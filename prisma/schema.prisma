@@ -1,0 +1,362 @@
+generator client {
+  provider      = "prisma-client-js"
+  // "native" for local dev; the linux/openssl targets are required so the query
+  // engine runs on Hostinger (Linux) when deployed from GitHub.
+  binaryTargets = ["native", "debian-openssl-3.0.x", "debian-openssl-1.1.x", "linux-musl-openssl-3.0.x", "linux-musl"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum CheckoutIntentStatus {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  APPLICATION_IN_PROGRESS
+  SUBMITTED
+  UNDER_REVIEW
+  MORE_INFO_REQUIRED
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  NOT_STARTED
+  DRAFT
+  SUBMITTED
+  NEEDS_CHANGES
+  ACCEPTED
+}
+
+enum Role {
+  CUSTOMER
+  STAFF
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum DocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum RefundStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum TaskStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+}
+
+enum MessageChannel {
+  EMAIL
+  WHATSAPP
+  INTERNAL
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum InfoRequestStatus {
+  OPEN
+  RESOLVED
+}
+
+model User {
+  id             String    @id @default(cuid())
+  fullName       String
+  email          String    @unique
+  whatsapp       String
+  country        String
+  passwordHash   String
+  role           Role      @default(CUSTOMER)
+  status         UserStatus @default(ACTIVE)
+  emailVerifiedAt DateTime?
+  lockedUntil    DateTime?
+  deletedAt      DateTime?
+  termsAt        DateTime
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  sessions       Session[]
+  checkouts      CheckoutIntent[]
+  orders         Order[]
+  applications   Application[]
+  notifications  Notification[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  tokenHash    String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  lastSeenAt   DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FormPackage {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String @db.Text
+  priceCents  Int
+  currency    String   @default("USD")
+  featuresJson String @db.Text
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  checkouts   CheckoutIntent[]
+  orders      Order[]
+}
+
+model CheckoutIntent {
+  id              String               @id @default(cuid())
+  userId          String
+  packageId       String
+  status          CheckoutIntentStatus @default(PENDING)
+  stripeSessionId String?              @unique
+  amountCents     Int
+  currency        String
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  paidAt          DateTime?
+  user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package         FormPackage          @relation(fields: [packageId], references: [id])
+  order           Order?
+}
+
+model Order {
+  id               String         @id @default(cuid())
+  reference        String         @unique
+  userId           String
+  packageId        String
+  checkoutIntentId String         @unique
+  status           OrderStatus    @default(PAID)
+  amountCents      Int
+  currency         String
+  assignedToId     String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package          FormPackage    @relation(fields: [packageId], references: [id])
+  checkoutIntent   CheckoutIntent @relation(fields: [checkoutIntentId], references: [id], onDelete: Cascade)
+  application      Application?
+  statusHistory    OrderStatusHistory[]
+  payments         Payment[]
+  messages         Message[]
+  tasks            Task[]
+  notes            InternalNote[]
+  infoRequests     InfoRequest[]
+
+  @@index([assignedToId])
+  @@index([status])
+}
+
+model Application {
+  id              String              @id @default(cuid())
+  userId          String
+  orderId         String              @unique
+  status          ApplicationStatus   @default(NOT_STARTED)
+  applicationJson String              @default("{}") @db.Text
+  declarationAccepted Boolean         @default(false)
+  submittedAt     DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order           Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  documents       ApplicationDocument[]
+}
+
+model ApplicationDocument {
+  id            String         @id @default(cuid())
+  applicationId String
+  kind          String
+  fileName      String
+  size          Int
+  mimeType      String
+  storageKey    String?
+  status        DocumentStatus @default(PENDING)
+  reviewedById  String?
+  reviewedAt    DateTime?
+  reviewNote    String?        @db.Text
+  createdAt     DateTime       @default(now())
+  application   Application    @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model ProcessedStripeEvent {
+  id        String   @id @default(cuid())
+  eventId   String   @unique
+  type      String
+  createdAt DateTime @default(now())
+}
+
+model OrderStatusHistory {
+  id         String   @id @default(cuid())
+  orderId    String
+  fromStatus String?
+  toStatus   String
+  note       String?  @db.Text
+  actorId    String?
+  createdAt  DateTime @default(now())
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String
+  provider          String        @default("stripe")
+  providerPaymentId String?
+  amountCents       Int
+  currency          String        @default("USD")
+  status            PaymentStatus @default(PAID)
+  rawJson           String?       @db.Text
+  createdAt         DateTime      @default(now())
+  order             Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refunds           Refund[]
+
+  @@index([orderId])
+}
+
+model Refund {
+  id            String       @id @default(cuid())
+  paymentId     String
+  amountCents   Int
+  reason        String?      @db.Text
+  status        RefundStatus @default(PENDING)
+  stripeRefundId String?
+  actorId       String?
+  createdAt     DateTime     @default(now())
+  payment       Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+}
+
+model Message {
+  id        String           @id @default(cuid())
+  orderId   String?
+  userId    String?
+  channel   MessageChannel   @default(INTERNAL)
+  direction MessageDirection @default(OUTBOUND)
+  subject   String?
+  body      String           @db.Text
+  actorId   String?
+  createdAt DateTime         @default(now())
+  order     Order?           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([userId])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  title     String
+  body      String?   @db.Text
+  href      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Task {
+  id         String     @id @default(cuid())
+  title      String
+  detail     String?    @db.Text
+  status     TaskStatus @default(OPEN)
+  orderId    String?
+  assigneeId String?
+  dueAt      DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  order      Order?     @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([status])
+}
+
+model InternalNote {
+  id        String   @id @default(cuid())
+  orderId   String
+  authorId  String?
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  target    String?
+  metaJson  String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([createdAt])
+}
+
+model InfoRequest {
+  id         String            @id @default(cuid())
+  orderId    String
+  message    String            @db.Text
+  status     InfoRequestStatus @default(OPEN)
+  actorId    String?
+  resolvedAt DateTime?
+  createdAt  DateTime          @default(now())
+  order      Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model AppSetting {
+  key       String   @id
+  valueJson String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+model LoginOtp {
+  id        String   @id @default(cuid())
+  userId    String
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  consumedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}

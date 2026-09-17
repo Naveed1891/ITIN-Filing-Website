@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "new-itin-application",
+    "name": "New ITIN Application",
+    "description": "For individuals preparing a first Form W-7 application for an IRS federal tax purpose.",
+    "priceCents": 22500,
+    "currency": "USD",
+    "featured": true,
+    "features": [
+      "Form W-7 preparation guidance",
+      "Application-reason checklist",
+      "Document requirements checklist",
+      "Information consistency review",
+      "IRS submission-method guidance",
+      "General email support"
+    ]
+  },
+  {
+    "slug": "itin-renewal",
+    "name": "ITIN Renewal",
+    "description": "For expired ITIN holders who need to file a U.S. federal tax return.",
+    "priceCents": 17500,
+    "currency": "USD",
+    "featured": false,
+    "features": [
+      "Renewal eligibility checklist",
+      "Form W-7 preparation guidance",
+      "Document requirements checklist",
+      "Information consistency review",
+      "IRS submission-method guidance",
+      "General email support"
+    ]
+  }
+]
