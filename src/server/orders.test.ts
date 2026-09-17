@@ -62,7 +62,7 @@ describe("paid Stripe session order creation", () => {
         checkoutIntentId: "intent_1",
         status: "PAID",
         amountCents: 22500,
-        application: { create: { userId: "user_1", status: "DRAFT" } },
+        application: { create: { userId: "user_1", status: "DRAFT", applicationJson: "{}" } },
       }),
     });
   });

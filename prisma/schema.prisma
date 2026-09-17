@@ -186,7 +186,7 @@ model Application {
   userId          String
   orderId         String              @unique
   status          ApplicationStatus   @default(NOT_STARTED)
-  applicationJson String              @default("{}") @db.Text
+  applicationJson String              @db.Text
   declarationAccepted Boolean         @default(false)
   submittedAt     DateTime?
   createdAt       DateTime            @default(now())

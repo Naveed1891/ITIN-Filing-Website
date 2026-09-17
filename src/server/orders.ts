@@ -54,6 +54,7 @@ export async function createPaidOrderFromCheckoutSession(session: Stripe.Checkou
           create: {
             userId: paidIntent.userId,
             status: "DRAFT",
+            applicationJson: "{}",
           },
         },
       },

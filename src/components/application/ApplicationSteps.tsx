@@ -2,6 +2,7 @@
 
 import { useFormContext, useWatch } from "react-hook-form";
 import { FormField } from "@/components/ui/FormField";
+import { COUNTRIES, flagEmoji } from "@/lib/countries";
 import {
   applicationOptions,
   type ApplicationOption,
@@ -133,9 +134,24 @@ export function AddressStep() {
       <FormField label="Street Address *" autoComplete="street-address" error={formError(errors, "streetAddress")} {...register("streetAddress")} />
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label="City *" autoComplete="address-level2" error={formError(errors, "city")} {...register("city")} />
-        <FormField label="State / Province *" autoComplete="address-level1" error={formError(errors, "stateProvince")} {...register("stateProvince")} />
+        <FormField label="State / Province / Region *" autoComplete="address-level1" error={formError(errors, "stateProvince")} {...register("stateProvince")} />
         <FormField label="ZIP / Postal Code *" autoComplete="postal-code" error={formError(errors, "postalCode")} {...register("postalCode")} />
-        <FormField label="Country *" autoComplete="country-name" error={formError(errors, "country")} {...register("country")} />
+        <div className="flex flex-col gap-[7px]">
+          <label htmlFor="country" className={labelClass}>Country <span className="text-error">*</span></label>
+          <select
+            id="country"
+            autoComplete="country-name"
+            className={inputClass}
+            aria-invalid={!!formError(errors, "country")}
+            {...register("country")}
+          >
+            <option value="">Select your country…</option>
+            {COUNTRIES.map((c) => (
+              <option key={`${c.iso2}-${c.name}`} value={c.name}>{flagEmoji(c.iso2)} {c.name}</option>
+            ))}
+          </select>
+          <InlineError message={formError(errors, "country")} />
+        </div>
       </div>
     </div>
   );
