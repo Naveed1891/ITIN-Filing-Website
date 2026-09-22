@@ -1,15 +1,30 @@
-/**
- * Prisma client for ITINFiling. This standalone site is the single source of
- * truth for its own data (customers, orders, applications, admin).
- */
 import { PrismaClient } from "@prisma/client";
 import { packageDefinitions } from "./packages";
+
+function getDatabaseUrl(): string {
+  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
+
+  const host = process.env.DB_HOST;
+  const name = process.env.DB_NAME;
+  const user = process.env.DB_USER;
+  const password = process.env.DB_PASSWORD || "";
+  const port = process.env.DB_PORT || "3306";
+
+  if (!host || !name || !user) {
+    throw new Error(
+      "Database not configured. Set DB_HOST, DB_NAME, DB_USER, and DB_PASSWORD in your environment variables."
+    );
+  }
+
+  return `mysql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${name}`;
+}
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
+    datasources: { db: { url: getDatabaseUrl() } },
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 

@@ -1,3 +1,4 @@
+require("../scripts/db-url").ensureDatabaseUrl();
 const { PrismaClient } = require("@prisma/client");
 const { randomBytes, scryptSync } = require("crypto");
 // Single source of truth shared with the app runtime (see src/server/packages.ts).
