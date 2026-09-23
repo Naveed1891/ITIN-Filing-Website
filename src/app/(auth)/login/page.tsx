@@ -7,6 +7,7 @@ import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { PasswordField } from "@/components/ui/PasswordField";
+import { OtpInput } from "@/components/ui/OtpInput";
 import { apiFetch } from "@/lib/api-client";
 import { safeReturnTo } from "@/lib/return-to";
 
@@ -92,35 +93,33 @@ function LoginForm() {
               </div>
 
               <form className="flex flex-col gap-4" onSubmit={submit}>
-                {otpEmail ? <FormField
-                  label="Six-digit verification code"
-                  name="code"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  placeholder="000000"
-                  required
-                /> : <><FormField
-                  label="Email address"
-                  name="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                  required
-                />
-                <PasswordField
-                  label="Password"
-                  name="password"
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  required
-                />
-                </>}
+                {otpEmail ? (
+                  <OtpInput name="code" disabled={submitting} />
+                ) : (
+                  <>
+                    <FormField
+                      label="Email address"
+                      name="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                      required
+                    />
+                    <PasswordField
+                      label="Password"
+                      name="password"
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      required
+                    />
+                  </>
+                )}
                 <div className="flex justify-end">
                   <Link
-                    href="/contact"
+                    href="/forgot-password"
                     className="text-[12.5px] font-medium text-blue hover:underline"
                   >
-                    Need sign-in help?
+                    Forgot password?
                   </Link>
                 </div>
                 {error && <p role="alert" className="rounded-lg border border-error-border bg-error-bg p-3 text-sm text-error">{error}</p>}

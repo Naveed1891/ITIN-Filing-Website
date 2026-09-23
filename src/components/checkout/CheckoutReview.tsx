@@ -2,15 +2,18 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Check,
   ChevronLeft,
   CreditCard,
-  FileUp,
+  FileImage,
+  FileText,
   LoaderCircle,
   LockKeyhole,
   ShieldCheck,
+  Upload,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { AuthUser, ItinPackage } from "@/features/itin/types";
@@ -54,6 +57,178 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+function formatFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+const ACCEPTED_TYPES = ["application/pdf", "image/png", "image/jpeg"];
+const MAX_SIZE = 5 * 1024 * 1024;
+
+function ProofUpload({
+  proof,
+  onSelect,
+  disabled,
+}: {
+  proof: File | null;
+  onSelect: (file: File | null) => void;
+  disabled: boolean;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [fileError, setFileError] = useState("");
+
+  useEffect(() => {
+    if (!proof || !proof.type.startsWith("image/")) {
+      setPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(proof);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [proof]);
+
+  const validate = useCallback((file: File): string | null => {
+    if (!ACCEPTED_TYPES.includes(file.type)) return "Only PDF, PNG, or JPEG files are accepted.";
+    if (file.size > MAX_SIZE) return `File is too large (${formatFileSize(file.size)}). Maximum is 5 MB.`;
+    return null;
+  }, []);
+
+  function handleFiles(files: FileList | null) {
+    if (!files?.length) return;
+    const file = files[0];
+    const err = validate(file);
+    if (err) {
+      setFileError(err);
+      onSelect(null);
+    } else {
+      setFileError("");
+      onSelect(file);
+    }
+  }
+
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!disabled) setDragActive(true);
+  }
+
+  function handleDragLeave(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (!disabled) handleFiles(e.dataTransfer.files);
+  }
+
+  if (proof) {
+    const isImage = proof.type.startsWith("image/");
+    return (
+      <div className="mt-5">
+        <p className="mb-2 text-xs font-bold uppercase tracking-[0.1em] text-[#66758A]">Payment proof</p>
+        <div className="flex items-start gap-4 rounded-[12px] border border-blue/25 bg-blue/[0.03] p-4">
+          {isImage && preview ? (
+            <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border border-border bg-white">
+              <img src={preview} alt="Proof preview" className="size-full object-cover" />
+            </div>
+          ) : (
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-blue">
+              <FileText size={28} />
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-text-dark">{proof.name}</p>
+            <p className="mt-0.5 text-xs text-[#66758A]">
+              {formatFileSize(proof.size)} · {isImage ? "Image" : "PDF"}
+            </p>
+            <div className="mt-2 flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+              <Check size={13} strokeWidth={3} />
+              Ready to submit
+            </div>
+          </div>
+          {!disabled && (
+            <button
+              type="button"
+              onClick={() => {
+                onSelect(null);
+                if (inputRef.current) inputRef.current.value = "";
+              }}
+              className="flex size-8 shrink-0 items-center justify-center rounded-full text-[#66758A] transition-colors hover:bg-bg-light hover:text-text-dark"
+              aria-label="Remove file"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-5">
+      <p className="mb-2 text-xs font-bold uppercase tracking-[0.1em] text-[#66758A]">Upload payment proof</p>
+      <div
+        role="button"
+        tabIndex={0}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => !disabled && inputRef.current?.click()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (!disabled) inputRef.current?.click();
+          }
+        }}
+        className={`flex cursor-pointer flex-col items-center gap-3 rounded-[14px] border-2 border-dashed p-8 text-center transition-colors ${
+          dragActive
+            ? "border-blue bg-blue/[0.06]"
+            : "border-border bg-bg-light/50 hover:border-blue/40 hover:bg-blue/[0.02]"
+        } ${disabled ? "pointer-events-none opacity-60" : ""}`}
+      >
+        <span className={`flex size-12 items-center justify-center rounded-full transition-colors ${
+          dragActive ? "bg-blue/15 text-blue" : "bg-white text-[#66758A] shadow-sm ring-1 ring-border"
+        }`}>
+          <Upload size={22} />
+        </span>
+        <div>
+          <p className="text-sm font-semibold text-text-dark">
+            {dragActive ? "Drop your file here" : "Drag and drop your receipt here"}
+          </p>
+          <p className="mt-1 text-xs text-[#66758A]">or click to browse files</p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-[#66758A] ring-1 ring-border">
+            <FileImage size={12} /> PNG / JPEG
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-[#66758A] ring-1 ring-border">
+            <FileText size={12} /> PDF
+          </span>
+          <span className="text-[11px] text-[#9AA7B4]">Max 5 MB</span>
+        </div>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="application/pdf,image/png,image/jpeg"
+          className="sr-only"
+          onChange={(e) => handleFiles(e.target.files)}
+          disabled={disabled}
+        />
+      </div>
+      {fileError && (
+        <p role="alert" className="mt-2 text-xs font-medium text-error">{fileError}</p>
+      )}
+    </div>
+  );
+}
+
 export function CheckoutReview({
   customer,
   selectedPackage,
@@ -66,7 +241,12 @@ export function CheckoutReview({
 }: CheckoutReviewProps) {
   const [bank, setBank] = useState<Record<string, string> | null>(null);
   const [proof, setProof] = useState<File | null>(null);
-  useEffect(() => { fetch("/api/checkout/bank-details", { cache: "no-store" }).then((r) => r.json()).then((x) => setBank(x.bank)); }, []);
+  useEffect(() => {
+    fetch("/api/checkout/bank-details", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((x) => setBank(x.bank))
+      .catch(() => {});
+  }, []);
 
   return (
     <section className="mx-auto grid w-full max-w-[1240px] overflow-hidden rounded-[16px] border border-border bg-white shadow-[0_28px_80px_-52px_rgba(11,33,56,0.55)] xl:grid-cols-[42fr_58fr]">
@@ -162,7 +342,40 @@ export function CheckoutReview({
           </section>
         </div>
 
-        <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-[12px] border border-border bg-bg-light/60 p-4">
+        <div className="mt-6 rounded-[14px] border border-border bg-bg-light/60 p-5 sm:p-6">
+          <h2 className="text-sm font-extrabold text-text-dark">Bank account details</h2>
+          <p className="mt-1 text-xs text-[#66758A]">Transfer the exact amount shown in the order summary to this account.</p>
+          {bank ? (
+            <dl className="mt-4 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+              {[
+                ["Account holder", bank.accountName],
+                ["Bank name", bank.bankName],
+                ["Account number", bank.accountNumber || bank.iban],
+                ["Routing / SWIFT", bank.routingNumber || bank.swiftCode || "Not applicable"],
+              ].map(([label, value]) => (
+                <div key={label} className="bg-white p-3.5">
+                  <dt className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#9AA7B4]">{label}</dt>
+                  <dd className="mt-1 text-sm font-semibold text-text-dark">{value || "Contact support"}</dd>
+                </div>
+              ))}
+              {bank.instructions && (
+                <div className="bg-white p-3.5 sm:col-span-2">
+                  <dt className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#9AA7B4]">Instructions</dt>
+                  <dd className="mt-1 whitespace-pre-wrap text-sm text-text-mid">{bank.instructions}</dd>
+                </div>
+              )}
+            </dl>
+          ) : (
+            <div className="mt-4 flex items-center gap-2 text-sm text-[#66758A]">
+              <LoaderCircle size={14} className="animate-spin" />
+              Loading bank details...
+            </div>
+          )}
+
+          <ProofUpload proof={proof} onSelect={setProof} disabled={submitting} />
+        </div>
+
+        <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-[12px] border border-border bg-bg-light/60 p-4">
           <input
             type="checkbox"
             checked={termsAccepted}
@@ -182,12 +395,6 @@ export function CheckoutReview({
             {error}
           </p>
         )}
-
-        <div className="mt-6 rounded-[12px] border border-border bg-bg-light/60 p-5">
-          <h2 className="text-sm font-extrabold text-text-dark">Bank account details</h2>
-          {bank ? <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2"><DetailRow label="Account holder" value={bank.accountName || "Contact support"}/><DetailRow label="Bank" value={bank.bankName || "Contact support"}/><DetailRow label="Account number" value={bank.accountNumber || bank.iban || "Contact support"}/><DetailRow label="Routing / SWIFT" value={bank.routingNumber || bank.swiftCode || "Not applicable"}/>{bank.instructions&&<div className="sm:col-span-2"><dt className="font-semibold">Instructions</dt><dd className="mt-1 whitespace-pre-wrap text-text-mid">{bank.instructions}</dd></div>}</dl>:<p className="mt-2 text-sm text-text-mid">Loading bank details…</p>}
-          <label className="mt-5 block rounded-lg border border-dashed border-blue/40 bg-white p-4"><span className="flex items-center gap-2 text-sm font-bold"><FileUp size={17}/>Upload payment proof</span><span className="mt-1 block text-xs text-text-mid">PDF, PNG or JPEG, up to 5 MB.</span><input className="mt-3 block w-full text-sm" type="file" accept="application/pdf,image/png,image/jpeg" onChange={(e)=>setProof(e.target.files?.[0]??null)}/></label>
-        </div>
 
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Button type="button" variant="text" size="md" onClick={onBack} disabled={submitting} className="text-[#66758A]">

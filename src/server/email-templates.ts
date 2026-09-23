@@ -187,3 +187,19 @@ ${button(opts.dashboardUrl, "View your order")}`;
     html: shell({ heading: "Payment proof received", bodyHtml, preheader: `${opts.reference} is awaiting payment review`, supportEmail: opts.supportEmail }),
   };
 }
+
+/* ── Password reset ───────────────────────────────────────────────── */
+
+export function passwordResetEmail(opts: { code: string; minutes: number; supportEmail?: string }): EmailContent {
+  const bodyHtml = `
+${paragraph("We received a request to reset your ITINReady account password. Use the code below to proceed.")}
+<div style="margin:6px 0 20px;padding:18px;background:${BRAND.bg};border:1px solid ${BRAND.border};border-radius:12px;text-align:center;">
+<div style="font-size:32px;font-weight:800;letter-spacing:10px;color:${BRAND.navy};font-family:'Courier New',monospace;">${esc(opts.code)}</div>
+</div>
+${note(`This code expires in ${opts.minutes} minutes. If you did not request a password reset, you can safely ignore this email — your password will remain unchanged.`)}`;
+  return {
+    subject: `Password reset code: ${opts.code}`,
+    text: `Your ITINReady password reset code is ${opts.code}. It expires in ${opts.minutes} minutes. If you did not request it, ignore this email.`,
+    html: shell({ heading: "Reset your password", bodyHtml, preheader: `Your code is ${opts.code}`, supportEmail: opts.supportEmail }),
+  };
+}

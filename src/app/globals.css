@@ -658,3 +658,41 @@ body {
   .dash__sidebar { transition: none; }
   .dash-skeleton { animation: none; }
 }
+
+/* --- OTP character boxes --- */
+
+.otp-grid {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.otp-box {
+  width: 52px;
+  height: 58px;
+  border: 1.5px solid #CBD4DE;
+  border-radius: 12px;
+  background: #fff;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1B2B3A;
+  caret-color: #205493;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.otp-box:focus {
+  outline: none;
+  border-color: #205493;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #205493 14%, transparent);
+}
+
+.otp-box:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 420px) {
+  .otp-grid { gap: 6px; }
+  .otp-box { width: 44px; height: 50px; font-size: 20px; border-radius: 10px; }
+}
