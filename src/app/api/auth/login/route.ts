@@ -31,8 +31,17 @@ export async function POST(request: Request) {
         prisma.loginOtp.deleteMany({ where: { userId: user.id, consumedAt: null } }),
         prisma.loginOtp.create({ data: { userId: user.id, codeHash: createHash("sha256").update(code).digest("hex"), expiresAt: new Date(Date.now() + 10 * 60 * 1000) } }),
       ]);
-      await sendEmail(user.email, otpEmail({ code, minutes: 10, supportEmail: settings.smtp.mainEmail }), "otp");
-      return json({ otpRequired: true });
+      try {
+        await sendEmail(user.email, otpEmail({ code, minutes: 10, supportEmail: settings.smtp.mainEmail }), "otp");
+        return json({ otpRequired: true });
+      } catch (smtpErr) {
+        console.error("OTP email delivery failed:", smtpErr);
+        if (["SUPER_ADMIN", "ADMIN"].includes(user.role)) {
+          await createSession(user.id);
+          return json({ user: publicUser(user), smtpError: true });
+        }
+        return errorJson("Email verification is enabled but the email system is unavailable. Please contact the site administrator.", 503);
+      }
     }
     await createSession(user.id);
     return json({ user: publicUser(user) });
