@@ -25,7 +25,7 @@ const schema = z.object({
     orders: z.boolean().default(false),
     payments: z.boolean().default(false),
     orderStatus: z.boolean().default(false),
-  }).default({}),
+  }).default({ emailVerification: false, orders: false, payments: false, orderStatus: false }),
 });
 
 export async function GET() {
