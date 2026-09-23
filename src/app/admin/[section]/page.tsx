@@ -45,8 +45,8 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
     return (
       <Section title="Orders" description="Track every paid ITIN service request from intake through completion.">
         <DashTable heads={["Reference", "Customer", "Package", "Status", "Amount", "Created"]} rows={items.map((x) => [
-          <Link key="r" href={`/admin/orders`}>{x.reference}</Link>,
-          <span key="u">{x.user.fullName}<br /><span style={{ color: "#9AA7B4", fontSize: "12px" }}>{x.user.email}</span></span>,
+          <Link key="r" href={`/admin/orders/${x.id}`}>{x.reference}</Link>,
+          <Link key="u" href={`/admin/customers/${x.user.id}`} style={{ color: "inherit", textDecoration: "none" }}>{x.user.fullName}<br /><span style={{ color: "#9AA7B4", fontSize: "12px" }}>{x.user.email}</span></Link>,
           x.package.name,
           <StatusBadge key="s" status={x.status} />,
           formatMoney(x.amountCents),
@@ -61,7 +61,7 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
     return (
       <Section title="Customers" description="Customer identities, account state and filing activity.">
         <DashTable heads={["Customer", "Email", "Country", "WhatsApp", "Orders", "Status"]} rows={items.map((x) => [
-          <strong key="n">{x.fullName}</strong>,
+          <Link key="n" href={`/admin/customers/${x.id}`}><strong>{x.fullName}</strong></Link>,
           x.email,
           x.country,
           x.whatsapp,
@@ -77,8 +77,8 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
     return (
       <Section title="Applications" description="Review W-7 application progress, submissions and change requests.">
         <DashTable heads={["Order", "Applicant", "Status", "Declaration", "Submitted", "Updated"]} rows={items.map((x) => [
-          x.order.reference,
-          <span key="u">{x.user.fullName}<br /><span style={{ color: "#9AA7B4", fontSize: "12px" }}>{x.user.email}</span></span>,
+          <Link key="o" href={`/admin/orders/${x.order.id}`}>{x.order.reference}</Link>,
+          <Link key="u" href={`/admin/customers/${x.user.id}`} style={{ color: "inherit", textDecoration: "none" }}>{x.user.fullName}<br /><span style={{ color: "#9AA7B4", fontSize: "12px" }}>{x.user.email}</span></Link>,
           <StatusBadge key="s" status={x.status} />,
           x.declarationAccepted ? "Accepted" : "Pending",
           x.submittedAt ? formatDate(x.submittedAt) : "—",
@@ -94,8 +94,8 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
       <Section title="Documents" description="Review customer uploads and document approval status.">
         <DashTable heads={["File", "Customer", "Order", "Type", "Status", "Uploaded"]} rows={items.map((x) => [
           <strong key="f">{x.fileName}</strong>,
-          x.application.user.fullName,
-          x.application.order.reference,
+          <Link key="u" href={`/admin/customers/${x.application.user.id}`}>{x.application.user.fullName}</Link>,
+          <Link key="o" href={`/admin/orders/${x.application.order.id}`}>{x.application.order.reference}</Link>,
           x.kind,
           <StatusBadge key="s" status={x.status} />,
           formatDate(x.createdAt),

@@ -48,9 +48,9 @@ export default async function AdminOverviewPage() {
               <tbody>
                 {recent.map((order) => (
                   <tr key={order.id}>
-                    <td><Link href="/admin/orders">{order.reference}</Link></td>
+                    <td><Link href={`/admin/orders/${order.id}`}>{order.reference}</Link></td>
                     <td>
-                      {order.user.fullName}
+                      <Link href={`/admin/customers/${order.user.id}`} style={{ color: "inherit", textDecoration: "none" }}>{order.user.fullName}</Link>
                       <br />
                       <span style={{ color: "#9AA7B4", fontSize: "12px" }}>{order.user.email}</span>
                     </td>

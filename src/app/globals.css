@@ -321,27 +321,16 @@ body {
 }
 
 .dash__brand-link {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: #fff;
+  display: block;
   text-decoration: none;
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
 }
 
-.dash__brand-icon {
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.75rem;
-  background: #f2c969;
-  color: #0B2138;
+.dash__brand-logo {
+  height: auto;
+  width: 150px;
+  max-width: 100%;
+  object-fit: contain;
 }
-
-.dash__brand-gold { color: #f2c969; }
 
 .dash__area {
   margin: 0.65rem 0 0;
@@ -658,6 +647,32 @@ body {
   .dash__sidebar { transition: none; }
   .dash-skeleton { animation: none; }
 }
+
+/* --- Detail page helpers --- */
+
+.dash-dl { margin: 0; }
+.dash-dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #E3E8EE;
+  font-size: 14px;
+}
+.dash-dl > div:last-child { border-bottom: 0; }
+.dash-dl dt { color: #9AA7B4; font-weight: 500; min-width: 0; }
+.dash-dl dd { margin: 0; color: #1B2B3A; font-weight: 600; text-align: right; min-width: 0; word-break: break-word; }
+
+.dash-link { color: #205493; text-decoration: none; font-weight: 600; }
+.dash-link:hover { text-decoration: underline; }
+
+.dash-back-link {
+  color: #9AA7B4;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+.dash-back-link:hover { color: #205493; }
 
 /* --- OTP character boxes --- */
 

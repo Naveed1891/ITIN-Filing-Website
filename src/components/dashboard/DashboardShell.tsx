@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   BadgeDollarSign, Boxes, ClipboardCheck, FileText, FolderLock, Gauge, Headphones,
-  History, ListTodo, Mail, Package, Settings, ShieldCheck, UserRound, Users,
+  History, ListTodo, Mail, Package, Settings, UserRound, Users,
 } from "lucide-react";
 
 type NavItem = { href: string; label: string; Icon: LucideIcon };
@@ -75,8 +76,15 @@ export function DashboardShell({
       <aside className={`dash__sidebar${menuOpen ? " dash__sidebar--open" : ""}`}>
         <div className="dash__brand">
           <Link href="/" className="dash__brand-link">
-            <span className="dash__brand-icon"><ShieldCheck size={22} /></span>
-            ITIN<span className="dash__brand-gold">Ready</span>
+            <Image
+              src="/images/brand/itinfiling-logo.png"
+              alt="ITINReady"
+              width={4065}
+              height={769}
+              className="dash__brand-logo"
+              sizes="160px"
+              priority
+            />
           </Link>
           <p className="dash__area">{areaLabel}</p>
         </div>
