@@ -17,8 +17,7 @@ describe("ITIN document requirements", () => {
     ]);
   });
 
-  it("requires passport and signature for other application options", () => {
-    expect(requiredDocumentKinds("hopetex")).toEqual(["passport", "scannedSignature"]);
+  it("requires passport and signature for no-company applicants", () => {
     expect(requiredDocumentKinds("no-company")).toEqual(["passport", "scannedSignature"]);
   });
 

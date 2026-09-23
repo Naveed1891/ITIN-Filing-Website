@@ -144,7 +144,7 @@ function CheckoutFlow() {
         method: "POST",
         body: JSON.stringify({ packageSlug: selectedPackage.slug, fileName: proof.name, mimeType: proof.type, fileBase64: btoa(binary) }),
       });
-      router.push(`/dashboard?payment=pending&reference=${encodeURIComponent(result.reference)}`);
+      router.push(`/application/${result.orderId}`);
     } catch (cause) {
       setError(
         cause instanceof Error && cause.message

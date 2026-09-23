@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/Button";
 import {
   AddressStep,
   ApplicationOptionStep,
-  HopeTexOrderStep,
   PersonalDetailsStep,
 } from "@/components/application/ApplicationSteps";
 import { ApplicationDocumentsStep } from "@/components/application/ApplicationDocumentsStep";
@@ -49,26 +48,24 @@ async function fileToBase64(file: File): Promise<string> {
   return btoa(binary);
 }
 
-type StepId = "option" | "personal" | "address" | "order" | "documents" | "review";
+type StepId = "option" | "personal" | "address" | "documents" | "review";
 
 const stepLabels: Record<StepId, string> = {
   option: "Application option",
   personal: "Personal details",
   address: "Ownership and address",
-  order: "HopeTex order",
   documents: "Documents",
   review: "Review and declaration",
 };
 
 function stepsForOption(option?: ApplicationOption): StepId[] {
-  if (option === "hopetex") return ["option", "order", "documents", "review"];
   if (option === "has-company" || option === "no-company") {
     return ["option", "personal", "address", "documents", "review"];
   }
   return ["option"];
 }
 
-function personalComplete(values: Partial<ItinApplicationValues>) {
+function personalComplete(values: Partial<ItinApplicationValues>, renewal = false) {
   if (!("firstName" in values)) return false;
   const phoneValid = /^\+[1-9]\d{7,14}$/.test(values.phone?.trim() ?? "");
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email ?? "");
@@ -78,6 +75,7 @@ function personalComplete(values: Partial<ItinApplicationValues>) {
       && Boolean(values.birthFirstName?.trim())
       && Boolean(values.birthLastName?.trim())
     );
+  if (renewal && !values.itinNumber?.trim()) return false;
   return Boolean(
     values.firstName?.trim()
     && values.lastName?.trim()
@@ -126,6 +124,7 @@ const fieldsByStep: Partial<Record<StepId, Array<FieldPath<ItinApplicationValues
   personal: [
     "firstName",
     "lastName",
+    "itinNumber",
     "sameAsBirthName",
     "birthFirstName",
     "birthLastName",
@@ -140,9 +139,12 @@ const fieldsByStep: Partial<Record<StepId, Array<FieldPath<ItinApplicationValues
     "postalCode",
     "country",
   ],
-  order: ["hopetexOrderNumber"],
-  documents: ["passport", "scannedSignature", "companyDocuments", "einDocument"],
+  documents: ["passport", "scannedSignature", "companyDocuments", "einDocument", "previousItinForm"],
 };
+
+function isRenewalPackage(slug?: string) {
+  return Boolean(slug && slug.toLowerCase().includes("renewal"));
+}
 
 export default function ApplicationPage() {
   const params = useParams<{ orderId: string }>();
@@ -245,12 +247,8 @@ export default function ApplicationPage() {
 
   function isStepComplete(stepId: StepId) {
     if (stepId === "option") return Boolean(applicationOption);
-    if (stepId === "personal") return personalComplete(watchedValues);
+    if (stepId === "personal") return personalComplete(watchedValues, isRenewal);
     if (stepId === "address") return addressComplete(watchedValues);
-    if (stepId === "order") {
-      return "hopetexOrderNumber" in watchedValues
-        && Boolean(watchedValues.hopetexOrderNumber?.trim());
-    }
     if (stepId === "documents") {
       return Boolean(
         applicationOption
@@ -275,6 +273,15 @@ export default function ApplicationPage() {
   }
 
   async function submitApplication() {
+    if (isRenewal) {
+      const itin = getValues("itinNumber");
+      if (!itin?.trim()) {
+        methods.setError("itinNumber", { message: "ITIN Number is required for renewals" });
+        setStep("personal");
+        return;
+      }
+    }
+
     const result = itinApplicationSchema.safeParse(getValues());
     if (!result.success) {
       await trigger();
@@ -294,6 +301,9 @@ export default function ApplicationPage() {
           { kind: "companyDocuments", files: result.data.companyDocuments },
           { kind: "einDocument", files: result.data.einDocument },
         );
+      }
+      if (result.data.previousItinForm && result.data.previousItinForm.length > 0) {
+        fileGroups.push({ kind: "previousItinForm", files: result.data.previousItinForm });
       }
 
       const documents = await Promise.all(
@@ -345,14 +355,16 @@ export default function ApplicationPage() {
     );
   }
 
+  const isRenewal = isRenewalPackage(order?.packageSlug);
+
   if (loadError || !order) {
     return (
       <div className="min-h-screen bg-bg-light">
         <main className="mx-auto flex min-h-[70vh] max-w-lg flex-col items-center justify-center px-5 text-center">
           <span className="mb-5 flex size-16 items-center justify-center rounded-full bg-white text-navy shadow-card"><LockKeyhole size={28} /></span>
-          <h1 className="text-2xl font-extrabold text-text-dark">Application locked</h1>
-          <p className="mt-3 text-sm leading-6 text-text-mid">{loadError || "Payment must be confirmed before the ITIN application can be accessed."}</p>
-          <Link href="/checkout" className="mt-6"><Button size="md">Go to checkout</Button></Link>
+          <h1 className="text-2xl font-extrabold text-text-dark">Application unavailable</h1>
+          <p className="mt-3 text-sm leading-6 text-text-mid">{loadError || "This application could not be loaded. Please try again or contact support."}</p>
+          <Link href="/dashboard" className="mt-6"><Button size="md">Go to dashboard</Button></Link>
         </main>
       </div>
     );
@@ -447,15 +459,24 @@ export default function ApplicationPage() {
           </aside>
 
           <section className="min-w-0 flex-1 rounded-card border border-border bg-white p-5 shadow-card sm:p-7">
+            {order.status === "PENDING_PAYMENT" && (
+              <div className="mb-5 flex gap-3 rounded-xl border border-gold/30 bg-gold/10 p-4">
+                <LoaderCircle size={18} className="mt-0.5 shrink-0 text-navy" />
+                <div>
+                  <p className="text-sm font-bold text-text-dark">Payment under review</p>
+                  <p className="mt-0.5 text-xs leading-5 text-text-mid">Your payment proof is being reviewed by our finance team. You can continue filling your application in the meantime.</p>
+                </div>
+              </div>
+            )}
             {step === "option" && <ApplicationOptionStep onOptionChange={changeApplicationOption} />}
-            {step === "personal" && <PersonalDetailsStep />}
+            {step === "personal" && <PersonalDetailsStep isRenewal={isRenewal} />}
             {step === "address" && <AddressStep />}
-            {step === "order" && <HopeTexOrderStep />}
             {step === "documents" && applicationOption && (
               <ApplicationDocumentsStep
                 applicationOption={applicationOption}
                 previousMetadata={previousMetadata}
                 showErrors={showDocumentErrors}
+                isRenewal={isRenewal}
                 onFilesChanged={(kind) => {
                   setPreviousMetadata((metadata) =>
                     metadata.filter((file) => file.kind !== kind)

@@ -1,0 +1,4 @@
+"use client";
+import { useState } from "react";
+import { apiFetch } from "@/lib/api-client";
+export function CommunicationReply({ messageId }: { messageId: string }) { const [body,setBody]=useState("");const [status,setStatus]=useState("");async function send(e:React.FormEvent){e.preventDefault();await apiFetch(`/api/admin/communications/${messageId}`,{method:"POST",body:JSON.stringify({body})});setBody("");setStatus("Reply sent. Refreshing…");window.location.reload()}return <form onSubmit={send} className="mt-6 border-t border-border pt-5"><label className="text-sm font-bold">Reply</label><textarea className="mt-2 min-h-32 w-full rounded-xl border border-border p-3" value={body} onChange={e=>setBody(e.target.value)} required/><button className="dash-btn dash-btn--primary mt-3" type="submit">Send reply</button>{status&&<p className="mt-2 text-sm text-blue">{status}</p>}</form> }

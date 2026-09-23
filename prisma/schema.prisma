@@ -184,7 +184,8 @@ model BankTransfer {
   status           BankTransferStatus @default(PENDING)
   proofFileName    String
   proofMimeType    String
-  proofDataBase64  String             @db.LongText
+  proofDataBase64  String?            @db.LongText
+  proofStorageKey  String?
   reviewedById     String?
   reviewNote       String?            @db.Text
   reviewedAt       DateTime?

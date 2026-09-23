@@ -2,6 +2,7 @@ import { requireUser } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { json, parseJson, routeError } from "@/server/http";
 import { applicationSubmitSchema } from "@/server/validation";
+import { uploadBase64File } from "@/server/storage";
 
 export const dynamic = "force-dynamic";
 
@@ -17,11 +18,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ ord
     });
     if (!order) throw new Error("NOT_FOUND");
     if (order.userId !== user.id) throw new Error("FORBIDDEN");
-    if (!order.application || order.status === "PENDING_PAYMENT") {
-      throw new Error("Payment must be confirmed before submitting the application.");
-    }
+    if (!order.application || order.status === "CANCELLED") throw new Error("This order is no longer active.");
+
+    const uploadedDocuments = await Promise.all(input.documents.map(async (document) => ({
+      ...document,
+      storageKey: await uploadBase64File(`applications/${order.id}`, document.fileName, document.mimeType, document.fileBase64 ?? ""),
+    })));
 
     const submittedAt = new Date();
+    const nextOrderStatus = order.status === "PENDING_PAYMENT" ? "PENDING_PAYMENT" : "SUBMITTED";
     const application = await prisma.application.update({
       where: { id: order.application.id },
       data: {
@@ -32,15 +37,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ ord
         documents: {
           deleteMany: {},
           createMany: {
-            data: input.documents.map((document) => ({
+            data: uploadedDocuments.map((document) => ({
               kind: document.kind,
               fileName: document.fileName,
               size: document.size,
               mimeType: document.mimeType,
+              storageKey: document.storageKey,
             })),
           },
         },
-        order: { update: { status: "SUBMITTED" } },
+        order: { update: { status: nextOrderStatus } },
       },
     });
     return json({

@@ -10,9 +10,7 @@ async function getOwnedApplicationLocal(orderId: string, userId: string) {
   });
   if (!order) throw new Error("NOT_FOUND");
   if (order.userId !== userId) throw new Error("FORBIDDEN");
-  if (order.status !== "PAID" && order.status !== "APPLICATION_IN_PROGRESS" && order.status !== "SUBMITTED") {
-    throw new Error("Payment must be confirmed before accessing the application.");
-  }
+  if (order.status === "CANCELLED") throw new Error("This order is no longer active.");
   if (!order.application) throw new Error("NOT_FOUND");
   return order.application;
 }

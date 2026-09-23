@@ -56,6 +56,9 @@ export function documentMetadataFromValues(
     addFiles("companyDocuments", values.companyDocuments);
     addFiles("einDocument", values.einDocument);
   }
+  if (values.previousItinForm && values.previousItinForm.length > 0) {
+    addFiles("previousItinForm", values.previousItinForm);
+  }
   return metadata;
 }
 

@@ -56,7 +56,7 @@ export function AccountSetupForm() {
       </div>
 
       <fieldset className="flex flex-col gap-4 rounded-lg border border-border p-5">
-        <legend className="px-2 text-sm font-bold text-text-dark">ceo@hopetexx.com</legend>
+        <legend className="px-2 text-sm font-bold text-text-dark">CEO account</legend>
         <PasswordField label="Password" name="ceoPassword" autoComplete="new-password" required />
         <PasswordField label="Confirm password" name="ceoPasswordConfirm" autoComplete="new-password" required />
       </fieldset>

@@ -141,7 +141,7 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
         <DashTable heads={["From", "Direction", "Subject", "Message", "Created"]} rows={items.map((x) => [
           x.userId ? <Link key="u" href={`/admin/customers/${x.userId}`}>{userMap.get(x.userId) ?? "Customer"}</Link> : "System",
           <StatusBadge key="d" status={x.direction === "INBOUND" ? "SUBMITTED" : "COMPLETED"} />,
-          x.subject ?? "—",
+          <Link key="subject" href={`/admin/communications/${x.id}`}>{x.subject ?? "View message"}</Link>,
           <span key="m" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", maxWidth: "380px" }}>{x.body}</span>,
           formatDate(x.createdAt),
         ])} />

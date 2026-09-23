@@ -10,10 +10,6 @@ export const applicationOptions = [
     value: "no-company",
     label: "I don't have US Company & EIN, I will not Start one for now",
   },
-  {
-    value: "hopetex",
-    label: "My Company is Registered from HopeTex",
-  },
 ] as const;
 
 export type ApplicationOption = (typeof applicationOptions)[number]["value"];
@@ -21,7 +17,6 @@ export type ApplicationOption = (typeof applicationOptions)[number]["value"];
 export const applicationOptionSchema = z.enum([
   "has-company",
   "no-company",
-  "hopetex",
 ], {
   error: "Application option is required",
 });
@@ -57,6 +52,12 @@ const einDocumentSchema = z
 const scannedSignatureSchema = z
   .array(documentFileSchema)
   .length(1, "Scanned signature on white paper is required");
+
+const previousItinFormSchema = z
+  .array(documentFileSchema)
+  .max(1, "Only one previous ITIN form is allowed")
+  .optional()
+  .default([]);
 
 const birthNameSchema = z
   .object({
@@ -136,19 +137,12 @@ const noCompanySchema = z
   })
   .and(birthNameSchema);
 
-const hopetexSchema = z.object({
-  applicationOption: z.literal("hopetex"),
-  hopetexOrderNumber: requiredText("Order number"),
-  passport: passportSchema,
-  scannedSignature: scannedSignatureSchema,
-  declarationAccepted: declarationField,
-});
-
 // Intersections cannot be used directly by discriminatedUnion, so the shared
 // birth-name refinement is applied to the complete union below.
 const hasCompanyObject = z.object({
   applicationOption: z.literal("has-company"),
   ...personalFields,
+  itinNumber: z.string().trim().optional().default(""),
   sameAsBirthName: z.enum(["yes", "no"], { error: "Choose Yes or No" }),
   birthFirstName: z.string().trim(),
   birthLastName: z.string().trim(),
@@ -157,31 +151,31 @@ const hasCompanyObject = z.object({
   companyDocuments: companyDocumentsSchema,
   einDocument: einDocumentSchema,
   scannedSignature: scannedSignatureSchema,
+  previousItinForm: previousItinFormSchema,
   declarationAccepted: declarationField,
-}).strict();
+});
 
 const noCompanyObject = z.object({
   applicationOption: z.literal("no-company"),
   ...personalFields,
+  itinNumber: z.string().trim().optional().default(""),
   sameAsBirthName: z.enum(["yes", "no"], { error: "Choose Yes or No" }),
   birthFirstName: z.string().trim(),
   birthLastName: z.string().trim(),
   ...addressFields,
   passport: passportSchema,
   scannedSignature: scannedSignatureSchema,
+  previousItinForm: previousItinFormSchema,
   declarationAccepted: declarationField,
-}).strict();
-
-const hopetexObject = hopetexSchema.strict();
+});
 
 export const itinApplicationSchema = z
   .discriminatedUnion("applicationOption", [
     hasCompanyObject,
     noCompanyObject,
-    hopetexObject,
   ])
   .superRefine((data, ctx) => {
-    if (data.applicationOption === "hopetex" || data.sameAsBirthName !== "no") {
+    if (data.sameAsBirthName !== "no") {
       return;
     }
     if (!data.birthFirstName) {
@@ -217,6 +211,7 @@ export interface ApplicationDraftValues {
   applicationOption?: ApplicationOption | "";
   firstName?: string;
   lastName?: string;
+  itinNumber?: string;
   sameAsBirthName?: "" | "yes" | "no";
   birthFirstName?: string;
   birthLastName?: string;
@@ -228,19 +223,20 @@ export interface ApplicationDraftValues {
   stateProvince?: string;
   postalCode?: string;
   country?: string;
-  hopetexOrderNumber?: string;
   declarationAccepted?: boolean;
 }
 
 export const defaultApplicationValues = {
   passport: [] as File[],
   scannedSignature: [] as File[],
+  previousItinForm: [] as File[],
   declarationAccepted: false,
 };
 
 const personalDefaults = {
   firstName: "",
   lastName: "",
+  itinNumber: "",
   sameAsBirthName: "" as "yes",
   birthFirstName: "",
   birthLastName: "",
@@ -254,6 +250,7 @@ const personalDefaults = {
   country: "",
   passport: [] as File[],
   scannedSignature: [] as File[],
+  previousItinForm: [] as File[],
   declarationAccepted: false,
 };
 
@@ -264,22 +261,14 @@ export function valuesForOption(
     companyDocuments: File[];
     einDocument: File[];
     scannedSignature: File[];
+    previousItinForm: File[];
   }> = {},
 ): ItinApplicationValues {
-  if (option === "hopetex") {
-    return {
-      applicationOption: option,
-      hopetexOrderNumber: current.hopetexOrderNumber ?? "",
-      passport: current.passport ?? [],
-      scannedSignature: current.scannedSignature ?? [],
-      declarationAccepted: false,
-    };
-  }
-
   const shared = {
     ...personalDefaults,
     firstName: current.firstName ?? "",
     lastName: current.lastName ?? "",
+    itinNumber: current.itinNumber ?? "",
     sameAsBirthName: current.sameAsBirthName === "no" ? "no" as const : current.sameAsBirthName === "yes" ? "yes" as const : personalDefaults.sameAsBirthName,
     birthFirstName: current.birthFirstName ?? "",
     birthLastName: current.birthLastName ?? "",
@@ -293,6 +282,7 @@ export function valuesForOption(
     country: current.country ?? "",
     passport: current.passport ?? [],
     scannedSignature: current.scannedSignature ?? [],
+    previousItinForm: current.previousItinForm ?? [],
   };
 
   return option === "has-company"
@@ -312,13 +302,6 @@ export function createDraftValues(
   values: Partial<ItinApplicationValues>,
 ): ApplicationDraftValues {
   const option = values.applicationOption;
-  if (option === "hopetex") {
-    return {
-      applicationOption: option,
-      hopetexOrderNumber: "hopetexOrderNumber" in values ? values.hopetexOrderNumber : "",
-      declarationAccepted: false,
-    };
-  }
   if (option !== "has-company" && option !== "no-company") {
     return { applicationOption: "" };
   }
@@ -326,6 +309,7 @@ export function createDraftValues(
     applicationOption: option,
     firstName: "firstName" in values ? values.firstName : "",
     lastName: "lastName" in values ? values.lastName : "",
+    itinNumber: "itinNumber" in values ? values.itinNumber : "",
     sameAsBirthName: "sameAsBirthName" in values ? values.sameAsBirthName : "",
     birthFirstName: "birthFirstName" in values ? values.birthFirstName : "",
     birthLastName: "birthLastName" in values ? values.birthLastName : "",
@@ -351,6 +335,9 @@ export function createSubmissionPayload(values: ValidItinApplication) {
           einDocument: values.einDocument.map(({ name, size, type }) => ({ name, size, type })),
         }
       : {}),
+    ...(values.previousItinForm && values.previousItinForm.length > 0
+      ? { previousItinForm: values.previousItinForm.map(({ name, size, type }) => ({ name, size, type })) }
+      : {}),
   };
 
   const activeTextValues = Object.fromEntries(
@@ -359,6 +346,7 @@ export function createSubmissionPayload(values: ValidItinApplication) {
       "scannedSignature",
       "companyDocuments",
       "einDocument",
+      "previousItinForm",
       "declarationAccepted",
     ].includes(key)),
   );
@@ -374,5 +362,4 @@ export function createSubmissionPayload(values: ValidItinApplication) {
 export const applicationVariantSchemas = {
   hasCompany: hasCompanySchema,
   noCompany: noCompanySchema,
-  hopetex: hopetexSchema,
 };

@@ -4,6 +4,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { PartnershipButton } from "@/components/partner/PartnershipButton";
 
 const playfairDisplayHeading = Playfair_Display({subsets:['latin'],variable:'--font-heading'});
 
@@ -75,6 +76,7 @@ export default function RootLayout({
           ]}
         />
         {children}
+        <PartnershipButton />
       </body>
     </html>
   );

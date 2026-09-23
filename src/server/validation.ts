@@ -50,7 +50,7 @@ export const applicationPatchSchema = z.object({
 });
 
 export const documentMetadataSchema = z.object({
-  kind: z.enum(["passport", "companyDocuments", "einDocument", "scannedSignature"]),
+  kind: z.enum(["passport", "companyDocuments", "einDocument", "scannedSignature", "previousItinForm"]),
   fileName: z.string().trim().min(1),
   size: z.number().int().nonnegative(),
   mimeType: z.string().trim().min(1),

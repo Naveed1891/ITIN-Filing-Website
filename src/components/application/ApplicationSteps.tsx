@@ -78,7 +78,7 @@ export function ApplicationOptionStep({
   );
 }
 
-export function PersonalDetailsStep() {
+export function PersonalDetailsStep({ isRenewal = false }: { isRenewal?: boolean }) {
   const {
     register,
     control,
@@ -89,6 +89,9 @@ export function PersonalDetailsStep() {
   return (
     <div className="flex flex-col gap-6">
       <StepHeading title="Personal details" description="Enter the details exactly as they appear on your passport." />
+      {isRenewal && (
+        <FormField label="ITIN Number *" placeholder="9XX-XX-XXXX" error={formError(errors, "itinNumber")} {...register("itinNumber")} />
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label="First Name *" autoComplete="given-name" error={formError(errors, "firstName")} {...register("firstName")} />
         <FormField label="Last Name (Surname) *" autoComplete="family-name" error={formError(errors, "lastName")} {...register("lastName")} />
@@ -153,20 +156,6 @@ export function AddressStep() {
           <InlineError message={formError(errors, "country")} />
         </div>
       </div>
-    </div>
-  );
-}
-
-export function HopeTexOrderStep() {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext<ItinApplicationValues>();
-
-  return (
-    <div className="flex flex-col gap-6">
-      <StepHeading title="HopeTex order" description="Enter the order number for your HopeTex company registration." />
-      <FormField label="Enter Your Order No. *" error={formError(errors, "hopetexOrderNumber")} {...register("hopetexOrderNumber")} />
     </div>
   );
 }

@@ -17,6 +17,7 @@ const documentLabels: Record<DocumentKind, string> = {
   companyDocuments: "Upload Company Documents",
   einDocument: "Upload EIN Document",
   scannedSignature: "Upload Scanned Signature on White Paper",
+  previousItinForm: "Upload Previous ITIN Form",
 };
 
 const documentInstructions: Partial<Record<DocumentKind, string>> = {
@@ -53,6 +54,7 @@ function UploadCard({
   const [selectionError, setSelectionError] = useState("");
   const allowMultiple = kind === "companyDocuments";
   const instruction = documentInstructions[kind];
+  const isOptional = kind === "previousItinForm";
 
   function chooseFiles(selected: File[]) {
     if (selected.length === 0) return;
@@ -85,10 +87,10 @@ function UploadCard({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="text-sm font-bold text-text-dark">
-                {documentLabels[kind]} <span className="text-error">*</span>
+                {documentLabels[kind]} {!isOptional && <span className="text-error">*</span>}
               </p>
               <p className="text-xs text-text-muted">
-                Required · PDF, JPG, JPEG, or PNG · max 1 GB
+                {isOptional ? "Optional" : "Required"} · PDF, JPG, JPEG, or PNG · max 1 GB
                 {allowMultiple ? " each · multiple files allowed" : ""}
               </p>
             </div>
@@ -161,11 +163,13 @@ export function ApplicationDocumentsStep({
   previousMetadata,
   showErrors,
   onFilesChanged,
+  isRenewal = false,
 }: {
   applicationOption: ApplicationOption;
   previousMetadata: DocumentMetadata[];
   showErrors: boolean;
   onFilesChanged: (kind: DocumentKind) => void;
+  isRenewal?: boolean;
 }) {
   const {
     control,
@@ -176,12 +180,16 @@ export function ApplicationDocumentsStep({
   const companyDocuments = useWatch({ control, name: "companyDocuments" }) ?? [];
   const einDocument = useWatch({ control, name: "einDocument" }) ?? [];
   const scannedSignature = useWatch({ control, name: "scannedSignature" }) ?? [];
+  const previousItinForm = useWatch({ control, name: "previousItinForm" }) ?? [];
   const filesByKind: Record<DocumentKind, File[]> = {
     passport,
     companyDocuments,
     einDocument,
     scannedSignature,
+    previousItinForm,
   };
+
+  const kinds = requiredDocumentKinds(applicationOption);
 
   return (
     <div className="flex flex-col gap-6">
@@ -197,7 +205,7 @@ export function ApplicationDocumentsStep({
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        {requiredDocumentKinds(applicationOption).map((kind) => (
+        {kinds.map((kind) => (
           <UploadCard
             key={kind}
             kind={kind}
@@ -225,6 +233,23 @@ export function ApplicationDocumentsStep({
             }}
           />
         ))}
+
+        {isRenewal && (
+          <UploadCard
+            kind="previousItinForm"
+            files={filesByKind.previousItinForm}
+            previousMetadata={previousMetadata.filter((file) => file.kind === "previousItinForm")}
+            showRequiredError={false}
+            onChange={(files) => {
+              onFilesChanged("previousItinForm");
+              setValue("previousItinForm", files, {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              });
+            }}
+          />
+        )}
       </div>
     </div>
   );

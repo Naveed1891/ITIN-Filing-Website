@@ -1,7 +1,7 @@
 import { json, parseJson, routeError } from "@/server/http";
 import { getOperationalSettings } from "@/server/operational-settings";
 import { sendEmailSafely } from "@/server/email";
-import { contactFormEmail } from "@/server/email-templates";
+import { contactConfirmationEmail, contactFormEmail } from "@/server/email-templates";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +29,7 @@ export async function POST(request: Request) {
         }),
         "general",
       );
+      await sendEmailSafely(input.email, contactConfirmationEmail({ name: input.name, subject: input.subject, supportEmail }), "general");
     }
     return json({ sent: true });
   } catch (error) {

@@ -65,4 +65,5 @@ export type DocumentKind =
   | "passport"
   | "companyDocuments"
   | "einDocument"
-  | "scannedSignature";
+  | "scannedSignature"
+  | "previousItinForm";

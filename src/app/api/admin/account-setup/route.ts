@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const SETUP_KEY = "superadmin_account_reset_2026_09";
 const CONFIRMATION = "REMOVE ALL PREVIOUS USERS";
 const replacementAdmins = [
-  { email: "ceo@hopetexx.com", fullName: "HopeTexx CEO" },
+  { email: "ceo@hopetexx.com", fullName: "CEO" },
   { email: "naveed@invoclouds.com", fullName: "Naveed" },
 ] as const;
 

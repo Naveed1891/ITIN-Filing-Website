@@ -33,7 +33,6 @@ describe("ITIN application discriminated validation", () => {
     expect(applicationOptions).toEqual([
       { value: "has-company", label: "I have US Company & EIN" },
       { value: "no-company", label: "I don't have US Company & EIN, I will not Start one for now" },
-      { value: "hopetex", label: "My Company is Registered from HopeTex" },
     ]);
   });
 
@@ -94,36 +93,6 @@ describe("ITIN application discriminated validation", () => {
     expect(result.success).toBe(true);
   });
 
-  it("requires an order number, passport, and signature for option 3", () => {
-    const result = itinApplicationSchema.safeParse({
-      applicationOption: "hopetex",
-      hopetexOrderNumber: "",
-      passport: [],
-      scannedSignature: [],
-      declarationAccepted: true,
-    });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const paths = result.error.issues.map((issue) => issue.path[0]);
-      expect(paths).toEqual(expect.arrayContaining([
-        "hopetexOrderNumber",
-        "passport",
-        "scannedSignature",
-      ]));
-    }
-  });
-
-  it("does not require hidden personal, address, or company fields for option 3", () => {
-    const result = itinApplicationSchema.safeParse({
-      applicationOption: "hopetex",
-      hopetexOrderNumber: "HTX-2048",
-      passport: [file("passport.pdf")],
-      scannedSignature: [signature],
-      declarationAccepted: true,
-    });
-    expect(result.success).toBe(true);
-  });
-
   it("requires birth-name fields only when the answer is No", () => {
     const sameName = itinApplicationSchema.safeParse({
       applicationOption: "no-company",
@@ -152,7 +121,7 @@ describe("ITIN application discriminated validation", () => {
     }
   });
 
-  it("clears hidden values and files when switching options", () => {
+  it("clears company document fields when switching from has-company to no-company", () => {
     const optionOne = valuesForOption("has-company", {
       ...personalApplication,
       passport: [file("passport.pdf")],
@@ -163,30 +132,19 @@ describe("ITIN application discriminated validation", () => {
     const optionTwo = valuesForOption("no-company", optionOne);
     expect("companyDocuments" in optionTwo).toBe(false);
     expect("einDocument" in optionTwo).toBe(false);
-
-    const optionThree = valuesForOption("hopetex", optionTwo);
-    expect("firstName" in optionThree).toBe(false);
-    expect("streetAddress" in optionThree).toBe(false);
-    expect("ownershipPercentage" in optionThree).toBe(false);
-    expect(optionThree.passport).toHaveLength(1);
-    expect(optionThree.scannedSignature).toHaveLength(1);
+    expect(optionTwo.passport).toHaveLength(1);
+    expect(optionTwo.scannedSignature).toHaveLength(1);
   });
 
   it("creates review and submission data from active fields only", () => {
     const parsed = itinApplicationSchema.parse({
-      applicationOption: "hopetex",
-      hopetexOrderNumber: "HTX-2048",
+      applicationOption: "no-company",
+      ...personalApplication,
       passport: [file("passport.pdf")],
       scannedSignature: [signature],
-      declarationAccepted: true,
     });
     const payload = createSubmissionPayload(parsed);
-    expect(payload.application).toEqual({
-      applicationOption: "hopetex",
-      hopetexOrderNumber: "HTX-2048",
-    });
-    expect(payload.application).not.toHaveProperty("firstName");
-    expect(payload.application).not.toHaveProperty("streetAddress");
+    expect(payload.application).not.toHaveProperty("companyDocuments");
     expect(payload.documents).toHaveProperty("passport");
     expect(payload.documents).toHaveProperty("scannedSignature");
     expect(payload.documents).not.toHaveProperty("companyDocuments");

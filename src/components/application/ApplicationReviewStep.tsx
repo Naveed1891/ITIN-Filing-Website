@@ -9,7 +9,7 @@ import { formatFileSize } from "@/features/itin/documents";
 
 interface ApplicationReviewStepProps {
   values: ItinApplicationValues;
-  onEdit: (step: "option" | "personal" | "address" | "order" | "documents") => void;
+  onEdit: (step: "option" | "personal" | "address" | "documents") => void;
   declarationError?: string;
   registerDeclaration: UseFormRegisterReturn<"declarationAccepted">;
 }
@@ -21,7 +21,7 @@ function ReviewSection({
   rows,
 }: {
   title: string;
-  step: "option" | "personal" | "address" | "order" | "documents";
+  step: "option" | "personal" | "address" | "documents";
   onEdit: ApplicationReviewStepProps["onEdit"];
   rows: Array<[string, string]>;
 }) {
@@ -66,6 +66,11 @@ export function ApplicationReviewStep({
       ["EIN Document", values.einDocument.map((file) => `${file.name} (${formatFileSize(file.size)})`).join(", ")],
     );
   }
+  if (values.previousItinForm && values.previousItinForm.length > 0) {
+    documentRows.push(
+      ["Previous ITIN Form", values.previousItinForm.map((file) => `${file.name} (${formatFileSize(file.size)})`).join(", ")],
+    );
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -75,26 +80,19 @@ export function ApplicationReviewStep({
       </div>
       <ReviewSection title="Application option" step="option" onEdit={onEdit} rows={[["Selected option", optionLabel]]} />
 
-      {values.applicationOption === "hopetex" ? (
-        <ReviewSection title="HopeTex order" step="order" onEdit={onEdit} rows={[
-          ["Order number", values.hopetexOrderNumber],
-        ]} />
-      ) : (
-        <>
-          <ReviewSection title="Personal details" step="personal" onEdit={onEdit} rows={[
-            ["Name", `${values.firstName} ${values.lastName}`],
-            ["Birth name", values.sameAsBirthName === "yes" ? "Same as current name" : `${values.birthFirstName} ${values.birthLastName}`],
-            ["Phone", values.phone],
-            ["Email", values.email],
-          ]} />
-          <ReviewSection title="Ownership and address" step="address" onEdit={onEdit} rows={[
-            ["OWNERSHIP %", `${values.ownershipPercentage}%`],
-            ["Street Address", values.streetAddress],
-            ["City / region", `${values.city}, ${values.stateProvince} ${values.postalCode}`],
-            ["Country", values.country],
-          ]} />
-        </>
-      )}
+      <ReviewSection title="Personal details" step="personal" onEdit={onEdit} rows={[
+        ...(values.itinNumber ? [["ITIN Number", values.itinNumber] as [string, string]] : []),
+        ["Name", `${values.firstName} ${values.lastName}`],
+        ["Birth name", values.sameAsBirthName === "yes" ? "Same as current name" : `${values.birthFirstName} ${values.birthLastName}`],
+        ["Phone", values.phone],
+        ["Email", values.email],
+      ]} />
+      <ReviewSection title="Ownership and address" step="address" onEdit={onEdit} rows={[
+        ["OWNERSHIP %", `${values.ownershipPercentage}%`],
+        ["Street Address", values.streetAddress],
+        ["City / region", `${values.city}, ${values.stateProvince} ${values.postalCode}`],
+        ["Country", values.country],
+      ]} />
 
       <ReviewSection title="Documents" step="documents" onEdit={onEdit} rows={documentRows} />
       <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border p-4">

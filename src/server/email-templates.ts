@@ -217,6 +217,16 @@ ${note(`Reply directly to ${opts.email} to respond.`)}`;
   };
 }
 
+export function contactConfirmationEmail(opts: { name: string; subject: string; supportEmail?: string }): EmailContent {
+  const bodyHtml = `<p style="margin:0 0 12px;color:${BRAND.text};font-size:15px;line-height:1.6;">Hi ${opts.name}, thank you for contacting ITINReady.</p><p style="margin:0;color:${BRAND.muted};font-size:14px;line-height:1.6;">We received your message about <strong>${opts.subject}</strong>. A member of our team will review it and respond as soon as possible.</p>`;
+  return { subject: "We received your ITINReady message", text: `Hi ${opts.name}, we received your message about ${opts.subject}. Our team will respond as soon as possible.`, html: shell({ heading: "Message received", bodyHtml, supportEmail: opts.supportEmail }) };
+}
+
+export function supportReplyEmail(opts: { fullName: string; subject: string; reply: string; dashboardUrl: string; supportEmail?: string }): EmailContent {
+  const bodyHtml = `<p style="margin:0 0 12px;color:${BRAND.text};font-size:15px;line-height:1.6;">Hi ${opts.fullName}, our team replied to your support message.</p><div style="margin:14px 0;padding:16px;background:${BRAND.bg};border-left:4px solid ${BRAND.gold};border-radius:8px;"><strong style="color:${BRAND.navy};">${opts.subject}</strong><p style="margin:8px 0 0;color:${BRAND.text};font-size:14px;line-height:1.6;white-space:pre-wrap;">${opts.reply}</p></div>${button(opts.dashboardUrl, "View conversation")}`;
+  return { subject: `Reply from ITINReady: ${opts.subject}`, text: `Hi ${opts.fullName}, our team replied: ${opts.reply}\n\nView your messages: ${opts.dashboardUrl}`, html: shell({ heading: "You have a new reply", bodyHtml, supportEmail: opts.supportEmail }) };
+}
+
 /* ── Partnership enquiry (to support inbox) ──────────────────────── */
 
 export function partnerInquiryEmail(opts: {
