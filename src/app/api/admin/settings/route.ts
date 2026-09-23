@@ -5,7 +5,7 @@ import { json, parseJson, routeError } from "@/server/http";
 
 export const dynamic = "force-dynamic";
 
-const text = z.string().trim().max(1000);
+const text = z.string().trim().max(1000).default("");
 const schema = z.object({
   bank: z.object({ accountName: text, bankName: text, accountNumber: text, routingNumber: text, iban: text, swiftCode: text, instructions: text }),
   stripe: z.object({ publishableKey: text, secretKey: text, webhookSecret: text }),
@@ -13,13 +13,19 @@ const schema = z.object({
   smtp: z.object({
     host: text,
     port: text,
-    mainEmail: z.union([z.literal(""), z.email()]),
+    mainEmail: z.union([z.literal(""), z.email()]).default(""),
     password: text,
     fromName: text,
-    noReplyEmail: z.union([z.literal(""), z.email()]),
+    noReplyEmail: z.union([z.literal(""), z.email()]).default(""),
     noReplyPassword: text,
-    secure: z.boolean(),
+    secure: z.boolean().default(true),
   }),
+  notifications: z.object({
+    emailVerification: z.boolean().default(false),
+    orders: z.boolean().default(false),
+    payments: z.boolean().default(false),
+    orderStatus: z.boolean().default(false),
+  }).default({}),
 });
 
 export async function GET() {
@@ -43,6 +49,7 @@ export async function PUT(request: Request) {
         password: input.smtp.password || current.smtp.password,
         noReplyPassword: input.smtp.noReplyPassword || current.smtp.noReplyPassword,
       },
+      notifications: input.notifications,
     });
     return json({ ok: true, message: "Configuration saved to the database.", actor: actor.id });
   } catch (error) { return routeError(error); }

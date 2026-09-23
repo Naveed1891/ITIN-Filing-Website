@@ -32,6 +32,11 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password is required."),
 });
 
+export const loginOtpSchema = z.object({
+  email: z.email("Enter a valid email address."),
+  code: z.string().trim().regex(/^\d{6}$/, "Enter the six-digit verification code."),
+});
+
 export const createCheckoutSessionSchema = z.object({
   packageSlug: z.string().trim().min(1, "Package is required."),
 });

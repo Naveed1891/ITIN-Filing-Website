@@ -8,6 +8,7 @@ export type OperationalSettings = {
   stripe: { publishableKey: string; secretKey: string; webhookSecret: string; enabled: boolean };
   s3: { endpoint: string; region: string; bucket: string; accessKeyId: string; secretAccessKey: string; publicBaseUrl: string };
   smtp: { host: string; port: string; mainEmail: string; password: string; fromName: string; noReplyEmail: string; noReplyPassword: string; secure: boolean };
+  notifications: { emailVerification: boolean; orders: boolean; payments: boolean; orderStatus: boolean };
 };
 
 export const emptyOperationalSettings: OperationalSettings = {
@@ -15,6 +16,7 @@ export const emptyOperationalSettings: OperationalSettings = {
   stripe: { publishableKey: "", secretKey: "", webhookSecret: "", enabled: false },
   s3: { endpoint: "", region: "", bucket: "", accessKeyId: "", secretAccessKey: "", publicBaseUrl: "" },
   smtp: { host: "", port: "587", mainEmail: "", password: "", fromName: "ITINReady", noReplyEmail: "", noReplyPassword: "", secure: true },
+  notifications: { emailVerification: false, orders: false, payments: false, orderStatus: false },
 };
 
 export async function getOperationalSettings(): Promise<OperationalSettings> {
@@ -31,6 +33,7 @@ export async function getOperationalSettings(): Promise<OperationalSettings> {
         ...parsed.smtp,
         mainEmail: parsed.smtp?.mainEmail || parsed.smtp?.username || "",
       },
+      notifications: { ...emptyOperationalSettings.notifications, ...parsed.notifications },
     };
   } catch {
     return structuredClone(emptyOperationalSettings);
@@ -49,7 +52,7 @@ export async function saveOperationalSettings(settings: OperationalSettings) {
 export function settingsForAdmin(settings: OperationalSettings) {
   return {
     bank: settings.bank,
-    stripe: { publishableKey: settings.stripe.publishableKey, enabled: false, secretKeyConfigured: Boolean(settings.stripe.secretKey), webhookSecretConfigured: Boolean(settings.stripe.webhookSecret) },
+    stripe: { publishableKey: settings.stripe.publishableKey, secretKey: "", webhookSecret: "", enabled: false, secretKeyConfigured: Boolean(settings.stripe.secretKey), webhookSecretConfigured: Boolean(settings.stripe.webhookSecret) },
     s3: { ...settings.s3, secretAccessKey: "", secretAccessKeyConfigured: Boolean(settings.s3.secretAccessKey) },
     smtp: {
       ...settings.smtp,
@@ -58,5 +61,6 @@ export function settingsForAdmin(settings: OperationalSettings) {
       passwordConfigured: Boolean(settings.smtp.password),
       noReplyPasswordConfigured: Boolean(settings.smtp.noReplyPassword),
     },
+    notifications: settings.notifications,
   };
 }

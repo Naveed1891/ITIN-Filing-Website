@@ -1,5 +1,9 @@
 import type Stripe from "stripe";
 import { prisma } from "./db";
+import { getOperationalSettings } from "./operational-settings";
+import { sendEmailSafely } from "./email";
+import { orderConfirmationEmail } from "./email-templates";
+import { getAppUrl } from "./stripe";
 
 export function createOrderReference() {
   const year = new Date().getFullYear();
@@ -16,7 +20,7 @@ export async function createPaidOrderFromCheckoutSession(session: Stripe.Checkou
     throw new Error("Stripe session metadata is incomplete.");
   }
 
-  return prisma.$transaction(async (tx) => {
+  const order = await prisma.$transaction(async (tx) => {
     const intent = await tx.checkoutIntent.findUnique({
       where: { id: checkoutIntentId },
       include: { package: true, order: true },
@@ -41,7 +45,7 @@ export async function createPaidOrderFromCheckoutSession(session: Stripe.Checkou
       reference = createOrderReference();
     }
 
-    const order = await tx.order.create({
+    return tx.order.create({
       data: {
         reference,
         userId: paidIntent.userId,
@@ -59,7 +63,26 @@ export async function createPaidOrderFromCheckoutSession(session: Stripe.Checkou
         },
       },
     });
-
-    return order;
   });
+
+  if (order) {
+    const settings = await getOperationalSettings();
+    if (settings.notifications.orders) {
+      const user = await prisma.user.findUnique({ where: { id: order.userId } });
+      const pkg = await prisma.formPackage.findUnique({ where: { id: order.packageId } });
+      if (user && pkg) {
+        const amount = (order.amountCents / 100).toLocaleString("en-US", { style: "currency", currency: order.currency });
+        await sendEmailSafely(user.email, orderConfirmationEmail({
+          fullName: user.fullName,
+          reference: order.reference,
+          packageName: pkg.name,
+          amount,
+          dashboardUrl: `${getAppUrl()}/dashboard`,
+          supportEmail: settings.smtp.mainEmail,
+        }));
+      }
+    }
+  }
+
+  return order;
 }

@@ -16,6 +16,7 @@ function LoginForm() {
   const returnTo = safeReturnTo(searchParams.get("returnTo") ?? searchParams.get("next"));
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [otpEmail, setOtpEmail] = useState("");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -23,13 +24,27 @@ function LoginForm() {
     setError("");
     const form = new FormData(event.currentTarget);
     try {
-      await apiFetch("/api/auth/login", {
+      if (otpEmail) {
+        await apiFetch("/api/auth/verify-otp", {
+          method: "POST",
+          body: JSON.stringify({ email: otpEmail, code: form.get("code") }),
+        });
+        router.push(returnTo);
+        router.refresh();
+        return;
+      }
+      const result = await apiFetch<{ otpRequired?: boolean }>("/api/auth/login", {
         method: "POST",
         body: JSON.stringify({
           email: form.get("email"),
           password: form.get("password"),
         }),
       });
+      if (result.otpRequired) {
+        setOtpEmail(String(form.get("email")));
+        setSubmitting(false);
+        return;
+      }
       router.push(returnTo);
       router.refresh();
     } catch (cause) {
@@ -72,12 +87,19 @@ function LoginForm() {
                   </em>
                 </h1>
                 <p className="text-[14px] text-text-muted">
-                  Sign in to track your application
+                  {otpEmail ? `Enter the code sent to ${otpEmail}` : "Sign in to track your application"}
                 </p>
               </div>
 
               <form className="flex flex-col gap-4" onSubmit={submit}>
-                <FormField
+                {otpEmail ? <FormField
+                  label="Six-digit verification code"
+                  name="code"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  placeholder="000000"
+                  required
+                /> : <><FormField
                   label="Email address"
                   name="email"
                   type="email"
@@ -92,6 +114,7 @@ function LoginForm() {
                   autoComplete="current-password"
                   required
                 />
+                </>}
                 <div className="flex justify-end">
                   <Link
                     href="/contact"
@@ -103,7 +126,7 @@ function LoginForm() {
                 {error && <p role="alert" className="rounded-lg border border-error-border bg-error-bg p-3 text-sm text-error">{error}</p>}
                 <Button type="submit" variant="primary" size="lg" fullWidth disabled={submitting}>
                   {submitting && <LoaderCircle size={16} className="animate-spin" />}
-                  Sign in
+                  {otpEmail ? "Verify and sign in" : "Sign in"}
                 </Button>
               </form>
 
