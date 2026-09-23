@@ -132,18 +132,19 @@ model Session {
 }
 
 model FormPackage {
-  id           String           @id @default(cuid())
-  slug         String           @unique
-  name         String
-  description  String           @db.Text
-  priceCents   Int
-  currency     String           @default("USD")
-  featuresJson String           @db.Text
-  isActive     Boolean          @default(true)
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  checkouts    CheckoutIntent[]
-  orders       Order[]
+  id             String           @id @default(cuid())
+  slug           String           @unique
+  name           String
+  description    String           @db.Text
+  priceCents     Int
+  salePriceCents Int?
+  currency       String           @default("USD")
+  featuresJson   String           @db.Text
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  checkouts      CheckoutIntent[]
+  orders         Order[]
 }
 
 model CheckoutIntent {

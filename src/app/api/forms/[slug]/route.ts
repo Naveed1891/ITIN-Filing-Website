@@ -16,14 +16,15 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
     if (dbPkg && dbPkg.isActive) {
       let features: string[] = [];
       try { features = JSON.parse(dbPkg.featuresJson); } catch { /* ignore */ }
+      const activeCents = dbPkg.salePriceCents ?? dbPkg.priceCents;
       return json({
         package: {
           id: dbPkg.id,
           slug: dbPkg.slug,
           name: dbPkg.name,
           description: dbPkg.description,
-          price: dbPkg.priceCents / 100,
-          priceCents: dbPkg.priceCents,
+          price: activeCents / 100,
+          priceCents: activeCents,
           currency: dbPkg.currency,
           features,
         },

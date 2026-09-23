@@ -11,6 +11,7 @@ const navLinks = [
   { label: "Eligibility", href: "/eligibility" },
   { label: "FAQ", href: "/faq" },
   { label: "Resources", href: "/blog" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export function MobileNav() {

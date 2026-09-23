@@ -100,7 +100,10 @@ export default async function PackageDetailPage({
   if (!live && !local) notFound();
 
   const name = live?.name ?? local!.name;
-  const price = live?.price ?? (local ? local.priceCents / 100 : 0);
+  const price = live?.price ?? (local ? (local.salePriceCents ? local.salePriceCents / 100 : local.priceCents / 100) : 0);
+  const originalPrice = live?.originalPrice ?? (local?.salePriceCents ? local.priceCents / 100 : undefined);
+  const currency = live?.currency ?? local?.currency ?? "GBP";
+  const sym = currency === "GBP" ? "£" : currency === "EUR" ? "€" : "$";
   const includes =
     live?.features && live.features.length > 0
       ? live.features
@@ -159,20 +162,27 @@ export default async function PackageDetailPage({
           <p className="text-[17px] text-white/70 leading-[1.6] max-w-[500px]">
             {intro}
           </p>
-          <div className="flex items-center gap-4 pt-2">
-            <span className="text-[40px] font-extrabold text-white leading-none tracking-[-0.02em]">
-              ${price}
-            </span>
-            <span className="font-serif text-[15px] italic text-white/50">
-              one-time
-            </span>
+          <div className="flex flex-col gap-1 pt-2">
+            {originalPrice != null && (
+              <span className="text-[18px] font-semibold text-white/40 line-through">
+                {sym}{originalPrice}
+              </span>
+            )}
+            <div className="flex items-center gap-4">
+              <span className="text-[40px] font-extrabold text-white leading-none tracking-[-0.02em]">
+                {sym}{price}
+              </span>
+              <span className="font-serif text-[15px] italic text-white/50">
+                one-time
+              </span>
+            </div>
           </div>
           <Magnetic>
             <Link
               href={`/checkout?package=${slug}`}
               className={cn(buttonVariants({ variant: "primary", size: "lg" }), "mt-2")}
             >
-              Get started — ${price}
+              Get started — {sym}{price}
             </Link>
           </Magnetic>
         </Reveal>
@@ -225,7 +235,12 @@ export default async function PackageDetailPage({
           <div className="sticky top-24 self-start bg-white border-2 border-gold/60 rounded-card p-6 flex flex-col gap-5 shadow-[0_32px_64px_-32px_rgba(17,46,81,0.45)]">
             <div className="flex items-end justify-between">
               <h3 className="text-[18px] font-extrabold text-text-dark">{name}</h3>
-              <span className="text-[28px] font-extrabold text-navy">${price}</span>
+              <div className="flex flex-col items-end">
+                {originalPrice != null && (
+                  <span className="text-[14px] font-semibold text-text-muted line-through">{sym}{originalPrice}</span>
+                )}
+                <span className="text-[28px] font-extrabold text-navy">{sym}{price}</span>
+              </div>
             </div>
             <div className="flex flex-col gap-2 text-[13px] text-text-mid">
               <div className="flex justify-between">
@@ -241,7 +256,7 @@ export default async function PackageDetailPage({
               href={`/checkout?package=${slug}`}
               className={cn(buttonVariants({ variant: "primary", size: "lg", fullWidth: true }))}
             >
-              Get started — ${price}
+              Get started — {sym}{price}
             </Link>
             <p className="text-[12px] text-text-muted text-center">
               Private preparation service · IRS outcome not guaranteed

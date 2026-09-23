@@ -26,8 +26,8 @@ describe("trusted package data", () => {
 
     expect(serializePackageDefinition(pkg!)).toMatchObject({
       slug: "itin-renewal",
-      price: 175,
-      priceCents: 17500,
+      price: 99.9,
+      priceCents: 9990,
       currency: "USD",
     });
   });

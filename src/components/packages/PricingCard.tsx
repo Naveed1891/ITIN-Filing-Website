@@ -7,6 +7,8 @@ export interface PricingCardData {
   slug: string;
   name: string;
   price: number;
+  originalPrice?: number;
+  currency?: string;
   description: string;
   features: string[];
   cta: string;
@@ -25,6 +27,7 @@ interface PricingCardProps {
  */
 export function PricingCard({ pkg, href }: PricingCardProps) {
   const featured = Boolean(pkg.featured);
+  const sym = pkg.currency === "GBP" ? "£" : pkg.currency === "EUR" ? "€" : "$";
 
   return (
     <div className="group relative h-full">
@@ -84,27 +87,38 @@ export function PricingCard({ pkg, href }: PricingCardProps) {
           </div>
 
           {/* Price */}
-          <div className="relative mt-6 flex items-baseline gap-1.5">
-            <span
-              className={`text-[20px] font-bold ${
-                featured ? "text-gold" : "text-blue"
-              }`}
-            >
-              $
-            </span>
-            <Counter
-              value={pkg.price}
-              className={`text-[clamp(2.5rem,3.5vw,3.25rem)] font-extrabold leading-none tracking-[-0.03em] ${
-                featured ? "text-white" : "text-navy"
-              }`}
-            />
-            <span
-              className={`ml-1.5 font-serif text-[14px] italic ${
-                featured ? "text-white/45" : "text-text-muted"
-              }`}
-            >
-              one-time
-            </span>
+          <div className="relative mt-6 flex flex-col gap-1">
+            {pkg.originalPrice != null && (
+              <span
+                className={`text-[16px] font-semibold line-through ${
+                  featured ? "text-white/40" : "text-text-muted"
+                }`}
+              >
+                {sym}{pkg.originalPrice}
+              </span>
+            )}
+            <div className="flex items-baseline gap-1.5">
+              <span
+                className={`text-[20px] font-bold ${
+                  featured ? "text-gold" : "text-blue"
+                }`}
+              >
+                {sym}
+              </span>
+              <Counter
+                value={pkg.price}
+                className={`text-[clamp(2.5rem,3.5vw,3.25rem)] font-extrabold leading-none tracking-[-0.03em] ${
+                  featured ? "text-white" : "text-navy"
+                }`}
+              />
+              <span
+                className={`ml-1.5 font-serif text-[14px] italic ${
+                  featured ? "text-white/45" : "text-text-muted"
+                }`}
+              >
+                one-time
+              </span>
+            </div>
           </div>
 
           <div
@@ -150,7 +164,7 @@ export function PricingCard({ pkg, href }: PricingCardProps) {
                   : "hover:border-navy hover:bg-navy hover:text-white",
               )}
             >
-              {pkg.cta} — ${pkg.price}
+              {pkg.cta} — {sym}{pkg.price}
             </Link>
           </div>
         </div>

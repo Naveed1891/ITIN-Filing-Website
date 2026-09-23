@@ -23,7 +23,7 @@ export interface ItinPackage {
   description: string;
   price: number;
   priceCents: number;
-  currency: "USD";
+  currency: string;
   features: string[];
 }
 
@@ -43,7 +43,7 @@ export interface ItinOrder {
   packageName: string;
   amount: number;
   amountCents: number;
-  currency: "USD";
+  currency: string;
   status: OrderStatus;
   applicationStatus: ApplicationStatus;
   user?: AuthUser;

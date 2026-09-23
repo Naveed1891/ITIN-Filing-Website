@@ -13,9 +13,11 @@ interface OrderItem {
 interface OrderSummaryProps {
   items: OrderItem[];
   total: number;
+  currency?: string;
 }
 
-export function OrderSummary({ items, total }: OrderSummaryProps) {
+export function OrderSummary({ items, total, currency = "GBP" }: OrderSummaryProps) {
+  const sym = currency === "GBP" ? "£" : currency === "EUR" ? "€" : "$";
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -31,7 +33,7 @@ export function OrderSummary({ items, total }: OrderSummaryProps) {
         </span>
         <div className="flex items-center gap-2">
           <span className="text-[16px] font-extrabold text-navy">
-            ${total}
+            {sym}{total}
           </span>
           <ChevronDown
             size={16}
@@ -65,7 +67,7 @@ export function OrderSummary({ items, total }: OrderSummaryProps) {
                   </span>
                 </div>
                 <span className="text-[14px] font-bold text-text-dark flex-shrink-0">
-                  ${item.price}
+                  {sym}{item.price}
                 </span>
               </div>
             ))}
@@ -73,7 +75,7 @@ export function OrderSummary({ items, total }: OrderSummaryProps) {
 
           <div className="border-t border-border pt-4 flex items-center justify-between">
             <span className="text-[14px] font-bold text-text-dark">Total</span>
-            <span className="text-[20px] font-extrabold text-navy">${total}</span>
+            <span className="text-[20px] font-extrabold text-navy">{sym}{total}</span>
           </div>
 
           <div className="flex flex-col gap-2 pt-1">

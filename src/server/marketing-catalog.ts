@@ -6,7 +6,9 @@ function fallbackCards(): PricingCardData[] {
   return packageDefinitions.map((pkg) => ({
     slug: pkg.slug,
     name: pkg.name,
-    price: priceDollars(pkg.priceCents),
+    price: pkg.salePriceCents ? priceDollars(pkg.salePriceCents) : priceDollars(pkg.priceCents),
+    originalPrice: pkg.salePriceCents ? priceDollars(pkg.priceCents) : undefined,
+    currency: pkg.currency,
     featured: Boolean(pkg.featured),
     description: pkg.description,
     features: pkg.features,
@@ -28,10 +30,13 @@ export async function getMarketingPackages(): Promise<{
         packages: dbPackages.map((pkg) => {
           let features: string[] = [];
           try { features = JSON.parse(pkg.featuresJson); } catch { /* ignore */ }
+          const hasSale = pkg.salePriceCents != null && pkg.salePriceCents > 0;
           return {
             slug: pkg.slug,
             name: pkg.name,
-            price: pkg.priceCents / 100,
+            price: hasSale ? pkg.salePriceCents! / 100 : pkg.priceCents / 100,
+            originalPrice: hasSale ? pkg.priceCents / 100 : undefined,
+            currency: pkg.currency,
             featured: pkg.slug === dbPackages.reduce((best, p) => p.priceCents > best.priceCents ? p : best, dbPackages[0]).slug,
             description: pkg.description,
             features,

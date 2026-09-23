@@ -38,7 +38,7 @@ function SelectedPackageSummary({
             <p className="mt-2 text-sm leading-6 text-text-mid">{selectedPackage.description}</p>
           </div>
           <p className="shrink-0 text-3xl font-extrabold text-navy">
-            ${selectedPackage.price} <span className="text-sm font-bold text-text-muted">{selectedPackage.currency}</span>
+            {selectedPackage.currency === "GBP" ? "£" : selectedPackage.currency === "EUR" ? "€" : "$"}{selectedPackage.price} <span className="text-sm font-bold text-text-muted">{selectedPackage.currency}</span>
           </p>
         </div>
         <div className="my-5 h-px bg-border" />

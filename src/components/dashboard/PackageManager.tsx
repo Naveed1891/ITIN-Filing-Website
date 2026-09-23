@@ -11,6 +11,7 @@ interface PackageData {
   name: string;
   description: string;
   priceCents: number;
+  salePriceCents: number | null;
   currency: string;
   features: string[];
   isActive: boolean;
@@ -114,9 +115,16 @@ export function PackageManager({
                       </div>
                       <p style={{ margin: "0.25rem 0 0", fontSize: "12px", color: "#9AA7B4" }}>{pkg.slug}</p>
                     </div>
-                    <p style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "#205493", whiteSpace: "nowrap" }}>
-                      ${(pkg.priceCents / 100).toFixed(2)}
-                    </p>
+                    <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                      {pkg.salePriceCents != null && (
+                        <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#9AA7B4", textDecoration: "line-through" }}>
+                          {pkg.currency === "GBP" ? "£" : "$"}{(pkg.priceCents / 100).toFixed(2)}
+                        </p>
+                      )}
+                      <p style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "#205493" }}>
+                        {pkg.currency === "GBP" ? "£" : "$"}{((pkg.salePriceCents ?? pkg.priceCents) / 100).toFixed(2)}
+                      </p>
+                    </div>
                   </div>
 
                   <p style={{ margin: "0.75rem 0", fontSize: "13px", color: "#5A6B7B", lineHeight: 1.6 }}>
@@ -176,6 +184,7 @@ function PackageForm({
   const [name, setName] = useState(initial?.name ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [priceDollars, setPriceDollars] = useState(initial ? (initial.priceCents / 100).toString() : "");
+  const [salePriceDollars, setSalePriceDollars] = useState(initial?.salePriceCents ? (initial.salePriceCents / 100).toString() : "");
   const [features, setFeatures] = useState(initial?.features.join("\n") ?? "");
   const [isActive, setIsActive] = useState(initial?.isActive ?? true);
   const [submitting, setSubmitting] = useState(false);
@@ -200,17 +209,27 @@ function PackageForm({
       return;
     }
 
+    const salePriceCents = salePriceDollars.trim()
+      ? Math.round(parseFloat(salePriceDollars) * 100)
+      : null;
+    if (salePriceCents !== null && (isNaN(salePriceCents) || salePriceCents < 0)) {
+      setError("Enter a valid sale price or leave it empty.");
+      setSubmitting(false);
+      return;
+    }
+
     try {
       if (isEdit) {
-        const result = await apiFetch<{ package: any }>(`/api/admin/packages/${initial!.id}`, {
+        await apiFetch<{ package: any }>(`/api/admin/packages/${initial!.id}`, {
           method: "PATCH",
-          body: JSON.stringify({ name, description, priceCents, features: featureList, isActive }),
+          body: JSON.stringify({ name, description, priceCents, salePriceCents, features: featureList, isActive }),
         });
         onDone({
           ...initial!,
           name,
           description,
           priceCents,
+          salePriceCents,
           features: featureList,
           isActive,
           updatedAt: new Date().toISOString(),
@@ -218,7 +237,7 @@ function PackageForm({
       } else {
         const result = await apiFetch<{ package: any }>("/api/admin/packages", {
           method: "POST",
-          body: JSON.stringify({ slug, name, description, priceCents, currency: "USD", features: featureList, isActive }),
+          body: JSON.stringify({ slug, name, description, priceCents, salePriceCents, currency: "GBP", features: featureList, isActive }),
         });
         onDone({
           id: result.package.id,
@@ -226,6 +245,7 @@ function PackageForm({
           name,
           description,
           priceCents,
+          salePriceCents,
           currency: "USD",
           features: featureList,
           isActive,
@@ -262,8 +282,12 @@ function PackageForm({
             <input className="dash-input" type="text" value={name} onChange={(e) => setName(e.target.value)} required maxLength={200} placeholder="New ITIN Application" />
           </label>
           <label className="dash-label">
-            Price (USD)
+            Original price ($)
             <input className="dash-input" type="number" value={priceDollars} onChange={(e) => setPriceDollars(e.target.value)} required min="0" step="0.01" placeholder="225.00" />
+          </label>
+          <label className="dash-label">
+            Sale price ($) <span style={{ fontWeight: 400, color: "#9AA7B4" }}>(optional)</span>
+            <input className="dash-input" type="number" value={salePriceDollars} onChange={(e) => setSalePriceDollars(e.target.value)} min="0" step="0.01" placeholder="99.90" />
           </label>
         </div>
 

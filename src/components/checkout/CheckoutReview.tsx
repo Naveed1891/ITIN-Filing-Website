@@ -271,14 +271,14 @@ export function CheckoutReview({
               <h2 className="text-xl font-extrabold leading-tight">{selectedPackage.name}</h2>
               <p className="mt-2 text-sm leading-6 text-white/65">{selectedPackage.description}</p>
             </div>
-            <p className="shrink-0 text-2xl font-extrabold">${selectedPackage.price}</p>
+            <p className="shrink-0 text-2xl font-extrabold">{selectedPackage.currency === "GBP" ? "£" : selectedPackage.currency === "EUR" ? "€" : "$"}{selectedPackage.price}</p>
           </div>
         </div>
 
         <dl className="mt-2 text-sm">
-          <SummaryRow label="Subtotal" value={`$${selectedPackage.price}.00 USD`} />
+          <SummaryRow label="Subtotal" value={`${selectedPackage.currency === "GBP" ? "£" : "$"}${selectedPackage.price} ${selectedPackage.currency}`} />
           <SummaryRow label="Tax, if applicable" value="Calculated at payment" />
-          <SummaryRow label="Total due" value={`$${selectedPackage.price}.00 USD`} strong />
+          <SummaryRow label="Total due" value={`${selectedPackage.currency === "GBP" ? "£" : "$"}${selectedPackage.price} ${selectedPackage.currency}`} strong />
         </dl>
 
         <div className="mt-7 rounded-[12px] border border-white/15 bg-white/[0.05] p-5">

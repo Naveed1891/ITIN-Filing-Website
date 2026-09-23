@@ -7,6 +7,7 @@ export interface PackageDefinition {
   name: string;
   description: string;
   priceCents: number;
+  salePriceCents?: number;
   currency: typeof SUPPORTED_CURRENCY;
   features: string[];
   active?: boolean;
@@ -26,6 +27,7 @@ export const packageDefinitions: PackageDefinition[] = packageCatalog.map((pkg) 
     name: pkg.name,
     description: pkg.description,
     priceCents: pkg.priceCents,
+    salePriceCents: (pkg as any).salePriceCents ?? undefined,
     currency: SUPPORTED_CURRENCY,
     featured: pkg.featured,
     features: pkg.features,
@@ -48,13 +50,14 @@ export function findPublishedPackage(slug: string) {
 }
 
 export function serializePackageDefinition(pkg: PackageDefinition) {
+  const activeCents = pkg.salePriceCents ?? pkg.priceCents;
   return {
     id: pkg.slug,
     slug: pkg.slug,
     name: pkg.name,
     description: pkg.description,
-    price: priceDollars(pkg.priceCents),
-    priceCents: pkg.priceCents,
+    price: priceDollars(activeCents),
+    priceCents: activeCents,
     currency: pkg.currency,
     features: pkg.features,
   };

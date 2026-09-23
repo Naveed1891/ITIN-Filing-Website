@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/server/db";
 import { getCurrentUser } from "@/server/auth";
 import { PageHeading, Panel, StatusBadge, formatMoney, formatDate } from "@/components/dashboard/DashboardPrimitives";
+import { OrderStatusUpdate } from "@/components/dashboard/OrderStatusUpdate";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         </Panel>
       </div>
 
+      <Panel title="Update order status">
+        <OrderStatusUpdate orderId={order.id} currentStatus={order.status} />
+      </Panel>
+
       {order.payments.length > 0 && (
         <Panel title="Payments">
           <div className="dash-table-wrap">
@@ -95,7 +100,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               <h3 style={{ fontSize: "13px", fontWeight: 700, marginBottom: "0.5rem" }}>Documents ({order.application.documents.length})</h3>
               <div className="dash-table-wrap">
                 <table className="dash-table">
-                  <thead><tr><th>File</th><th>Type</th><th>Status</th><th>Uploaded</th></tr></thead>
+                  <thead><tr><th>File</th><th>Type</th><th>Status</th><th>Uploaded</th><th>Actions</th></tr></thead>
                   <tbody>
                     {order.application.documents.map((d) => (
                       <tr key={d.id}>
@@ -103,6 +108,16 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                         <td>{d.kind}</td>
                         <td><StatusBadge status={d.status} /></td>
                         <td>{formatDate(d.createdAt)}</td>
+                        <td>
+                          {d.storageKey ? (
+                            <span style={{ display: "flex", gap: "0.5rem" }}>
+                              <a href={`/api/admin/documents/${d.id}`} target="_blank" rel="noopener noreferrer" className="dash-link" style={{ fontSize: "12px" }}>View</a>
+                              <a href={`/api/admin/documents/${d.id}?download=1`} download={d.fileName} className="dash-link" style={{ fontSize: "12px" }}>Download</a>
+                            </span>
+                          ) : (
+                            <span style={{ fontSize: "12px", color: "#9AA7B4" }}>No file</span>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

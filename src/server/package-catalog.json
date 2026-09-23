@@ -4,6 +4,7 @@
     "name": "New ITIN Application",
     "description": "For individuals preparing a first Form W-7 application for an IRS federal tax purpose.",
     "priceCents": 22500,
+    "salePriceCents": 9990,
     "currency": "USD",
     "featured": true,
     "features": [
@@ -20,6 +21,7 @@
     "name": "ITIN Renewal",
     "description": "For expired ITIN holders who need to file a U.S. federal tax return.",
     "priceCents": 17500,
+    "salePriceCents": 9990,
     "currency": "USD",
     "featured": false,
     "features": [

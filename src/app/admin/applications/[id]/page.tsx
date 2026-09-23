@@ -80,7 +80,7 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
         {application.documents.length > 0 ? (
           <div className="dash-table-wrap">
             <table className="dash-table">
-              <thead><tr><th>File name</th><th>Type</th><th>Size</th><th>Status</th><th>Review note</th><th>Uploaded</th></tr></thead>
+              <thead><tr><th>File name</th><th>Type</th><th>Size</th><th>Status</th><th>Review note</th><th>Uploaded</th><th>Actions</th></tr></thead>
               <tbody>
                 {application.documents.map((d) => (
                   <tr key={d.id}>
@@ -90,6 +90,16 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
                     <td><StatusBadge status={d.status} /></td>
                     <td>{d.reviewNote ?? "—"}</td>
                     <td>{formatDate(d.createdAt)}</td>
+                    <td>
+                      {d.storageKey ? (
+                        <span style={{ display: "flex", gap: "0.5rem" }}>
+                          <a href={`/api/admin/documents/${d.id}`} target="_blank" rel="noopener noreferrer" className="dash-link" style={{ fontSize: "12px" }}>View</a>
+                          <a href={`/api/admin/documents/${d.id}?download=1`} download={d.fileName} className="dash-link" style={{ fontSize: "12px" }}>Download</a>
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: "12px", color: "#9AA7B4" }}>No file</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
