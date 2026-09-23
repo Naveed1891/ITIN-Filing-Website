@@ -12,7 +12,12 @@ export async function POST(request: Request) {
     const user = await prisma.user.findUnique({
       where: { email: normalizeEmail(input.email) },
     });
-    if (!user || !(await verifyPassword(input.password, user.passwordHash))) {
+    const unavailable =
+      !user ||
+      user.status !== "ACTIVE" ||
+      user.deletedAt !== null ||
+      (user.lockedUntil !== null && user.lockedUntil > new Date());
+    if (unavailable || !user || !(await verifyPassword(input.password, user.passwordHash))) {
       return errorJson("Invalid email or password.", 401);
     }
     await createSession(user.id);
