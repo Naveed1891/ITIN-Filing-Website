@@ -9,9 +9,9 @@ const fields = {
   bank: [["accountName","Account holder"],["bankName","Bank name"],["accountNumber","Account number"],["routingNumber","Routing or sort code"],["iban","IBAN"],["swiftCode","SWIFT / BIC"],["instructions","Payment instructions"]],
   stripe: [["publishableKey","Publishable key"],["secretKey","Secret key"],["webhookSecret","Webhook signing secret"]],
   s3: [["endpoint","Endpoint"],["region","Region"],["bucket","Bucket"],["accessKeyId","Access key ID"],["secretAccessKey","Secret access key"],["publicBaseUrl","Public file URL"]],
-  smtp: [["host","SMTP host"],["port","SMTP port"],["username","Username"],["password","Password"],["fromName","Sender name"],["noReplyEmail","No-reply email address"]],
+  smtp: [["host","SMTP host"],["port","SMTP port"],["mainEmail","Main email address — contact and form messages"],["password","Main email password"],["fromName","Sender name"],["noReplyEmail","No-reply email address — OTP emails"],["noReplyPassword","No-reply email password"]],
 } as const;
-const secret = new Set(["secretKey","webhookSecret","secretAccessKey","password"]);
+const secret = new Set(["secretKey","webhookSecret","secretAccessKey","password","noReplyPassword"]);
 
 export function CredentialsManager() {
   const [data,setData]=useState<Settings|null>(null); const [saving,setSaving]=useState(false); const [message,setMessage]=useState("");
