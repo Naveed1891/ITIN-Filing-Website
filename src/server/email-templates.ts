@@ -190,6 +190,91 @@ ${button(opts.dashboardUrl, "View your order")}`;
 
 /* ── Password reset ───────────────────────────────────────────────── */
 
+/* ── Contact form (to support inbox) ─────────────────────────────── */
+
+export function contactFormEmail(opts: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}): EmailContent {
+  const bodyHtml = `
+${paragraph(`A visitor submitted a contact form on itinready.com.`)}
+${dataTable([
+  ["Name", opts.name],
+  ["Email", opts.email],
+  ["Subject", opts.subject],
+])}
+<div style="margin:14px 0;padding:16px;background:${BRAND.bg};border-radius:10px;">
+<p style="margin:0 0 6px;color:${BRAND.muted};font-size:12px;text-transform:uppercase;letter-spacing:.06em;">Message</p>
+<p style="margin:0;color:${BRAND.text};font-size:14px;line-height:1.65;white-space:pre-wrap;">${esc(opts.message)}</p>
+</div>
+${note(`Reply directly to ${opts.email} to respond.`)}`;
+  return {
+    subject: `Contact form: ${opts.subject}`,
+    text: `Contact form from ${opts.name} (${opts.email}):\nSubject: ${opts.subject}\n\n${opts.message}`,
+    html: shell({ heading: "New contact form submission", bodyHtml }),
+  };
+}
+
+/* ── Partnership enquiry (to support inbox) ──────────────────────── */
+
+export function partnerInquiryEmail(opts: {
+  companyName: string;
+  website: string;
+  businessType: string;
+  monthlyVolume: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  country: string;
+  goals?: string;
+}): EmailContent {
+  const bodyHtml = `
+${paragraph(`A new partnership enquiry was submitted on itinready.com.`)}
+${dataTable([
+  ["Company", opts.companyName],
+  ["Website", opts.website],
+  ["Business type", opts.businessType],
+  ["Monthly volume", opts.monthlyVolume],
+  ["Contact", opts.contactName],
+  ["Email", opts.email],
+  ["Phone", opts.phone],
+  ["Country", opts.country],
+])}
+${opts.goals ? `<div style="margin:14px 0;padding:16px;background:${BRAND.bg};border-radius:10px;">
+<p style="margin:0 0 6px;color:${BRAND.muted};font-size:12px;text-transform:uppercase;letter-spacing:.06em;">Partnership goals</p>
+<p style="margin:0;color:${BRAND.text};font-size:14px;line-height:1.65;white-space:pre-wrap;">${esc(opts.goals)}</p>
+</div>` : ""}`;
+  return {
+    subject: `Partnership enquiry — ${opts.companyName}`,
+    text: `Partnership enquiry from ${opts.contactName} at ${opts.companyName} (${opts.email}). Business: ${opts.businessType}, Volume: ${opts.monthlyVolume}, Country: ${opts.country}.${opts.goals ? ` Goals: ${opts.goals}` : ""}`,
+    html: shell({ heading: "New partnership enquiry", bodyHtml }),
+  };
+}
+
+export function partnerConfirmationEmail(opts: {
+  companyName: string;
+  contactName: string;
+  email: string;
+}): EmailContent {
+  const bodyHtml = `
+${paragraph(`Hi ${opts.contactName}, thank you for your interest in partnering with ITINReady.`)}
+${paragraph("We have received your enquiry and our partnerships team will review it shortly. You can expect a reply within one working day.")}
+${dataTable([
+  ["Company", opts.companyName],
+  ["Email", opts.email],
+])}
+${note("If you have immediate questions, reply directly to this email.")}`;
+  return {
+    subject: "We received your partnership enquiry",
+    text: `Hi ${opts.contactName}, thanks for your partnership enquiry for ${opts.companyName}. Our team will reply within one working day.`,
+    html: shell({ heading: "Partnership enquiry received", bodyHtml }),
+  };
+}
+
+/* ── Password reset ───────────────────────────────────────────────── */
+
 export function passwordResetEmail(opts: { code: string; minutes: number; supportEmail?: string }): EmailContent {
   const bodyHtml = `
 ${paragraph("We received a request to reset your ITINReady account password. Use the code below to proceed.")}

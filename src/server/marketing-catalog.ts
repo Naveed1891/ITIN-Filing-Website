@@ -1,7 +1,8 @@
 import type { PricingCardData } from "@/components/packages/PricingCard";
+import { prisma } from "@/server/db";
 import { packageDefinitions, priceDollars } from "@/server/packages";
 
-function catalogCards(): PricingCardData[] {
+function fallbackCards(): PricingCardData[] {
   return packageDefinitions.map((pkg) => ({
     slug: pkg.slug,
     name: pkg.name,
@@ -13,12 +14,37 @@ function catalogCards(): PricingCardData[] {
   }));
 }
 
-/** Marketing package cards, served from the local package catalogue. */
 export async function getMarketingPackages(): Promise<{
   packages: PricingCardData[];
   source: "live" | "fallback";
 }> {
-  return { packages: catalogCards(), source: "fallback" };
+  try {
+    const dbPackages = await prisma.formPackage.findMany({
+      where: { isActive: true },
+      orderBy: { priceCents: "asc" },
+    });
+    if (dbPackages.length > 0) {
+      return {
+        packages: dbPackages.map((pkg) => {
+          let features: string[] = [];
+          try { features = JSON.parse(pkg.featuresJson); } catch { /* ignore */ }
+          return {
+            slug: pkg.slug,
+            name: pkg.name,
+            price: pkg.priceCents / 100,
+            featured: pkg.slug === dbPackages.reduce((best, p) => p.priceCents > best.priceCents ? p : best, dbPackages[0]).slug,
+            description: pkg.description,
+            features,
+            cta: pkg.slug === "itin-renewal" ? "Renew my ITIN" : "Get started",
+          };
+        }),
+        source: "live",
+      };
+    }
+  } catch {
+    // DB unavailable, fall through to fallback
+  }
+  return { packages: fallbackCards(), source: "fallback" };
 }
 
 export async function getMarketingPackage(slug: string) {

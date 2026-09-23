@@ -6,7 +6,7 @@ import { PageHeading, Panel, StatCard, StatusBadge, EmptyState, formatMoney, for
 
 export const dynamic = "force-dynamic";
 
-const allowed = new Set(["orders", "customers", "applications", "documents", "finance", "packages", "communications", "tasks", "reports", "audit-log", "staff", "credentials"]);
+const allowed = new Set(["orders", "customers", "applications", "documents", "finance", "communications", "tasks", "reports", "audit-log", "staff", "credentials"]);
 
 function DashTable({ heads, rows }: { heads: string[]; rows: React.ReactNode[][] }) {
   if (!rows.length) return <EmptyState title="No records found" description="This section is empty." />;
@@ -129,32 +129,20 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
     );
   }
 
-  if (section === "packages") {
-    const items = await prisma.formPackage.findMany({ orderBy: { priceCents: "asc" }, include: { _count: { select: { orders: true } } } });
-    return (
-      <Section title="Packages" description="ITIN service catalogue, pricing and order uptake.">
-        <DashTable heads={["Package", "Slug", "Price", "Currency", "Orders", "Status"]} rows={items.map((x) => [
-          <strong key="n">{x.name}</strong>,
-          x.slug,
-          formatMoney(x.priceCents),
-          x.currency,
-          x._count.orders,
-          <StatusBadge key="s" status={x.isActive ? "ACTIVE" : "INACTIVE"} />,
-        ])} />
-      </Section>
-    );
-  }
+  // "packages" is handled by the dedicated admin/packages/page.tsx route
 
   if (section === "communications") {
     const items = await prisma.message.findMany({ orderBy: { createdAt: "desc" }, include: { order: true }, take: 100 });
+    const userIds = [...new Set(items.map((x) => x.userId).filter(Boolean))] as string[];
+    const users = userIds.length > 0 ? await prisma.user.findMany({ where: { id: { in: userIds } }, select: { id: true, fullName: true } }) : [];
+    const userMap = new Map(users.map((u) => [u.id, u.fullName]));
     return (
-      <Section title="Communications" description="Email, WhatsApp and internal customer conversations.">
-        <DashTable heads={["Channel", "Direction", "Subject", "Order", "Message", "Created"]} rows={items.map((x) => [
-          x.channel,
-          x.direction,
+      <Section title="Communications" description="Support messages and internal customer conversations.">
+        <DashTable heads={["From", "Direction", "Subject", "Message", "Created"]} rows={items.map((x) => [
+          x.userId ? <Link key="u" href={`/admin/customers/${x.userId}`}>{userMap.get(x.userId) ?? "Customer"}</Link> : "System",
+          <StatusBadge key="d" status={x.direction === "INBOUND" ? "SUBMITTED" : "COMPLETED"} />,
           x.subject ?? "—",
-          x.order?.reference ?? "—",
-          <span key="m" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", maxWidth: "320px" }}>{x.body}</span>,
+          <span key="m" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", maxWidth: "380px" }}>{x.body}</span>,
           formatDate(x.createdAt),
         ])} />
       </Section>

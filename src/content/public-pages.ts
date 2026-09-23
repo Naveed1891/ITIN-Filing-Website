@@ -61,47 +61,7 @@ export const publicPages: PublicPageData[] = [
       },
     ],
   },
-  {
-    slug: "contact",
-    eyebrow: "Contact",
-    title: "Contact the ITINFiling support team",
-    metaTitle: "Contact ITINFiling.com | ITIN Application Support",
-    metaDescription:
-      "Contact ITINFiling.com for general questions about ITIN application preparation, documents, packages or an existing service request.",
-    intro:
-      "For general ITIN application questions or help choosing the right preparation package, email our support team. Do not send passports, tax returns or other sensitive documents by ordinary email.",
-    sections: [
-      {
-        id: "email-support",
-        title: "Email support",
-        paragraphs: [
-          "Email support@itinfiling.com with your name and a brief, non-sensitive description of your question. If you already have an order reference, include only that reference number.",
-        ],
-        bullets: [
-          "Package and eligibility questions",
-          "Document checklist questions",
-          "Help locating an existing application",
-          "Website accessibility or technical feedback",
-        ],
-      },
-      {
-        id: "before-contacting",
-        title: "Before you contact us",
-        paragraphs: [
-          "For account-specific assistance, use the secure account area where available. Never email a complete passport image, Social Security number, ITIN, payment card number or full tax return.",
-        ],
-      },
-      {
-        id: "irs-help",
-        title: "When to contact the IRS",
-        paragraphs: [
-          "Contact the IRS directly for an official application status after the published processing window, a lost ITIN assignment notice, or questions only the agency can resolve.",
-        ],
-      },
-    ],
-    primaryCta: { label: "Email support", href: "mailto:support@itinfiling.com" },
-    secondaryCta: { label: "Read ITIN FAQs", href: "/faq" },
-  },
+  // "contact" page is now a dedicated route at src/app/(marketing)/contact/page.tsx
   {
     slug: "how-it-works",
     eyebrow: "Process",
