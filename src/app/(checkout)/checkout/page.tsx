@@ -131,17 +131,20 @@ function CheckoutFlow() {
     };
   }, [packageSlug]);
 
-  async function startCheckout() {
+  async function startCheckout(proof: File) {
     if (!selectedPackage) return;
     setSubmitting(true);
     setError("");
     try {
-      const result = await apiFetch<{ url: string | null }>("/api/checkout/create-session", {
+      if (proof.size > 5 * 1024 * 1024) throw new Error("Payment proof must be 5 MB or smaller.");
+      const bytes = new Uint8Array(await proof.arrayBuffer());
+      let binary = "";
+      for (const byte of bytes) binary += String.fromCharCode(byte);
+      const result = await apiFetch<{ orderId: string; reference: string }>("/api/checkout/bank-transfer", {
         method: "POST",
-        body: JSON.stringify({ packageSlug: selectedPackage.slug }),
+        body: JSON.stringify({ packageSlug: selectedPackage.slug, fileName: proof.name, mimeType: proof.type, fileBase64: btoa(binary) }),
       });
-      if (!result.url) throw new Error("Stripe did not return a Checkout URL.");
-      window.location.assign(result.url);
+      router.push(`/dashboard?payment=pending&reference=${encodeURIComponent(result.reference)}`);
     } catch (cause) {
       setError(
         cause instanceof Error && cause.message

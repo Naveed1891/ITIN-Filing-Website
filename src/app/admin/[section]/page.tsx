@@ -12,7 +12,12 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   const { section } = await params;
   if (!allowed.has(section)) notFound();
   const actor = await getCurrentUser();
+  if (!actor) redirect("/login?returnTo=/admin");
   if (section === "credentials" && actor?.role !== "SUPER_ADMIN") redirect("/admin");
+  if (actor.role !== "SUPER_ADMIN") {
+    const access = await prisma.staffPermission.findUnique({ where: { userId_module: { userId: actor.id, module: section } } });
+    if (!access?.canView) redirect("/admin");
+  }
 
   if (section === "orders") {
     const items = await prisma.order.findMany({ orderBy: { createdAt: "desc" }, include: { user: true, package: true }, take: 100 });
@@ -49,7 +54,7 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   }
   if (section === "audit-log") {
     const items = await prisma.auditLog.findMany({ orderBy: { createdAt: "desc" }, take: 150 });
-    return <Module title="Audit log" description="Security and operational events across the platform."><Table heads={["Action", "Actor", "Target", "Metadata", "Created"]} rows={items.map((x) => [<b key="a">{x.action}</b>, x.actorId ?? "System", x.target ?? "—", <code key="m" className="text-xs">{x.metaJson?.slice(0, 120) ?? "—"}</code>, x.createdAt.toLocaleString()])} /></Module>;
+    return <Module title="Audit log" description="Security and operational events across the platform."><Table heads={["Action", "Actor", "Target", "Details", "Created"]} rows={items.map((x) => [<b key="a">{x.action}</b>, x.actorId ? "Authorized staff" : "System", x.target ?? "—", x.metaJson ? "Additional event details recorded" : "—", x.createdAt.toLocaleString()])} /></Module>;
   }
   if (section === "staff") {
     const items = await prisma.user.findMany({ where: { role: { in: ["STAFF", "ADMIN", "SUPER_ADMIN"] }, deletedAt: null }, orderBy: { createdAt: "desc" } });

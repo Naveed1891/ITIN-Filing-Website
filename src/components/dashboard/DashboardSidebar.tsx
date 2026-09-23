@@ -21,8 +21,10 @@ const customerItems = [
   ["/dashboard/support", "Support", Headphones], ["/dashboard/profile", "Profile", UserRound],
 ] as const;
 
-export function DashboardSidebar({ mode }: { mode: "admin" | "customer" }) {
-  const items = mode === "admin" ? adminItems : customerItems;
+export function DashboardSidebar({ mode, allowedModules }: { mode: "admin" | "customer"; allowedModules?: string[] }) {
+  const items = mode === "admin"
+    ? adminItems.filter(([href]) => !allowedModules || href === "/admin" || allowedModules.includes(href.replace("/admin/", "")))
+    : customerItems;
   return (
     <aside className="w-full bg-[#111D2B] text-white lg:fixed lg:inset-y-0 lg:w-72">
       <div className="flex h-full flex-col">

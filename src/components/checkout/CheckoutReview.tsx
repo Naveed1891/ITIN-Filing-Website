@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import {
   Check,
   ChevronLeft,
   CreditCard,
+  FileUp,
   LoaderCircle,
   LockKeyhole,
   ShieldCheck,
@@ -21,7 +23,7 @@ interface CheckoutReviewProps {
   error: string;
   onTermsChange: (accepted: boolean) => void;
   onBack: () => void;
-  onContinue: () => void;
+  onContinue: (proof: File) => void;
 }
 
 function SummaryRow({
@@ -62,7 +64,9 @@ export function CheckoutReview({
   onBack,
   onContinue,
 }: CheckoutReviewProps) {
-  const isTestMode = process.env.NODE_ENV === "development";
+  const [bank, setBank] = useState<Record<string, string> | null>(null);
+  const [proof, setProof] = useState<File | null>(null);
+  useEffect(() => { fetch("/api/checkout/bank-details", { cache: "no-store" }).then((r) => r.json()).then((x) => setBank(x.bank)); }, []);
 
   return (
     <section className="mx-auto grid w-full max-w-[1240px] overflow-hidden rounded-[16px] border border-border bg-white shadow-[0_28px_80px_-52px_rgba(11,33,56,0.55)] xl:grid-cols-[42fr_58fr]">
@@ -78,11 +82,6 @@ export function CheckoutReview({
               sizes="(max-width: 639px) 150px, 160px"
             />
           </Link>
-          {isTestMode && (
-            <span className="rounded-full border border-[#F2C969]/45 bg-[#F2C969]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#F2C969]">
-              Test mode
-            </span>
-          )}
         </div>
 
         <div className="mt-9 border-b border-white/15 pb-7">
@@ -120,7 +119,7 @@ export function CheckoutReview({
           <ShieldCheck size={19} className="mt-0.5 shrink-0 text-[#F2C969]" />
           <div>
             <p className="text-sm font-bold">Secure checkout</p>
-            <p className="mt-1 text-xs leading-5 text-white/60">Your payment details will be collected on Stripe&apos;s secure payment page.</p>
+            <p className="mt-1 text-xs leading-5 text-white/60">Your application opens after our team confirms your bank transfer.</p>
           </div>
         </div>
       </div>
@@ -130,10 +129,10 @@ export function CheckoutReview({
           <div className="max-w-[540px]">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue">Secure checkout</p>
             <h1 className="mt-2 text-[28px] font-extrabold leading-tight tracking-[-0.02em] text-text-dark sm:text-[32px]">
-              Complete your order
+              Pay by bank transfer
             </h1>
             <p className="mt-3 text-sm leading-6 text-[#66758A]">
-              Review your details and service selection before continuing to secure payment.
+              Transfer the total shown, then upload a clear receipt or bank confirmation.
             </p>
           </div>
           <span className="flex size-11 items-center justify-center rounded-full bg-bg-light text-navy">
@@ -184,23 +183,10 @@ export function CheckoutReview({
           </p>
         )}
 
-        <div className="mt-6 rounded-[12px] border border-border p-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex min-w-0 items-center gap-3">
-              <LockKeyhole size={17} className="shrink-0 text-blue" />
-              <div>
-                <p className="text-sm font-bold text-text-dark">Secure payment powered by Stripe</p>
-                <p className="text-xs text-[#66758A]">Payment information is entered on the next step.</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5" aria-label="Accepted card brands">
-              {["VISA", "MC", "AMEX"].map((brand) => (
-                <span key={brand} className="rounded border border-border bg-white px-2 py-1 text-[9px] font-extrabold text-navy">
-                  {brand}
-                </span>
-              ))}
-            </div>
-          </div>
+        <div className="mt-6 rounded-[12px] border border-border bg-bg-light/60 p-5">
+          <h2 className="text-sm font-extrabold text-text-dark">Bank account details</h2>
+          {bank ? <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2"><DetailRow label="Account holder" value={bank.accountName || "Contact support"}/><DetailRow label="Bank" value={bank.bankName || "Contact support"}/><DetailRow label="Account number" value={bank.accountNumber || bank.iban || "Contact support"}/><DetailRow label="Routing / SWIFT" value={bank.routingNumber || bank.swiftCode || "Not applicable"}/>{bank.instructions&&<div className="sm:col-span-2"><dt className="font-semibold">Instructions</dt><dd className="mt-1 whitespace-pre-wrap text-text-mid">{bank.instructions}</dd></div>}</dl>:<p className="mt-2 text-sm text-text-mid">Loading bank details…</p>}
+          <label className="mt-5 block rounded-lg border border-dashed border-blue/40 bg-white p-4"><span className="flex items-center gap-2 text-sm font-bold"><FileUp size={17}/>Upload payment proof</span><span className="mt-1 block text-xs text-text-mid">PDF, PNG or JPEG, up to 5 MB.</span><input className="mt-3 block w-full text-sm" type="file" accept="application/pdf,image/png,image/jpeg" onChange={(e)=>setProof(e.target.files?.[0]??null)}/></label>
         </div>
 
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -210,12 +196,12 @@ export function CheckoutReview({
           <Button
             type="button"
             size="md"
-            onClick={onContinue}
-            disabled={!termsAccepted || submitting}
+            onClick={() => proof && onContinue(proof)}
+            disabled={!termsAccepted || !proof || submitting}
             className="w-full sm:w-auto"
           >
             {submitting ? <LoaderCircle size={16} className="animate-spin" /> : <CreditCard size={16} />}
-            {submitting ? "Continuing…" : "Continue to secure payment"}
+            {submitting ? "Uploading…" : "Submit payment proof"}
           </Button>
         </div>
       </div>
