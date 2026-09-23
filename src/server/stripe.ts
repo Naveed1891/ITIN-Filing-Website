@@ -9,5 +9,9 @@ export function getStripe() {
 }
 
 export function getAppUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const url = process.env.NEXT_PUBLIC_APP_URL;
+  if (!url && process.env.NODE_ENV === "production") {
+    throw new Error("NEXT_PUBLIC_APP_URL is not set. Add it to your environment variables.");
+  }
+  return url ?? "http://localhost:3000";
 }

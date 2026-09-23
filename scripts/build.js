@@ -4,15 +4,20 @@
  * Prisma + Next.js build pipeline.
  */
 const { execSync } = require("child_process");
+const path = require("path");
 const { ensureDatabaseUrl } = require("./db-url");
 
 const url = ensureDatabaseUrl();
 
+const binDir = path.join(__dirname, "..", "node_modules", ".bin");
+const prisma = path.join(binDir, "prisma");
+const next = path.join(binDir, "next");
+
 const steps = [
-  "npx prisma generate",
-  "npx prisma migrate deploy",
+  `"${prisma}" generate`,
+  `"${prisma}" migrate deploy`,
   "node prisma/seed.js",
-  "npx next build",
+  `"${next}" build`,
 ];
 
 for (const step of steps) {
