@@ -91,8 +91,8 @@ export function CaaExplainerSection() {
           </div>
         </Reveal>
 
-        <Reveal direction="left" className="relative grid min-w-0 gap-4 sm:grid-cols-2">
-          <article className="relative overflow-hidden rounded-[22px] border border-red-200/80 bg-[#fff7f6] p-[clamp(1.25rem,2.2vw,2rem)] shadow-[0_28px_70px_-48px_rgba(112,28,28,0.55)]">
+        <Reveal direction="left" className="relative grid min-w-0 items-stretch gap-4 sm:grid-cols-2">
+          <article className="relative h-full overflow-hidden rounded-[22px] border border-red-200/80 bg-[#fff7f6] p-[clamp(1.25rem,2.2vw,2rem)] shadow-[0_28px_70px_-48px_rgba(112,28,28,0.55)]">
             <div className="flex items-center gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600">
                 <CircleX size={21} aria-hidden="true" />
@@ -112,7 +112,7 @@ export function CaaExplainerSection() {
             </ul>
           </article>
 
-          <article className="relative overflow-hidden rounded-[22px] border border-emerald-200 bg-emerald-50 p-[clamp(1.25rem,2.2vw,2rem)] shadow-[0_32px_80px_-48px_rgba(17,94,89,0.65)] sm:translate-y-6 motion-reduce:transform-none">
+          <article className="relative h-full overflow-hidden rounded-[22px] border border-emerald-200 bg-emerald-50 p-[clamp(1.25rem,2.2vw,2rem)] shadow-[0_32px_80px_-48px_rgba(17,94,89,0.65)]">
             <div aria-hidden className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-emerald-200/50 blur-2xl" />
             <div className="relative flex items-center gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm">
