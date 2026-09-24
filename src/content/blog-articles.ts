@@ -412,7 +412,7 @@ export const blogArticles: BlogArticle[] = [
         id: "purpose",
         title: "What Form W-7 is used for",
         paragraphs: [
-          "At the top of the form, choose either a new application or renewal. Every applicant—including each family member—needs a separate signed Form W-7.",
+          "At the top of the form, choose either a new application or renewal. Every applicant, including each family member, needs a separate signed Form W-7.",
         ],
       },
       {

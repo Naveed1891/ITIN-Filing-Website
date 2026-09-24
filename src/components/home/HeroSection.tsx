@@ -20,7 +20,7 @@ const HEADLINE: Array<{ text: string; accent?: boolean }> = [
   { text: "your" },
   { text: "ITIN" },
   { text: "application", accent: true },
-  { text: "—" },
+  { text: "-" },
   { text: "with" },
   { text: "clear" },
   { text: "guidance" },
@@ -150,7 +150,7 @@ export function HeroSection() {
               <Magnetic>
                 <Link href="/packages">
                   <Button variant="primary" size="lg">
-                    Get started — $225
+                    Get started - $99.9
                   </Button>
                 </Link>
               </Magnetic>

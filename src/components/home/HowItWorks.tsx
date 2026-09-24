@@ -118,7 +118,7 @@ export function HowItWorks() {
                     </em>
                   </>
                 }
-                subtitle="Five steps from application to your ITIN — with expert support throughout."
+                subtitle="Five steps from application to your ITIN, with expert support throughout."
                 align="left"
               />
               <Link href="/packages">

@@ -112,7 +112,7 @@ export function EligibilityChecker() {
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center">
                 {eligible && (
                   <Link href="/packages">
-                    <Button variant="primary" size="md">Apply now — $225</Button>
+                    <Button variant="primary" size="md">Apply now - $99.9</Button>
                   </Link>
                 )}
                 <Button variant="outline" size="md" onClick={reset}>Start over</Button>

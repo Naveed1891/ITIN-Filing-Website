@@ -15,6 +15,15 @@ export async function GET(
       return errorJson("Forbidden.", 403);
     }
 
+    if (user.role !== "SUPER_ADMIN") {
+      const access = await prisma.staffPermission.findMany({
+        where: { userId: user.id, module: { in: ["documents", "applications", "orders"] }, canView: true },
+        select: { id: true },
+        take: 1,
+      });
+      if (!access.length) return errorJson("Forbidden.", 403);
+    }
+
     const { id } = await params;
     const doc = await prisma.applicationDocument.findUnique({ where: { id } });
     if (!doc) return errorJson("Document not found.", 404);

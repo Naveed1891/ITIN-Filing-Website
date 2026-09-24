@@ -92,13 +92,23 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
     const items = await prisma.applicationDocument.findMany({ orderBy: { createdAt: "desc" }, include: { application: { include: { user: true, order: true } } }, take: 100 });
     return (
       <Section title="Documents" description="Review customer uploads and document approval status.">
-        <DashTable heads={["File", "Customer", "Order", "Type", "Status", "Uploaded"]} rows={items.map((x) => [
-          <strong key="f">{x.fileName}</strong>,
+        <DashTable heads={["File", "Customer", "Order", "Type", "Status", "Uploaded", "Actions"]} rows={items.map((x) => [
+          x.storageKey
+            ? <a key="f" href={`/api/admin/documents/${x.id}`} target="_blank" rel="noopener noreferrer" className="dash-link"><strong>{x.fileName}</strong></a>
+            : <strong key="f">{x.fileName}</strong>,
           <Link key="u" href={`/admin/customers/${x.application.user.id}`}>{x.application.user.fullName}</Link>,
           <Link key="o" href={`/admin/orders/${x.application.order.id}`}>{x.application.order.reference}</Link>,
           x.kind,
           <StatusBadge key="s" status={x.status} />,
           formatDate(x.createdAt),
+          x.storageKey ? (
+            <span key="a" style={{ display: "flex", gap: "0.75rem" }}>
+              <a href={`/api/admin/documents/${x.id}`} target="_blank" rel="noopener noreferrer" className="dash-link" style={{ fontSize: "12px" }}>View</a>
+              <a href={`/api/admin/documents/${x.id}?download=1`} download={x.fileName} className="dash-link" style={{ fontSize: "12px" }}>Download</a>
+            </span>
+          ) : (
+            <span key="a" style={{ fontSize: "12px", color: "#9AA7B4" }}>No file stored</span>
+          ),
         ])} />
       </Section>
     );

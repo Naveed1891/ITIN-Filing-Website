@@ -139,7 +139,7 @@ ${dataTable([
 ])}
 ${button(opts.dashboardUrl, "Start your application")}`;
   return {
-    subject: `ITINReady order confirmed — ${opts.reference}`,
+    subject: `ITINReady order confirmed - ${opts.reference}`,
     text: `Hi ${opts.fullName}, your ITINReady order ${opts.reference} (${opts.packageName}, ${opts.amount}) is confirmed. Start your application: ${opts.dashboardUrl}`,
     html: shell({ heading: "Your order is confirmed", bodyHtml, preheader: `Order ${opts.reference} confirmed`, supportEmail: opts.supportEmail }),
   };
@@ -182,7 +182,7 @@ ${statusBadge("Payment under review", opts.amount)}
 ${note("We will notify you once the payment is approved. Your application will open after approval.")}
 ${button(opts.dashboardUrl, "View your order")}`;
   return {
-    subject: `Payment proof received — ${opts.reference}`,
+    subject: `Payment proof received - ${opts.reference}`,
     text: `Hi ${opts.fullName}, we received your payment proof for ${opts.reference} (${opts.amount}). We will notify you after review. ${opts.dashboardUrl}`,
     html: shell({ heading: "Payment proof received", bodyHtml, preheader: `${opts.reference} is awaiting payment review`, supportEmail: opts.supportEmail }),
   };
@@ -257,7 +257,7 @@ ${opts.goals ? `<div style="margin:14px 0;padding:16px;background:${BRAND.bg};bo
 <p style="margin:0;color:${BRAND.text};font-size:14px;line-height:1.65;white-space:pre-wrap;">${esc(opts.goals)}</p>
 </div>` : ""}`;
   return {
-    subject: `Partnership enquiry — ${opts.companyName}`,
+    subject: `Partnership enquiry - ${opts.companyName}`,
     text: `Partnership enquiry from ${opts.contactName} at ${opts.companyName} (${opts.email}). Business: ${opts.businessType}, Volume: ${opts.monthlyVolume}, Country: ${opts.country}.${opts.goals ? ` Goals: ${opts.goals}` : ""}`,
     html: shell({ heading: "New partnership enquiry", bodyHtml }),
   };
@@ -291,7 +291,7 @@ ${paragraph("We received a request to reset your ITINReady account password. Use
 <div style="margin:6px 0 20px;padding:18px;background:${BRAND.bg};border:1px solid ${BRAND.border};border-radius:12px;text-align:center;">
 <div style="font-size:32px;font-weight:800;letter-spacing:10px;color:${BRAND.navy};font-family:'Courier New',monospace;">${esc(opts.code)}</div>
 </div>
-${note(`This code expires in ${opts.minutes} minutes. If you did not request a password reset, you can safely ignore this email — your password will remain unchanged.`)}`;
+${note(`This code expires in ${opts.minutes} minutes. If you did not request a password reset, you can safely ignore this email. Your password will remain unchanged.`)}`;
   return {
     subject: `Password reset code: ${opts.code}`,
     text: `Your ITINReady password reset code is ${opts.code}. It expires in ${opts.minutes} minutes. If you did not request it, ignore this email.`,

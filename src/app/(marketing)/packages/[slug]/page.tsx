@@ -58,7 +58,7 @@ const packageCopy = {
       },
       {
         q: "What documents do I need to renew?",
-        a: "The same identity documents required for a new application — typically a valid passport or combination of IDs.",
+        a: "The same identity documents required for a new application, typically a valid passport or combination of IDs.",
       },
     ],
   },
@@ -102,7 +102,7 @@ export default async function PackageDetailPage({
   const name = live?.name ?? local!.name;
   const price = live?.price ?? (local ? (local.salePriceCents ? local.salePriceCents / 100 : local.priceCents / 100) : 0);
   const originalPrice = live?.originalPrice ?? (local?.salePriceCents ? local.priceCents / 100 : undefined);
-  const currency = live?.currency ?? local?.currency ?? "GBP";
+  const currency = live?.currency ?? local?.currency ?? "USD";
   const sym = currency === "GBP" ? "£" : currency === "EUR" ? "€" : "$";
   const includes =
     live?.features && live.features.length > 0
@@ -182,7 +182,7 @@ export default async function PackageDetailPage({
               href={`/checkout?package=${slug}`}
               className={cn(buttonVariants({ variant: "primary", size: "lg" }), "mt-2")}
             >
-              Get started — {sym}{price}
+              Get started - {sym}{price}
             </Link>
           </Magnetic>
         </Reveal>
@@ -256,7 +256,7 @@ export default async function PackageDetailPage({
               href={`/checkout?package=${slug}`}
               className={cn(buttonVariants({ variant: "primary", size: "lg", fullWidth: true }))}
             >
-              Get started — {sym}{price}
+              Get started - {sym}{price}
             </Link>
             <p className="text-[12px] text-text-muted text-center">
               Private preparation service · IRS outcome not guaranteed

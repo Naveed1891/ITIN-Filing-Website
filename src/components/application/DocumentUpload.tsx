@@ -70,7 +70,7 @@ export function DocumentUpload() {
                 </span>
                 {doc.uploaded ? (
                   <span className="text-[12px] text-blue font-medium truncate">
-                    {doc.fileName} — uploaded
+                    {doc.fileName} - uploaded
                   </span>
                 ) : (
                   <span className="text-[12px] text-text-muted">
@@ -103,7 +103,7 @@ export function DocumentUpload() {
             Drag additional files here
           </span>
           <span className="text-[12.5px] text-text-muted">
-            or click to browse — JPG, PNG, PDF up to 10 MB
+            or click to browse. JPG, PNG, PDF up to 10 MB
           </span>
         </div>
       </div>

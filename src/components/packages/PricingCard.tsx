@@ -164,7 +164,7 @@ export function PricingCard({ pkg, href }: PricingCardProps) {
                   : "hover:border-navy hover:bg-navy hover:text-white",
               )}
             >
-              {pkg.cta} — {sym}{pkg.price}
+              {pkg.cta} - {sym}{pkg.price}
             </Link>
           </div>
         </div>

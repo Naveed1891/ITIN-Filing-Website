@@ -237,7 +237,7 @@ function PackageForm({
       } else {
         const result = await apiFetch<{ package: any }>("/api/admin/packages", {
           method: "POST",
-          body: JSON.stringify({ slug, name, description, priceCents, salePriceCents, currency: "GBP", features: featureList, isActive }),
+          body: JSON.stringify({ slug, name, description, priceCents, salePriceCents, currency: "USD", features: featureList, isActive }),
         });
         onDone({
           id: result.package.id,

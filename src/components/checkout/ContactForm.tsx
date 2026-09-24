@@ -85,7 +85,7 @@ export function ContactForm({ onNext }: ContactFormProps) {
         value={data.phone}
         onChange={(e) => field("phone", e.target.value)}
         autoComplete="tel"
-        hint="Optional — for urgent communication only"
+        hint="Optional, for urgent communication only"
       />
 
       <div className="flex flex-col gap-[7px]">

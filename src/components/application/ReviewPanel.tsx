@@ -15,8 +15,8 @@ const reviewSections = [
   {
     title: "Documents",
     items: [
-      { label: "Passport", value: "passport.pdf — uploaded" },
-      { label: "Tax requirement proof", value: "w8ben.pdf — uploaded" },
+      { label: "Passport", value: "passport.pdf - uploaded" },
+      { label: "Tax requirement proof", value: "w8ben.pdf - uploaded" },
     ],
   },
   {

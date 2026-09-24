@@ -16,7 +16,7 @@ interface OrderSummaryProps {
   currency?: string;
 }
 
-export function OrderSummary({ items, total, currency = "GBP" }: OrderSummaryProps) {
+export function OrderSummary({ items, total, currency = "USD" }: OrderSummaryProps) {
   const sym = currency === "GBP" ? "£" : currency === "EUR" ? "€" : "$";
   const [expanded, setExpanded] = useState(false);
 
