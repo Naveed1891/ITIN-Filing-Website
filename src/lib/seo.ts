@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
-export const SITE_URL = "https://itinfiling.com";
-export const SITE_NAME = "ITINFiling.com";
+export const SITE_URL = (process.env.NEXT_PUBLIC_APP_URL || "https://itinready.com").replace(/\/$/, "");
+export const SITE_NAME = "ITINReady";
+export const SITE_ALTERNATE_NAMES = ["ITIN Ready", "ITINReady.com", "Ready ITIN"];
+export const OG_IMAGE = "/images/brand/og-image.png";
+export const LOGO_URL = `${SITE_URL}/images/brand/itinReadyLogo.png`;
 
 interface MetadataInput {
   title: string;
@@ -19,7 +22,7 @@ export function createMetadata({
   const canonical = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
 
   return {
-    title: { absolute: title },
+    title: { absolute: /ITINReady/i.test(title) ? title : `${title} | ${SITE_NAME}` },
     description,
     alternates: { canonical },
     openGraph: {
@@ -31,10 +34,10 @@ export function createMetadata({
       locale: "en_US",
       images: [
         {
-          url: "/images/multilingual-support.jpg",
-          width: 1600,
-          height: 1067,
-          alt: "ITINFiling customer support team",
+          url: OG_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: "ITINReady - ITIN application and renewal support",
         },
       ],
     },
@@ -42,7 +45,7 @@ export function createMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: ["/images/multilingual-support.jpg"],
+      images: [OG_IMAGE],
     },
   };
 }

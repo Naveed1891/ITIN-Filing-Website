@@ -14,9 +14,9 @@ import { FinalCta } from "@/components/home/FinalCta";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "Apply for an ITIN Online | ITIN Application Support",
+  title: "ITINReady | Get ITIN Ready - Apply for an ITIN Online or Renew",
   description:
-    "Prepare to apply for an ITIN online with clear eligibility, Form W-7 and document guidance for new applications and renewals.",
+    "Get ITIN ready with ITINReady: clear Form W-7 guidance, document checklists and private preparation support for new ITIN applications and ITIN renewals.",
   path: "/",
 });
 

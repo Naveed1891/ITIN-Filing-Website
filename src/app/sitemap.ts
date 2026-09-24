@@ -11,6 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/packages/new-itin-application",
     "/packages/itin-renewal",
     "/blog",
+    "/contact",
+    "/become-partner",
   ];
 
   return [

@@ -47,7 +47,7 @@ export async function PackagesSection() {
         )}
 
         <p className="text-center text-[12.5px] sm:text-[13px] text-text-muted">
-          ITINFiling.com is a private preparation service. The IRS determines
+          ITINReady is a private preparation service. The IRS determines
           eligibility, processing time, and issuance.
           {source === "fallback"
             ? " Showing standard published pricing while live catalog reconnects."

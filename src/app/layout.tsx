@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, Newsreader, Noto_Sans, Playfair_Display } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { SITE_NAME, SITE_URL } from "@/lib/seo";
+import { LOGO_URL, OG_IMAGE, SITE_ALTERNATE_NAMES, SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { PartnershipButton } from "@/components/partner/PartnershipButton";
@@ -25,25 +25,51 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
   title: {
-    default: "ITINFiling.com | ITIN Application Information",
-    template: "%s | ITINFiling.com",
+    default: "ITINReady | Apply for an ITIN Online - New ITIN & Renewal Help",
+    template: "%s | ITINReady",
   },
   description:
-    "Clear information and private document-preparation support for Form W-7, new ITIN applications and ITIN renewals.",
+    "ITINReady helps you prepare your ITIN application or renewal. Clear Form W-7 guidance, document checklists and private preparation support.",
+  keywords: [
+    "ITIN",
+    "ITIN Ready",
+    "ITINReady",
+    "Ready ITIN",
+    "apply for ITIN",
+    "ITIN application",
+    "ITIN renewal",
+    "Form W-7",
+    "individual taxpayer identification number",
+    "ITIN documents",
+  ],
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
+  verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
     url: SITE_URL,
-    title: "ITINFiling.com | ITIN Application Information",
+    locale: "en_US",
+    title: "ITINReady | Apply for an ITIN Online - New ITIN & Renewal Help",
     description:
       "Clear information about Form W-7, ITIN requirements, applications and renewals.",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "ITINReady - ITIN application and renewal support" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ITINFiling.com | ITIN Application Information",
+    title: "ITINReady | Apply for an ITIN Online - New ITIN & Renewal Help",
     description:
       "Clear information about Form W-7, ITIN requirements, applications and renewals.",
+    images: [OG_IMAGE],
   },
 };
 
@@ -63,15 +89,25 @@ export default function RootLayout({
             {
               "@context": "https://schema.org",
               "@type": "Organization",
+              "@id": `${SITE_URL}/#organization`,
               name: SITE_NAME,
+              alternateName: SITE_ALTERNATE_NAMES,
               url: SITE_URL,
+              logo: LOGO_URL,
+              image: LOGO_URL,
               email: "support@itinfiling.com",
+              description:
+                "Private ITIN application and renewal document-preparation support with clear Form W-7 guidance. Not affiliated with the IRS.",
             },
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
+              "@id": `${SITE_URL}/#website`,
               name: SITE_NAME,
+              alternateName: SITE_ALTERNATE_NAMES,
               url: SITE_URL,
+              inLanguage: "en-US",
+              publisher: { "@id": `${SITE_URL}/#organization` },
             },
           ]}
         />

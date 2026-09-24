@@ -73,7 +73,7 @@ export function WhyChooseUs() {
             <>
               Why thousands choose{" "}
               <em className="font-serif font-bold italic text-gold">
-                ITINFiling.com
+                ITINReady
               </em>
             </>
           }

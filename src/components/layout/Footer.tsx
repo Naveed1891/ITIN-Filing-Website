@@ -90,7 +90,7 @@ export function Footer() {
 
         <div className="mt-10 sm:mt-14 pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[11px] sm:text-[12px] text-white/35">
-            © {new Date().getFullYear()} ITINFiling.com. All rights reserved.
+            © {new Date().getFullYear()} ITINReady. All rights reserved.
           </p>
         </div>
       </div>

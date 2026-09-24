@@ -53,7 +53,7 @@ export function HeroDocumentVisual() {
               </div>
               <div>
                 <p className="text-[clamp(0.55rem,1vw,0.75rem)] font-bold uppercase tracking-[0.16em] text-navy">
-                  ITINFiling Notice
+                  ITINReady Notice
                 </p>
                 <p className="text-[clamp(0.45rem,0.8vw,0.65rem)] text-text-muted">
                   Decorative client record
@@ -131,7 +131,7 @@ export function HeroDocumentVisual() {
               Not a government document
             </span>
             <span className="text-[clamp(0.4rem,0.68vw,0.55rem)] font-bold text-blue">
-              ITINFiling.com
+              ITINReady
             </span>
           </div>
         </div>

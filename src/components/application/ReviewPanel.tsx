@@ -67,7 +67,7 @@ export function ReviewPanel() {
         <p className="text-[13.5px] text-text-mid leading-[1.6]">
           By submitting this application, I declare that the information
           provided is accurate and complete to the best of my knowledge. I
-          authorise ITINFiling.com to submit my W-7 application to the IRS on
+          authorise ITINReady to submit my W-7 application to the IRS on
           my behalf.
         </p>
         <label className="flex items-start gap-3 cursor-pointer">

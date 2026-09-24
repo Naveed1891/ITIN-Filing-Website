@@ -1,5 +1,5 @@
 /**
- * Links to the ITINFiling customer dashboard. The dashboard is now part of this
+ * Links to the ITINReady customer dashboard. The dashboard is now part of this
  * app (same origin) at /dashboard, so these return relative local paths.
  */
 export function customerDashboardUrl(path = "/dashboard"): string {

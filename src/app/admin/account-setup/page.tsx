@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/server/auth";
 import { prisma } from "@/server/db";
 
 export const metadata: Metadata = {
-  title: "One-time super-admin setup | ITINFiling",
+  title: "One-time super-admin setup | ITINReady",
   robots: { index: false, follow: false },
 };
 

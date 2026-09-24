@@ -7,9 +7,9 @@ import { createMetadata } from "@/lib/seo";
 import { Mail, ShieldCheck, Clock } from "lucide-react";
 
 export const metadata: Metadata = createMetadata({
-  title: "Contact ITINFiling.com | ITIN Application Support",
+  title: "Contact ITINReady | ITIN Application Support",
   description:
-    "Contact ITINFiling.com for general questions about ITIN application preparation, documents, packages or an existing service request.",
+    "Contact ITINReady for general questions about ITIN application preparation, documents, packages or an existing service request.",
   path: "/contact",
 });
 

@@ -31,7 +31,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
     datePublished: article.published,
     dateModified: article.updated,
     mainEntityOfPage: url,
-    author: { "@type": "Organization", name: "ITINFiling Editorial Team" },
+    author: { "@type": "Organization", name: "ITINReady Editorial Team" },
     publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
   };
   const breadcrumbJsonLd = {
@@ -82,7 +82,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
               {article.summary}
             </p>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-white/50 sm:text-[13px]">
-              <span>By ITINFiling Editorial Team</span>
+              <span>By ITINReady Editorial Team</span>
               <span>
                 Published{" "}
                 <time dateTime={article.published}>

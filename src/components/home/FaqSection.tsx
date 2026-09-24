@@ -1,6 +1,7 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion } from "./FaqAccordion";
 import { Reveal } from "@/components/motion";
+import { JsonLd } from "@/components/seo/JsonLd";
 import type { FaqItem } from "@/types";
 
 const faqs: FaqItem[] = [
@@ -49,6 +50,17 @@ const faqs: FaqItem[] = [
 export function FaqSection() {
   return (
     <section id="faq" className="section-padding bg-bg-light">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: item.answer },
+          })),
+        }}
+      />
       <div className="mx-auto w-full max-w-[1024px] px-4 md:px-6 lg:px-8">
         <div className="section-stack">
           <Reveal>

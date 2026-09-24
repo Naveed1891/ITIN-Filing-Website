@@ -24,11 +24,11 @@ export const publicPages: PublicPageData[] = [
     slug: "about",
     eyebrow: "About",
     title: "Clear guidance for a careful ITIN application",
-    metaTitle: "About ITINFiling.com | ITIN Application Guidance",
+    metaTitle: "About ITINReady | ITIN Application Guidance",
     metaDescription:
-      "Learn how ITINFiling.com approaches ITIN application guidance, document preparation and clear support for international applicants.",
+      "Learn how ITINReady approaches ITIN application guidance, document preparation and clear support for international applicants.",
     intro:
-      "ITINFiling.com is a private document-preparation service designed to make the ITIN application process easier to understand. We are not the IRS and do not issue ITINs.",
+      "ITINReady is a private document-preparation service designed to make the ITIN application process easier to understand. We are not the IRS and do not issue ITINs.",
     sections: [
       {
         id: "our-approach",
@@ -275,9 +275,9 @@ export const publicPages: PublicPageData[] = [
     slug: "privacy-policy",
     eyebrow: "Legal",
     title: "Privacy policy",
-    metaTitle: "Privacy Policy | ITINFiling.com",
+    metaTitle: "Privacy Policy | ITINReady",
     metaDescription:
-      "Read how ITINFiling.com describes the collection, use, protection and choices associated with personal information.",
+      "Read how ITINReady describes the collection, use, protection and choices associated with personal information.",
     intro:
       "This privacy policy explains the categories of information the website may collect, why that information is used and the choices available to users.",
     sections: [
@@ -323,17 +323,17 @@ export const publicPages: PublicPageData[] = [
     slug: "terms-and-conditions",
     eyebrow: "Legal",
     title: "Terms and conditions",
-    metaTitle: "Terms and Conditions | ITINFiling.com",
+    metaTitle: "Terms and Conditions | ITINReady",
     metaDescription:
-      "Review the general terms governing access to ITINFiling.com and use of its private document-preparation services.",
+      "Review the general terms governing access to ITINReady and use of its private document-preparation services.",
     intro:
-      "These terms describe the general conditions for using ITINFiling.com. They should be read together with the privacy and refund policies.",
+      "These terms describe the general conditions for using ITINReady. They should be read together with the privacy and refund policies.",
     sections: [
       {
         id: "service",
         title: "Nature of the service",
         paragraphs: [
-          "ITINFiling.com is a private document-preparation service and is not the IRS or another government agency. The IRS makes all decisions about assigning, renewing or rejecting an ITIN.",
+          "ITINReady is a private document-preparation service and is not the IRS or another government agency. The IRS makes all decisions about assigning, renewing or rejecting an ITIN.",
         ],
       },
       {
@@ -371,9 +371,9 @@ export const publicPages: PublicPageData[] = [
     slug: "refund-policy",
     eyebrow: "Legal",
     title: "Refund policy",
-    metaTitle: "Refund Policy | ITINFiling.com",
+    metaTitle: "Refund Policy | ITINReady",
     metaDescription:
-      "Review the general refund-request process and limitations for ITINFiling.com document-preparation services.",
+      "Review the general refund-request process and limitations for ITINReady document-preparation services.",
     intro:
       "This policy describes how refund requests are reviewed for private document-preparation services. It does not guarantee an IRS outcome or processing time.",
     sections: [
@@ -412,11 +412,11 @@ export const publicPages: PublicPageData[] = [
     slug: "disclaimer",
     eyebrow: "Legal",
     title: "Professional information disclaimer",
-    metaTitle: "Disclaimer | ITINFiling.com",
+    metaTitle: "Disclaimer | ITINReady",
     metaDescription:
-      "Read important limitations about ITINFiling.com, general tax information, government affiliation and application outcomes.",
+      "Read important limitations about ITINReady, general tax information, government affiliation and application outcomes.",
     intro:
-      "ITINFiling.com provides general information and private document-preparation support. It is not the IRS and is not affiliated with the U.S. government.",
+      "ITINReady provides general information and private document-preparation support. It is not the IRS and is not affiliated with the U.S. government.",
     sections: [
       {
         id: "not-advice",
