@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
+import { CountryCombobox } from "@/components/ui/CountryCombobox";
 
 interface ContactFormData {
   firstName: string;
@@ -95,30 +96,7 @@ export function ContactForm({ onNext }: ContactFormProps) {
         >
           Country of residence
         </label>
-        <select
-          id="country"
-          value={data.country}
-          onChange={(e) => field("country", e.target.value)}
-          className="h-12 px-[14px] rounded-btn border border-border-mid bg-white text-[14px] text-text-dark focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue transition"
-        >
-          <option value="">Select country…</option>
-          {[
-            "Mexico",
-            "Canada",
-            "India",
-            "China",
-            "Brazil",
-            "United Kingdom",
-            "Germany",
-            "France",
-            "Australia",
-            "Other",
-          ].map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
+        <CountryCombobox id="country" value={data.country} onChange={(country) => field("country", country)} invalid={Boolean(errors.country)} autoComplete="country-name" />
         {errors.country && (
           <p className="text-[12px] text-error flex items-center gap-1.5" role="alert">
             <span aria-hidden>⚠</span> {errors.country}

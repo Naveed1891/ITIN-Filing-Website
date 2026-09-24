@@ -1,8 +1,8 @@
 "use client";
 
-import { useFormContext, useWatch } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { FormField } from "@/components/ui/FormField";
-import { COUNTRIES, flagEmoji } from "@/lib/countries";
+import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import {
   applicationOptions,
   type ApplicationOption,
@@ -127,6 +127,7 @@ export function PersonalDetailsStep({ isRenewal = false }: { isRenewal?: boolean
 export function AddressStep() {
   const {
     register,
+    control,
     formState: { errors },
   } = useFormContext<ItinApplicationValues>();
 
@@ -141,18 +142,20 @@ export function AddressStep() {
         <FormField label="ZIP / Postal Code *" autoComplete="postal-code" error={formError(errors, "postalCode")} {...register("postalCode")} />
         <div className="flex flex-col gap-[7px]">
           <label htmlFor="country" className={labelClass}>Country <span className="text-error">*</span></label>
-          <select
-            id="country"
-            autoComplete="country-name"
-            className={inputClass}
-            aria-invalid={!!formError(errors, "country")}
-            {...register("country")}
-          >
-            <option value="">Select your country…</option>
-            {COUNTRIES.map((c) => (
-              <option key={`${c.iso2}-${c.name}`} value={c.name}>{flagEmoji(c.iso2)} {c.name}</option>
-            ))}
-          </select>
+          <Controller
+            control={control}
+            name="country"
+            render={({ field }) => (
+              <CountryCombobox
+                id="country"
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                invalid={!!formError(errors, "country")}
+                autoComplete="country-name"
+              />
+            )}
+          />
           <InlineError message={formError(errors, "country")} />
         </div>
       </div>

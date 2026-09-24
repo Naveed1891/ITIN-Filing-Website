@@ -9,7 +9,7 @@ export type Country = {
   max: number;
 };
 
-export const COUNTRIES: Country[] = [
+const BASE_COUNTRIES: Country[] = [
   { name: "Afghanistan", iso2: "AF", dial: "93", min: 9, max: 9 },
   { name: "Albania", iso2: "AL", dial: "355", min: 8, max: 9 },
   { name: "Algeria", iso2: "DZ", dial: "213", min: 9, max: 9 },
@@ -126,6 +126,65 @@ export const COUNTRIES: Country[] = [
   { name: "Zambia", iso2: "ZM", dial: "260", min: 9, max: 9 },
   { name: "Zimbabwe", iso2: "ZW", dial: "263", min: 9, max: 9 },
 ];
+
+const MORE_COUNTRIES: Country[] = [
+  { name: "Andorra", iso2: "AD", dial: "376", min: 6, max: 9 },
+  { name: "Angola", iso2: "AO", dial: "244", min: 9, max: 9 },
+  { name: "Bahamas", iso2: "BS", dial: "1", min: 10, max: 10 },
+  { name: "Barbados", iso2: "BB", dial: "1", min: 10, max: 10 },
+  { name: "Belize", iso2: "BZ", dial: "501", min: 7, max: 7 },
+  { name: "Benin", iso2: "BJ", dial: "229", min: 8, max: 8 },
+  { name: "Bhutan", iso2: "BT", dial: "975", min: 8, max: 8 },
+  { name: "Botswana", iso2: "BW", dial: "267", min: 7, max: 8 },
+  { name: "Brunei", iso2: "BN", dial: "673", min: 7, max: 7 },
+  { name: "Burkina Faso", iso2: "BF", dial: "226", min: 8, max: 8 },
+  { name: "Burundi", iso2: "BI", dial: "257", min: 8, max: 8 },
+  { name: "Congo (DRC)", iso2: "CD", dial: "243", min: 9, max: 9 },
+  { name: "Cuba", iso2: "CU", dial: "53", min: 8, max: 8 },
+  { name: "Eritrea", iso2: "ER", dial: "291", min: 7, max: 7 },
+  { name: "Fiji", iso2: "FJ", dial: "679", min: 7, max: 7 },
+  { name: "Gabon", iso2: "GA", dial: "241", min: 7, max: 8 },
+  { name: "Guinea", iso2: "GN", dial: "224", min: 9, max: 9 },
+  { name: "Guyana", iso2: "GY", dial: "592", min: 7, max: 7 },
+  { name: "Haiti", iso2: "HT", dial: "509", min: 8, max: 8 },
+  { name: "Iran", iso2: "IR", dial: "98", min: 10, max: 10 },
+  { name: "Ivory Coast", iso2: "CI", dial: "225", min: 10, max: 10 },
+  { name: "Kosovo", iso2: "XK", dial: "383", min: 8, max: 9 },
+  { name: "Laos", iso2: "LA", dial: "856", min: 8, max: 10 },
+  { name: "Lesotho", iso2: "LS", dial: "266", min: 8, max: 8 },
+  { name: "Liberia", iso2: "LR", dial: "231", min: 7, max: 9 },
+  { name: "Liechtenstein", iso2: "LI", dial: "423", min: 7, max: 9 },
+  { name: "Macau", iso2: "MO", dial: "853", min: 8, max: 8 },
+  { name: "Madagascar", iso2: "MG", dial: "261", min: 9, max: 9 },
+  { name: "Malawi", iso2: "MW", dial: "265", min: 7, max: 9 },
+  { name: "Mali", iso2: "ML", dial: "223", min: 8, max: 8 },
+  { name: "Mauritania", iso2: "MR", dial: "222", min: 8, max: 8 },
+  { name: "Monaco", iso2: "MC", dial: "377", min: 8, max: 9 },
+  { name: "Mongolia", iso2: "MN", dial: "976", min: 8, max: 8 },
+  { name: "Montenegro", iso2: "ME", dial: "382", min: 8, max: 9 },
+  { name: "Mozambique", iso2: "MZ", dial: "258", min: 9, max: 9 },
+  { name: "Myanmar", iso2: "MM", dial: "95", min: 8, max: 10 },
+  { name: "Namibia", iso2: "NA", dial: "264", min: 8, max: 9 },
+  { name: "Nicaragua", iso2: "NI", dial: "505", min: 8, max: 8 },
+  { name: "Niger", iso2: "NE", dial: "227", min: 8, max: 8 },
+  { name: "Palestine", iso2: "PS", dial: "970", min: 9, max: 9 },
+  { name: "Papua New Guinea", iso2: "PG", dial: "675", min: 7, max: 8 },
+  { name: "Puerto Rico", iso2: "PR", dial: "1", min: 10, max: 10 },
+  { name: "Rwanda", iso2: "RW", dial: "250", min: 9, max: 9 },
+  { name: "San Marino", iso2: "SM", dial: "378", min: 6, max: 10 },
+  { name: "Sierra Leone", iso2: "SL", dial: "232", min: 8, max: 8 },
+  { name: "Somalia", iso2: "SO", dial: "252", min: 7, max: 9 },
+  { name: "South Sudan", iso2: "SS", dial: "211", min: 9, max: 9 },
+  { name: "Sudan", iso2: "SD", dial: "249", min: 9, max: 9 },
+  { name: "Suriname", iso2: "SR", dial: "597", min: 6, max: 7 },
+  { name: "Syria", iso2: "SY", dial: "963", min: 9, max: 9 },
+  { name: "Tajikistan", iso2: "TJ", dial: "992", min: 9, max: 9 },
+  { name: "Togo", iso2: "TG", dial: "228", min: 8, max: 8 },
+  { name: "Trinidad and Tobago", iso2: "TT", dial: "1", min: 10, max: 10 },
+  { name: "Turkmenistan", iso2: "TM", dial: "993", min: 8, max: 8 },
+];
+
+export const COUNTRIES: Country[] = [...BASE_COUNTRIES, ...MORE_COUNTRIES].sort((a, b) => a.name.localeCompare(b.name));
 
 /** Flag emoji from an ISO-3166 alpha-2 code (regional indicator letters). */
 export function flagEmoji(iso2: string): string {

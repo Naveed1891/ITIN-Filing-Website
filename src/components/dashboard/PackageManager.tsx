@@ -33,6 +33,9 @@ export function PackageManager({
   const [editMode, setEditMode] = useState<EditMode>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [q, setQ] = useState("");
+  const needle = q.trim().toLowerCase();
+  const shown = needle ? packages.filter((p) => [p.name, p.slug, p.description].some((v) => v.toLowerCase().includes(needle))) : packages;
 
   async function handleDelete(pkg: PackageData) {
     if (pkg.orderCount > 0) {
@@ -94,6 +97,10 @@ export function PackageManager({
             </div>
           )}
 
+          {packages.length > 0 && (
+            <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search packages by name or description" aria-label="Search packages" maxLength={100} className="dash-input" />
+          )}
+
           {packages.length === 0 ? (
             <div className="dash-panel">
               <div className="dash-empty">
@@ -103,7 +110,8 @@ export function PackageManager({
             </div>
           ) : (
             <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))" }}>
-              {packages.map((pkg) => (
+              {shown.length === 0 && <p className="dash-empty__desc">No packages match your search.</p>}
+              {shown.map((pkg) => (
                 <div key={pkg.id} className="dash-panel" style={{ position: "relative" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}>
                     <div style={{ minWidth: 0 }}>

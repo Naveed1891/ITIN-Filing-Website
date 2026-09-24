@@ -1,15 +1,17 @@
 import { getCurrentUser } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { PageHeading, Panel, EmptyState } from "@/components/dashboard/DashboardPrimitives";
+import { SearchBar, readQuery } from "@/components/dashboard/SearchBar";
 import { SupportForm } from "@/components/dashboard/SupportForm";
 
 export const dynamic = "force-dynamic";
 
-export default async function SupportPage() {
+export default async function SupportPage({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
+  const q = readQuery((await searchParams).q);
   const user = await getCurrentUser();
   const messages = user
     ? await prisma.message.findMany({
-        where: { userId: user.id },
+        where: { userId: user.id, ...(q ? { OR: [{ subject: { contains: q } }, { body: { contains: q } }] } : {}) },
         orderBy: { createdAt: "desc" },
         take: 100,
       })
@@ -27,6 +29,7 @@ export default async function SupportPage() {
       </Panel>
 
       <Panel title="Previous messages">
+        <SearchBar q={q} placeholder="Search your messages" clearHref="/dashboard/support" />
         {messages.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
             {messages.map((msg) => (
@@ -61,8 +64,8 @@ export default async function SupportPage() {
           </div>
         ) : (
           <EmptyState
-            title="No messages yet"
-            description="Send your first message above and our team will respond shortly."
+            title={q ? "No messages match your search" : "No messages yet"}
+            description={q ? "Try a different search term." : "Send your first message above and our team will respond shortly."}
           />
         )}
       </Panel>

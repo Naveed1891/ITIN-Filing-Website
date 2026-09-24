@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/server/db";
 import { getCurrentUser } from "@/server/auth";
+import { SearchBar, readQuery } from "@/components/dashboard/SearchBar";
 import { PageHeading, Panel, StatCard, StatusBadge, EmptyState, formatMoney, formatDate } from "@/components/dashboard/DashboardPrimitives";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 const allowed = new Set(["orders", "customers", "applications", "documents", "finance", "communications", "tasks", "reports", "audit-log", "staff", "credentials"]);
 
 function DashTable({ heads, rows }: { heads: string[]; rows: React.ReactNode[][] }) {
-  if (!rows.length) return <EmptyState title="No records found" description="This section is empty." />;
+  if (!rows.length) return <EmptyState title="No records found" description="Nothing matches here yet. Try a different search or check back later." />;
   return (
     <div className="dash-table-wrap">
       <table className="dash-table">
@@ -20,17 +21,23 @@ function DashTable({ heads, rows }: { heads: string[]; rows: React.ReactNode[][]
   );
 }
 
-function Section({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
+function Section({ title, description, children, search }: { title: string; description: string; children: React.ReactNode; search?: { q?: string; placeholder: string; href: string } }) {
   return (
     <>
       <PageHeading title={title} description={description} />
-      <Panel>{children}</Panel>
+      <Panel>
+        {search && <SearchBar q={search.q} placeholder={search.placeholder} clearHref={search.href} />}
+        {children}
+      </Panel>
     </>
   );
 }
 
-export default async function AdminSectionPage({ params }: { params: Promise<{ section: string }> }) {
+export default async function AdminSectionPage({ params, searchParams }: { params: Promise<{ section: string }>; searchParams: Promise<{ q?: string | string[] }> }) {
   const { section } = await params;
+  const q = readQuery((await searchParams).q);
+  const search = (placeholder: string) => ({ q, placeholder, href: `/admin/${section}` });
+  const has = (value: string) => ({ contains: value });
   if (!allowed.has(section)) notFound();
   const actor = await getCurrentUser();
   if (!actor) redirect("/login?returnTo=/admin");
@@ -41,9 +48,12 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   }
 
   if (section === "orders") {
-    const items = await prisma.order.findMany({ orderBy: { createdAt: "desc" }, include: { user: true, package: true }, take: 100 });
+    const items = await prisma.order.findMany({
+      where: q ? { OR: [{ reference: has(q) }, { id: q }, { user: { fullName: has(q) } }, { user: { email: has(q) } }, { package: { name: has(q) } }] } : undefined,
+      orderBy: { createdAt: "desc" }, include: { user: true, package: true }, take: 100,
+    });
     return (
-      <Section title="Orders" description="Track every paid ITIN service request from intake through completion.">
+      <Section title="Orders" description="Track every paid ITIN service request from intake through completion." search={search("Search by order ID, customer, email or package")}>
         <DashTable heads={["Reference", "Customer", "Package", "Status", "Amount", "Created"]} rows={items.map((x) => [
           <Link key="r" href={`/admin/orders/${x.id}`}>{x.reference}</Link>,
           <Link key="u" href={`/admin/customers/${x.user.id}`} style={{ color: "inherit", textDecoration: "none" }}>{x.user.fullName}<br /><span style={{ color: "#9AA7B4", fontSize: "12px" }}>{x.user.email}</span></Link>,
@@ -57,9 +67,9 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   }
 
   if (section === "customers") {
-    const items = await prisma.user.findMany({ where: { role: "CUSTOMER", deletedAt: null }, orderBy: { createdAt: "desc" }, include: { _count: { select: { orders: true } } }, take: 100 });
+    const items = await prisma.user.findMany({ where: { role: "CUSTOMER", deletedAt: null, ...(q ? { OR: [{ fullName: has(q) }, { email: has(q) }, { country: has(q) }, { whatsapp: has(q) }, { orders: { some: { reference: has(q) } } }] } : {}) }, orderBy: { createdAt: "desc" }, include: { _count: { select: { orders: true } } }, take: 100 });
     return (
-      <Section title="Customers" description="Customer identities, account state and filing activity.">
+      <Section title="Customers" description="Customer identities, account state and filing activity." search={search("Search by name, email, country, phone or order ID")}>
         <DashTable heads={["Customer", "Email", "Country", "WhatsApp", "Orders", "Status"]} rows={items.map((x) => [
           <Link key="n" href={`/admin/customers/${x.id}`}><strong>{x.fullName}</strong></Link>,
           x.email,
@@ -73,9 +83,12 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   }
 
   if (section === "applications") {
-    const items = await prisma.application.findMany({ orderBy: { updatedAt: "desc" }, include: { user: true, order: true }, take: 100 });
+    const items = await prisma.application.findMany({
+      where: q ? { OR: [{ order: { reference: has(q) } }, { order: { id: q } }, { user: { fullName: has(q) } }, { user: { email: has(q) } }] } : undefined,
+      orderBy: { updatedAt: "desc" }, include: { user: true, order: true }, take: 100,
+    });
     return (
-      <Section title="Applications" description="Review W-7 application progress, submissions and change requests.">
+      <Section title="Applications" description="Review W-7 application progress, submissions and change requests." search={search("Search by order ID, applicant or email")}>
         <DashTable heads={["Order", "Applicant", "Status", "Declaration", "Submitted", "Updated"]} rows={items.map((x) => [
           <Link key="o" href={`/admin/orders/${x.order.id}`}>{x.order.reference}</Link>,
           <Link key="u" href={`/admin/customers/${x.user.id}`} style={{ color: "inherit", textDecoration: "none" }}>{x.user.fullName}<br /><span style={{ color: "#9AA7B4", fontSize: "12px" }}>{x.user.email}</span></Link>,
@@ -89,9 +102,11 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   }
 
   if (section === "documents") {
-    const items = await prisma.applicationDocument.findMany({ orderBy: { createdAt: "desc" }, include: { application: { include: { user: true, order: true } } }, take: 100 });
+    const items = await prisma.applicationDocument.findMany({
+      where: q ? { OR: [{ fileName: has(q) }, { kind: has(q) }, { application: { order: { reference: has(q) } } }, { application: { order: { id: q } } }, { application: { user: { fullName: has(q) } } }, { application: { user: { email: has(q) } } }] } : undefined,
+      orderBy: { createdAt: "desc" }, include: { application: { include: { user: true, order: true } } }, take: 100 });
     return (
-      <Section title="Documents" description="Review customer uploads and document approval status.">
+      <Section title="Documents" description="Review customer uploads and document approval status." search={search("Search by order ID, customer, email or file name")}>
         <DashTable heads={["File", "Customer", "Order", "Type", "Status", "Uploaded", "Actions"]} rows={items.map((x) => [
           x.storageKey
             ? <a key="f" href={`/api/admin/documents/${x.id}`} target="_blank" rel="noopener noreferrer" className="dash-link"><strong>{x.fileName}</strong></a>
@@ -142,12 +157,15 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   // "packages" is handled by the dedicated admin/packages/page.tsx route
 
   if (section === "communications") {
-    const items = await prisma.message.findMany({ orderBy: { createdAt: "desc" }, include: { order: true }, take: 100 });
+    const items = await prisma.message.findMany({
+      where: q ? { OR: [{ subject: has(q) }, { body: has(q) }, { order: { reference: has(q) } }] } : undefined,
+      orderBy: { createdAt: "desc" }, include: { order: true }, take: 100,
+    });
     const userIds = [...new Set(items.map((x) => x.userId).filter(Boolean))] as string[];
     const users = userIds.length > 0 ? await prisma.user.findMany({ where: { id: { in: userIds } }, select: { id: true, fullName: true } }) : [];
     const userMap = new Map(users.map((u) => [u.id, u.fullName]));
     return (
-      <Section title="Communications" description="Support messages and internal customer conversations.">
+      <Section title="Communications" description="Support messages and internal customer conversations." search={search("Search by subject, message or order ID")}>
         <DashTable heads={["From", "Direction", "Subject", "Message", "Created"]} rows={items.map((x) => [
           x.userId ? <Link key="u" href={`/admin/customers/${x.userId}`}>{userMap.get(x.userId) ?? "Customer"}</Link> : "System",
           <StatusBadge key="d" status={x.direction === "INBOUND" ? "SUBMITTED" : "COMPLETED"} />,
@@ -160,9 +178,12 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   }
 
   if (section === "tasks") {
-    const items = await prisma.task.findMany({ orderBy: [{ status: "asc" }, { dueAt: "asc" }], include: { order: true }, take: 100 });
+    const items = await prisma.task.findMany({
+      where: q ? { OR: [{ title: has(q) }, { detail: has(q) }, { order: { reference: has(q) } }] } : undefined,
+      orderBy: [{ status: "asc" }, { dueAt: "asc" }], include: { order: true }, take: 100,
+    });
     return (
-      <Section title="Tasks" description="Operational work queue for reviews, follow-ups and filing actions.">
+      <Section title="Tasks" description="Operational work queue for reviews, follow-ups and filing actions." search={search("Search by task, detail or order ID")}>
         <DashTable heads={["Task", "Order", "Status", "Due", "Detail"]} rows={items.map((x) => [
           <strong key="t">{x.title}</strong>,
           x.order?.reference ?? "—",
@@ -175,9 +196,12 @@ export default async function AdminSectionPage({ params }: { params: Promise<{ s
   }
 
   if (section === "audit-log") {
-    const items = await prisma.auditLog.findMany({ orderBy: { createdAt: "desc" }, take: 150 });
+    const items = await prisma.auditLog.findMany({
+      where: q ? { OR: [{ action: has(q) }, { target: has(q) }] } : undefined,
+      orderBy: { createdAt: "desc" }, take: 150,
+    });
     return (
-      <Section title="Audit log" description="Security and operational events across the platform.">
+      <Section title="Audit log" description="Security and operational events across the platform." search={search("Search by action or target")}>
         <DashTable heads={["Action", "Actor", "Target", "Details", "Created"]} rows={items.map((x) => [
           <strong key="a">{x.action}</strong>,
           x.actorId ? "Authorized staff" : "System",

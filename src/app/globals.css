@@ -711,3 +711,5 @@ body {
   .otp-grid { gap: 6px; }
   .otp-box { width: 44px; height: 50px; font-size: 20px; border-radius: 10px; }
 }
+.dash-search { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1rem; }
+.dash-search__input { flex: 1 1 260px; min-width: 0; }
