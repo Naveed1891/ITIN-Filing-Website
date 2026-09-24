@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { TrustStrip } from "@/components/home/TrustStrip";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { PackagesSection } from "@/components/home/PackagesSection";
+import { CaaExplainerSection } from "@/components/home/CaaExplainerSection";
 import { WhatIsItin } from "@/components/home/WhatIsItin";
 import { WhoNeedsItin } from "@/components/home/WhoNeedsItin";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
@@ -41,6 +42,7 @@ export default function HomePage() {
       <TrustStrip />
       <HowItWorks />
       <PackagesSection />
+      <CaaExplainerSection />
       <WhatIsItin />
       <WhoNeedsItin />
       <WhyChooseUs />
