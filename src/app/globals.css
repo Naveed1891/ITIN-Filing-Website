@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --site-max-width: 1680px;
-  --site-gutter: clamp(1rem, 3vw, 4rem);
+  --site-max-width: 1800px;
+  --site-gutter: clamp(0.875rem, 2.75vw, 3.5rem);
   --reading-width: 760px;
   --background: oklch(1 0 0);
   --foreground: oklch(0.147 0.004 49.3);
@@ -100,6 +100,21 @@ body {
   color: var(--color-text-dark);
   font-family: var(--font-sans);
   line-height: 1.6;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+p,
+li,
+dd,
+blockquote {
+  overflow-wrap: break-word;
 }
 
 /* Shared layout utilities */
@@ -112,7 +127,7 @@ body {
 }
 
 .section-padding {
-  padding-block: clamp(3.5rem, 6vw, 5rem);
+  padding-block: clamp(2.75rem, 5.5vw, 5rem);
 }
 
 .section-stack {

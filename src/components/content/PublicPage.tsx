@@ -57,7 +57,7 @@ export function PublicPage({ page }: { page: PublicPageData }) {
       </section>
 
       <section className="section-padding bg-white">
-        <div className="mx-auto w-full max-w-[820px] px-4 md:px-6 lg:px-8">
+        <div className="site-container max-w-[1040px]">
           <div className="space-y-12">
             {page.sections.map((section) => (
               <Reveal

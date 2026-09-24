@@ -54,7 +54,7 @@ export function ContactForm({ onNext }: ContactFormProps) {
         Your information
       </h2>
 
-      <div className="grid grid-cols-2 sm:grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <FormField
           label="First name"
           value={data.firstName}

@@ -75,15 +75,15 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
             { label: article.title },
           ]}
         />
-        <div className="site-container pb-[clamp(3.5rem,6vw,5rem)] pt-[clamp(2rem,4vw,3rem)]">
-          <div className="max-w-[1100px]">
+        <div className="site-container pb-[clamp(2.75rem,5vw,5rem)] pt-[clamp(1.5rem,3vw,3rem)]">
+          <div className="max-w-[1280px]">
             <p className="text-[12px] font-bold uppercase tracking-[0.13em] text-gold">
               {article.category}
             </p>
-            <h1 className="mt-4 max-w-[980px] text-[clamp(2rem,4.5vw,4.25rem)] font-extrabold leading-[1.04] tracking-[-0.03em] text-white">
+            <h1 className="mt-4 max-w-[1180px] text-[clamp(1.9rem,4.25vw,4.5rem)] font-extrabold leading-[1.04] tracking-[-0.03em] text-white">
               {article.title}
             </h1>
-            <p className="mt-5 max-w-[820px] text-[15px] leading-[1.7] text-white/70 sm:text-[17px]">
+            <p className="mt-5 max-w-[920px] text-[14px] leading-[1.7] text-white/70 sm:text-[16px] lg:text-[18px]">
               {article.summary}
             </p>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-white/50 sm:text-[13px]">
@@ -107,9 +107,9 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
       </section>
 
       <article className="section-padding bg-white">
-        <div className="mx-auto w-full max-w-[820px] px-4 md:px-6 lg:px-8">
+        <div className="site-container max-w-[1440px]">
           {image && (
-            <div className="relative mb-10 aspect-[16/10] overflow-hidden rounded-card bg-bg-light shadow-sm">
+            <div className="relative mb-[clamp(2rem,4vw,3.5rem)] aspect-[16/10] overflow-hidden rounded-[clamp(14px,2vw,24px)] bg-bg-light shadow-[0_30px_70px_-44px_rgba(17,46,81,0.55)] sm:aspect-[16/8] xl:aspect-[16/7]">
               <Image
                 src={image.src}
                 alt={image.alt}
@@ -117,40 +117,50 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
                 priority
                 className="object-cover"
                 style={{ objectPosition: image.objectPosition }}
-                sizes="(max-width: 860px) calc(100vw - 32px), 820px"
+                sizes="(max-width: 640px) calc(100vw - 28px), (max-width: 1536px) calc(100vw - 8vw), 1440px"
               />
             </div>
           )}
-          <nav
-            aria-label="Table of contents"
-            className="rounded-card border border-border bg-bg-light p-5 sm:p-6"
-          >
-            <p className="font-bold text-text-dark">Table of contents</p>
-            <ol className="mt-3 grid gap-2 sm:grid-cols-2">
-              {article.sections.map((section) => (
-                <li key={section.id}>
-                  <a
-                    href={`#${section.id}`}
-                    className="text-[14px] font-medium text-blue hover:underline"
-                  >
-                    {section.title}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <div className="grid min-w-0 gap-[clamp(2rem,4vw,5rem)] xl:grid-cols-[minmax(0,920px)_minmax(260px,1fr)] xl:items-start">
+            <nav
+              aria-label="Table of contents"
+              className="order-first rounded-card border border-border bg-bg-light p-5 sm:p-6 xl:order-last xl:sticky xl:top-24"
+            >
+              <p className="text-[11px] font-bold uppercase tracking-[0.13em] text-blue">
+                On this page
+              </p>
+              <ol className="mt-4 grid gap-x-6 gap-y-2.5 sm:grid-cols-2 xl:grid-cols-1">
+                {article.sections.map((section, index) => (
+                  <li key={section.id}>
+                    <a
+                      href={`#${section.id}`}
+                      className="group flex gap-3 text-[13px] font-semibold leading-[1.45] text-text-mid transition-colors hover:text-blue sm:text-[14px]"
+                    >
+                      <span className="font-mono text-[11px] text-gold" aria-hidden="true">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span>{section.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+              <div className="mt-5 border-t border-border pt-4 text-[12px] leading-relaxed text-text-muted">
+                <p>{article.readingTime}</p>
+                <p className="mt-1">Updated {formatDate(article.updated)}</p>
+              </div>
+            </nav>
 
-          <div className="mt-12 space-y-12">
+            <div className="min-w-0 space-y-[clamp(2.75rem,5vw,4.5rem)]">
             {article.sections.map((section) => (
               <section key={section.id} id={section.id} className="scroll-mt-28">
-                <h2 className="text-[clamp(1.45rem,3vw,2.15rem)] font-extrabold leading-tight text-text-dark">
+                <h2 className="text-[clamp(1.4rem,2.4vw,2.3rem)] font-extrabold leading-tight text-text-dark">
                   {section.title}
                 </h2>
                 <div className="mt-4 space-y-4">
                   {section.paragraphs.map((paragraph) => (
                     <p
                       key={paragraph}
-                      className="text-[15px] leading-[1.8] text-text-mid sm:text-[16px]"
+                      className="max-w-[78ch] text-[15px] leading-[1.78] text-text-mid sm:text-[16px] lg:text-[17px]"
                     >
                       {paragraph}
                     </p>
@@ -161,7 +171,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
                     {section.bullets.map((item) => (
                       <li
                         key={item}
-                        className="flex gap-3 text-[15px] leading-[1.7] text-text-dark sm:text-[16px]"
+                        className="flex max-w-[78ch] gap-3 text-[15px] leading-[1.7] text-text-dark sm:text-[16px] lg:text-[17px]"
                       >
                         <span
                           aria-hidden="true"
@@ -178,7 +188,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
             <section aria-labelledby="article-faq-title">
               <h2
                 id="article-faq-title"
-                className="text-[clamp(1.45rem,3vw,2.15rem)] font-extrabold text-text-dark"
+                  className="text-[clamp(1.4rem,2.4vw,2.3rem)] font-extrabold text-text-dark"
               >
                 Frequently asked questions
               </h2>
@@ -186,29 +196,18 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
                 {article.faqs.map((faq) => (
                   <details
                     key={faq.question}
-                    className="rounded-[14px] border border-border bg-bg-light p-5"
+                    className="rounded-[14px] border border-border bg-bg-light p-4 sm:p-5"
                   >
                     <summary className="cursor-pointer list-none font-semibold text-text-dark">
                       {faq.question}
                     </summary>
-                    <p className="mt-3 text-[15px] leading-[1.7] text-text-mid">
+                    <p className="mt-3 text-[14px] leading-[1.7] text-text-mid sm:text-[15px] lg:text-[16px]">
                       {faq.answer}
                     </p>
                   </details>
                 ))}
               </div>
             </section>
-
-            <aside className="rounded-card border border-gold/50 bg-gold/10 p-5 sm:p-6">
-              <h2 className="text-[16px] font-bold text-navy">
-                Professional-information disclaimer
-              </h2>
-              <p className="mt-2 text-[14px] leading-[1.7] text-text-mid">
-                This article provides general information, not individualized
-                tax or legal advice. ITIN rules can change; use the current IRS
-                Form W-7 instructions for your circumstances.
-              </p>
-            </aside>
 
             <section>
               <h2 className="text-[18px] font-extrabold text-text-dark">
@@ -229,6 +228,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
                 ))}
               </ul>
             </section>
+            </div>
           </div>
         </div>
       </article>
@@ -244,7 +244,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
                 Related ITIN guides
               </h2>
             </div>
-            <div className="grid items-stretch gap-5 md:grid-cols-3">
+            <div className="grid items-stretch gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {related.map((item) => (
                 <ArticleCard key={item.slug} article={item} />
               ))}
