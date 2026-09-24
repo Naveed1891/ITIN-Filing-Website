@@ -408,47 +408,6 @@ export const publicPages: PublicPageData[] = [
     ],
     primaryCta: { label: "Contact support", href: "/contact" },
   },
-  {
-    slug: "disclaimer",
-    eyebrow: "Legal",
-    title: "Professional information disclaimer",
-    metaTitle: "Disclaimer | ITINReady",
-    metaDescription:
-      "Read important limitations about ITINReady, general tax information, government affiliation and application outcomes.",
-    intro:
-      "ITINReady provides general information and private document-preparation support. It is not the IRS and is not affiliated with the U.S. government.",
-    sections: [
-      {
-        id: "not-advice",
-        title: "General information, not individual advice",
-        paragraphs: [
-          "Website content is educational and does not replace advice from a qualified tax professional or attorney who has reviewed your circumstances.",
-        ],
-      },
-      {
-        id: "no-affiliation",
-        title: "No government affiliation",
-        paragraphs: [
-          "References and links to IRS forms are provided for convenience. Government forms and instructions are available free from IRS.gov.",
-        ],
-      },
-      {
-        id: "no-guarantee",
-        title: "No guaranteed outcome or timing",
-        paragraphs: [
-          "The IRS controls ITIN eligibility, document review, processing and assignment. No statement on this website should be understood as a guarantee of approval or a fixed processing date.",
-        ],
-      },
-      {
-        id: "current-information",
-        title: "Use current official guidance",
-        paragraphs: [
-          "Tax rules and agency procedures can change. Verify important filing decisions against current IRS forms and instructions.",
-        ],
-      },
-    ],
-    primaryCta: { label: "View IRS guidance", href: "https://www.irs.gov/tin/itin" },
-  },
 ];
 
 export const publicPageMap = new Map(

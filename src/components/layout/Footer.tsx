@@ -27,7 +27,6 @@ const columns = [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms & Conditions", href: "/terms-and-conditions" },
       { label: "Refund Policy", href: "/refund-policy" },
-      { label: "Disclaimer", href: "/disclaimer" },
     ],
   },
 ];
