@@ -5,14 +5,15 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: SITE_NAME,
     short_name: SITE_NAME,
-    description: "ITIN application and renewal preparation support.",
+    description:
+      "Form W-7 preparation, ITIN application and ITIN renewal support.",
     start_url: "/",
     display: "standalone",
     background_color: "#112E51",
     theme_color: "#112E51",
     icons: [
-      { src: "/icon.png", sizes: "192x192", type: "image/png" },
-      { src: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
   };
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, Newsreader, Noto_Sans, Playfair_Display } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { LOGO_URL, OG_IMAGE, SITE_ALTERNATE_NAMES, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { BRAND_ICON_URL, LOGO_URL, OG_IMAGE, SITE_ALTERNATE_NAMES, SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { PartnershipButton } from "@/components/partner/PartnershipButton";
@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
   title: {
-    default: "ITINReady | Apply for an ITIN Online - New ITIN & Renewal Help",
+    default: "Apply for an ITIN Online | Form W-7 Help | ITINReady",
     template: "%s | ITINReady",
   },
   description:
-    "ITINReady helps you prepare your ITIN application or renewal. Clear Form W-7 guidance, document checklists and private preparation support.",
+    "Apply for an ITIN online with Form W-7 preparation, document review and ITIN renewal support for non-US residents, spouses and taxpayers.",
   keywords: [
     "ITIN",
     "ITIN Ready",
@@ -43,11 +43,25 @@ export const metadata: Metadata = {
     "Form W-7",
     "individual taxpayer identification number",
     "ITIN documents",
+    "ITIN application online",
+    "apply for ITIN number",
+    "ITIN for non-US residents",
+    "ITIN processing time",
+    "Certified Acceptance Agent",
   ],
   authors: [{ name: SITE_NAME }],
   creator: SITE_NAME,
   publisher: SITE_NAME,
   alternates: { canonical: "/" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
+      { url: "/icon-96.png", sizes: "96x96", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: [{ url: "/favicon.ico", type: "image/x-icon" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   robots: {
     index: true,
     follow: true,
@@ -59,16 +73,16 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     url: SITE_URL,
     locale: "en_US",
-    title: "ITINReady | Apply for an ITIN Online - New ITIN & Renewal Help",
+    title: "Apply for an ITIN Online | Form W-7 Help | ITINReady",
     description:
-      "Clear information about Form W-7, ITIN requirements, applications and renewals.",
+      "Form W-7 preparation, document review and ITIN renewal support for non-US residents, spouses, dependents and US taxpayers.",
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "ITINReady - ITIN application and renewal support" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ITINReady | Apply for an ITIN Online - New ITIN & Renewal Help",
+    title: "Apply for an ITIN Online | Form W-7 Help | ITINReady",
     description:
-      "Clear information about Form W-7, ITIN requirements, applications and renewals.",
+      "Form W-7 preparation, document review and ITIN renewal support for non-US residents, spouses, dependents and US taxpayers.",
     images: [OG_IMAGE],
   },
 };
@@ -93,11 +107,17 @@ export default function RootLayout({
               name: SITE_NAME,
               alternateName: SITE_ALTERNATE_NAMES,
               url: SITE_URL,
-              logo: LOGO_URL,
+              logo: {
+                "@type": "ImageObject",
+                url: BRAND_ICON_URL,
+                contentUrl: BRAND_ICON_URL,
+                width: 512,
+                height: 512,
+              },
               image: LOGO_URL,
               email: "support@itinfiling.com",
               description:
-                "Private ITIN application and renewal document-preparation support with clear Form W-7 guidance. Not affiliated with the IRS.",
+                "ITIN application and renewal document-preparation support with Form W-7 guidance for international applicants and US taxpayers.",
             },
             {
               "@context": "https://schema.org",

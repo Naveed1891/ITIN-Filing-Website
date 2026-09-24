@@ -5,6 +5,7 @@ export const SITE_NAME = "ITINReady";
 export const SITE_ALTERNATE_NAMES = ["ITIN Ready", "ITINReady.com", "Ready ITIN"];
 export const OG_IMAGE = "/images/brand/og-image.png";
 export const LOGO_URL = `${SITE_URL}/images/brand/itinReadyLogo.png`;
+export const BRAND_ICON_URL = `${SITE_URL}/icon-512.png`;
 
 interface MetadataInput {
   title: string;

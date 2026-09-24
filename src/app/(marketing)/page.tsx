@@ -14,10 +14,22 @@ import { FinalCta } from "@/components/home/FinalCta";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "ITINReady | Get ITIN Ready - Apply for an ITIN Online or Renew",
+  title: "Apply for an ITIN Online | Form W-7 Help | ITINReady",
   description:
-    "Get ITIN ready with ITINReady: clear Form W-7 guidance, document checklists and private preparation support for new ITIN applications and ITIN renewals.",
+    "Apply for an ITIN online with Form W-7 preparation, document review and ITIN renewal support for non-US residents, spouses, dependents and taxpayers.",
   path: "/",
+  keywords: [
+    "apply for an ITIN online",
+    "ITIN application",
+    "Form W-7",
+    "ITIN number application",
+    "ITIN renewal",
+    "ITIN requirements",
+    "ITIN documents",
+    "ITIN for non-US residents",
+    "ITIN processing time",
+    "Certified Acceptance Agent",
+  ],
 });
 
 export const dynamic = "force-dynamic";
