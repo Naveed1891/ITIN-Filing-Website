@@ -254,10 +254,10 @@ export function CheckoutReview({
         <div className="flex items-center justify-between gap-4">
           <Link href="/" className="flex shrink-0 items-center">
             <Image
-              src="/images/brand/itinfiling-logo.png"
-              alt="ITINFiling.com"
-              width={4065}
-              height={769}
+              src="/images/brand/itinReadyLogo.png"
+              alt="ITINReady"
+              width={4032}
+              height={719}
               className="h-auto w-[150px] object-contain sm:w-[160px]"
               sizes="(max-width: 639px) 150px, 160px"
             />

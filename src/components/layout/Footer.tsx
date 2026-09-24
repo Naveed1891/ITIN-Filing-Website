@@ -50,10 +50,10 @@ export function Footer() {
           <div className="col-span-2 lg:col-span-1 flex flex-col gap-4 sm:gap-5">
             <Link href="/" className="flex self-start items-center">
               <Image
-                src="/images/brand/itinfiling-logo.png"
-                alt="ITINFiling.com"
-                width={4065}
-                height={769}
+                src="/images/brand/itinReadyLogo.png"
+                alt="ITINReady"
+                width={4032}
+                height={719}
                 className="h-auto w-[150px] object-contain"
                 sizes="150px"
               />

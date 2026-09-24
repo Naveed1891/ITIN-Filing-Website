@@ -11,10 +11,10 @@ export function CheckoutHeader() {
           className="flex shrink-0 items-center"
         >
           <Image
-            src="/images/brand/itinfiling-logo.png"
-            alt="ITINFiling.com"
-            width={4065}
-            height={769}
+            src="/images/brand/itinReadyLogo.png"
+            alt="ITINReady"
+            width={4032}
+            height={719}
             priority
             className="h-auto w-[132px] object-contain sm:w-[160px]"
             sizes="(max-width: 639px) 132px, 160px"

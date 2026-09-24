@@ -44,7 +44,7 @@ ${opts.preheader ? `<div style="display:none;max-height:0;overflow:hidden;opacit
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid ${BRAND.border};border-radius:16px;overflow:hidden;font-family:Arial,Helvetica,sans-serif;">
 <tr>
   <td style="background:${BRAND.navy};padding:20px 28px;">
-    <img src="${appUrl}/images/brand/itinfiling-logo.png" alt="${BRAND.name}" height="40" style="height:40px;width:auto;max-width:220px;display:block;border:0;outline:none;text-decoration:none;" />
+    <img src="${appUrl}/images/brand/itinReadyLogo-email.png" alt="${BRAND.name}" height="40" style="height:40px;width:auto;max-width:220px;display:block;border:0;outline:none;text-decoration:none;" />
   </td>
 </tr>
 <tr>
