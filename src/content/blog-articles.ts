@@ -16,6 +16,8 @@ export interface BlogArticle {
   published: string;
   updated: string;
   readingTime: string;
+  author?: string;
+  keywords?: string[];
   sections: ArticleSection[];
   faqs: Array<{ question: string; answer: string }>;
   related: string[];
@@ -24,6 +26,8 @@ export interface BlogArticle {
 
 const published = "2026-06-29";
 const updated = "2026-06-29";
+const publisher = "Naveed Aslam";
+const newPublished = "2026-09-24";
 
 export const blogArticles: BlogArticle[] = [
   {
@@ -842,6 +846,582 @@ export const blogArticles: BlogArticle[] = [
         label: "IRS: ITIN supporting documents",
         href: "https://www.irs.gov/tin/itin/itin-supporting-documents",
       },
+    ],
+  },
+  {
+    slug: "caa-passport-processing-time-cp565",
+    title: "CAA passport review, ITIN processing time and the CP565 notice",
+    metaTitle: "CAA Passport Review, ITIN Processing Time and CP565",
+    metaDescription:
+      "Learn how a Certified Acceptance Agent checks a passport, current ITIN processing times, when documents return and what an IRS CP565 notice means.",
+    excerpt:
+      "What happens after a CAA checks your passport, how long the IRS may take and how to read a CP565 notice.",
+    summary:
+      "A Certified Acceptance Agent can inspect an eligible original passport and submit a Certificate of Accuracy, so the passport usually does not travel with the application. The IRS generally asks applicants to allow 7 weeks for a status notice, or 9 to 11 weeks during peak season and for applications filed from overseas. CP565 is the notice confirming that an ITIN was assigned or renewed.",
+    category: "CAA service",
+    published: newPublished,
+    updated: newPublished,
+    readingTime: "8 min read",
+    author: publisher,
+    keywords: [
+      "Certified Acceptance Agent passport",
+      "ITIN processing time",
+      "CP565 notice",
+      "ITIN passport return time",
+      "CAA ITIN status",
+      "IRS ITIN approval letter",
+    ],
+    sections: [
+      {
+        id: "passport-review",
+        title: "What a Certified Acceptance Agent does with your passport",
+        paragraphs: [
+          "A Certified Acceptance Agent, usually shortened to CAA, compares your original identification with the information on Form W-7. For an eligible passport, the CAA prepares a Certificate of Accuracy and normally returns the original document after the appointment. The certificate goes to the IRS with the rest of the application package.",
+          "A CAA does not issue an ITIN and cannot approve an application. The IRS makes that decision. The value of the CAA process is careful document review and, for many applicants, avoiding the need to mail an original passport to the IRS.",
+        ],
+      },
+      {
+        id: "processing-time",
+        title: "How long ITIN processing takes after CAA submission",
+        paragraphs: [
+          "The IRS currently says to allow 7 weeks from receipt of a complete application for a status notice. Allow 9 to 11 weeks if the application was submitted from January 15 through April 30 or from outside the United States.",
+          "CAA review does not place an application in a faster IRS queue. A complete, consistent package may prevent avoidable correspondence, but no agent can guarantee an approval date.",
+        ],
+      },
+      {
+        id: "passport-return",
+        title: "Passport return time depends on how you applied",
+        paragraphs: [
+          "If a CAA authenticates your passport, you generally leave the appointment with it. If you mail an original passport directly to the IRS, document return follows a separate mailing timeline. The IRS says supporting documents should be returned within 60 days from the date on the notice. Contact the number shown on the notice if they do not arrive.",
+          "Keep the CAA receipt, courier tracking and a complete copy of the submitted package. These records help establish when the file entered the process.",
+        ],
+      },
+      {
+        id: "cp565",
+        title: "What the CP565 notice means",
+        paragraphs: [
+          "CP565 is the IRS notice that confirms a new ITIN or an ITIN renewal. Check the spelling of the name and the date of birth, then keep the original notice with permanent tax records. Use the name and ITIN exactly as shown when filing future federal tax returns.",
+          "CP565 is not a Social Security card, work permit or immigration document. If you later receive an SSN, stop using the ITIN for federal tax filing and ask the IRS to combine the tax records.",
+        ],
+      },
+      {
+        id: "delayed",
+        title: "What to do when the expected period has passed",
+        paragraphs: [
+          "Wait until the applicable 7-week or 9-to-11-week window has passed before calling. Have the applicant's full name, mailing address, filing date, CAA receipt or delivery confirmation, and any IRS letter available. Never submit a duplicate Form W-7 simply because a notice is late unless the IRS or your adviser tells you to do so.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does a CAA keep my original passport?",
+        answer:
+          "A CAA can usually authenticate an eligible passport and return it after review. Special document rules apply to some dependents and document types.",
+      },
+      {
+        question: "Does CP565 mean my ITIN is active?",
+        answer:
+          "CP565 confirms that the IRS assigned or renewed the ITIN shown on the notice. Keep it with your tax records.",
+      },
+      {
+        question: "Can a CAA see live IRS processing status?",
+        answer:
+          "No. A CAA can confirm submission records and help respond to correspondence, but does not have a public live-tracking system for the IRS ITIN unit.",
+      },
+    ],
+    related: [
+      "certified-acceptance-agent",
+      "how-long-does-it-take-to-get-an-itin",
+      "apply-for-itin-without-mailing-passport",
+    ],
+    sources: [
+      { label: "IRS: Understanding your CP565 notice", href: "https://www.irs.gov/individuals/understanding-your-cp565-notice" },
+      { label: "IRS: ITIN acceptance agents", href: "https://www.irs.gov/tin/itin/itin-acceptance-agents" },
+      { label: "IRS: How to apply for an ITIN", href: "https://www.irs.gov/tin/itin/how-to-apply-for-an-itin" },
+    ],
+  },
+  {
+    slug: "non-us-resident-bank-account-itin-ein",
+    title: "Non-US resident opening a US account: do you need an ITIN or EIN?",
+    metaTitle: "Non-US Resident US Bank Account: ITIN or EIN?",
+    metaDescription:
+      "Understand when a non-US resident may need an ITIN or EIN for a US bank account, what banks can request and why the two tax IDs are not interchangeable.",
+    excerpt:
+      "A practical comparison of ITINs, EINs and bank identification rules for non-US residents.",
+    summary:
+      "An ITIN identifies an individual for federal tax purposes, while an EIN identifies a business or other entity. A bank may accept a passport, ITIN, EIN or other identification depending on the customer and account, but the IRS will not issue an ITIN solely to open a bank account.",
+    category: "Banking",
+    published: newPublished,
+    updated: newPublished,
+    readingTime: "8 min read",
+    author: publisher,
+    keywords: [
+      "non US resident US bank account ITIN",
+      "ITIN or EIN for bank account",
+      "open US bank account without SSN",
+      "foreign owner business bank account EIN",
+      "nonresident alien bank account",
+    ],
+    sections: [
+      {
+        id: "quick-answer",
+        title: "The short answer: the account holder determines the tax ID",
+        paragraphs: [
+          "For a personal account, a bank may ask a non-US resident for an ITIN if one has been issued, but its customer identification rules may also allow a foreign passport or another government-issued number. Each institution sets its own documentation and risk requirements within federal rules.",
+          "For an account owned by a company, the bank will usually ask for the company's EIN and formation records. It may separately request personal identification and tax information for beneficial owners, managers or authorized signers.",
+        ],
+      },
+      {
+        id: "itin-vs-ein",
+        title: "ITIN and EIN are not substitutes",
+        paragraphs: [
+          "An ITIN belongs to an individual who needs a US taxpayer identification number but is not eligible for an SSN. An EIN belongs to an entity or business tax account. Using the company's EIN in a field asking for the owner's personal TIN can create a mismatch, just as entering an ITIN where the bank asks for the entity's EIN can delay verification.",
+        ],
+        bullets: [
+          "Personal tax reporting: SSN or ITIN when required",
+          "Business account tax reporting: entity EIN when required",
+          "Identity verification: passport or other accepted government ID",
+          "Ownership checks: information for each relevant beneficial owner or controller",
+        ],
+      },
+      {
+        id: "itin-purpose",
+        title: "You cannot get an ITIN only to open an account",
+        paragraphs: [
+          "The IRS states that it does not issue an ITIN solely for opening a bank or investment account, e-commerce or starting a business. A Form W-7 applicant must show a federal tax purpose, usually with a tax return or documentation for a listed exception.",
+          "If a bank asks for an ITIN, that request by itself does not automatically establish eligibility. Ask the bank what alternative identification it accepts, then consider separately whether you have a genuine US tax filing or withholding reason for Form W-7.",
+        ],
+      },
+      {
+        id: "bank-checklist",
+        title: "Documents a non-US resident may be asked to provide",
+        paragraphs: [
+          "Requirements vary, especially for remote applications. Confirm the list with the institution before paying a service provider or arranging travel.",
+        ],
+        bullets: [
+          "Valid foreign passport and a second form of identification",
+          "Residential address and proof of address",
+          "ITIN, SSN or foreign tax number when applicable",
+          "For a company, EIN letter and formation documents",
+          "Ownership, control and source-of-funds information",
+        ],
+      },
+      {
+        id: "tax-reporting",
+        title: "Opening the account and handling tax reporting are separate questions",
+        paragraphs: [
+          "A bank may be able to identify a foreign customer without an ITIN, but tax forms still depend on the customer's status and income. A foreign individual may be asked for Form W-8BEN, while a US person generally uses Form W-9. Do not choose a form based only on citizenship or the account's mailing address.",
+        ],
+      },
+    ],
+    faqs: [
+      { question: "Can a non-US citizen open a US bank account?", answer: "Many banks allow it, but identification, address, in-person visit and product eligibility rules vary by institution." },
+      { question: "Does an LLC EIN replace the owner's ITIN?", answer: "No. The EIN identifies the LLC or business tax account. A bank may still ask for separate personal information about the owner or signer." },
+      { question: "Will the IRS issue an ITIN for banking only?", answer: "No. The IRS says an ITIN is not issued solely to open a bank or investment account. The applicant needs a federal tax purpose." },
+    ],
+    related: ["itin-for-non-us-residents", "itin-vs-ssn", "form-w-7-guide"],
+    sources: [
+      { label: "IRS: Topic 857, ITIN", href: "https://www.irs.gov/taxtopics/tc857" },
+      { label: "FDIC: GetBanked", href: "https://www.fdic.gov/getbanked" },
+      { label: "IRS: Taxpayer identification numbers", href: "https://www.irs.gov/tin/taxpayer-identification-numbers-tin" },
+    ],
+  },
+  {
+    slug: "foreign-seller-itin-tax-id-guide",
+    title: "Foreign seller tax ID guide: when a non-US person needs an ITIN",
+    metaTitle: "Foreign Seller ITIN and Tax ID Guide for Non-US Persons",
+    metaDescription:
+      "Learn when a foreign seller may need an ITIN, when a foreign TIN may be enough, and how W-8BEN, 1040-NR, marketplace sales and FIRPTA fit together.",
+    excerpt:
+      "How foreign TINs, ITINs, W-8BEN and US tax filing duties apply to non-US sellers.",
+    summary:
+      "A foreign seller does not automatically need an ITIN just because a US customer or online platform pays them. The correct tax ID depends on the income, withholding form, treaty claim and whether the seller must file a US return.",
+    category: "Foreign sellers",
+    published: newPublished,
+    updated: newPublished,
+    readingTime: "9 min read",
+    author: publisher,
+    keywords: [
+      "foreign seller ITIN",
+      "non US person tax identification number",
+      "ITIN for online seller",
+      "W-8BEN ITIN foreign TIN",
+      "foreign property seller ITIN",
+      "1040-NR seller",
+    ],
+    sections: [
+      {
+        id: "not-automatic",
+        title: "Selling to US customers does not automatically require an ITIN",
+        paragraphs: [
+          "An ITIN is a federal tax processing number for an individual who has a US tax purpose and is not eligible for an SSN. The location of a marketplace, payment processor or customer does not by itself decide whether the seller needs one.",
+          "Start with three facts: who legally earns the income, whether that person is an individual or entity, and what US tax or withholding rule applies. A foreign company may need an EIN, while a foreign individual with a filing obligation may need an ITIN.",
+        ],
+      },
+      {
+        id: "w8ben",
+        title: "W-8BEN may use a foreign TIN or an ITIN, depending on the claim",
+        paragraphs: [
+          "A foreign individual commonly gives Form W-8BEN to a withholding agent to certify foreign status. The form has separate fields for a US TIN and a foreign tax identifying number. An ITIN is required in some situations, including certain treaty or effectively connected income cases, but not for every payment to a foreign person.",
+          "Do not submit Form W-9 simply because a platform asks for a tax form. Form W-9 is for a US person. Supplying the wrong status certification can create incorrect reporting or withholding.",
+        ],
+      },
+      {
+        id: "filing-return",
+        title: "When a US tax return creates the ITIN need",
+        paragraphs: [
+          "A nonresident alien who must file Form 1040-NR, or files to claim a refund of US tax withheld, generally needs an ITIN if not eligible for an SSN. The ITIN application is usually filed with the return unless a Form W-7 exception applies.",
+          "Marketplace reporting and income-tax liability are different issues. Receiving an information form does not, by itself, settle where income is sourced or whether a treaty applies.",
+        ],
+      },
+      {
+        id: "property",
+        title: "Foreign sellers of US real property have special FIRPTA rules",
+        paragraphs: [
+          "A foreign individual selling a US real property interest may need an ITIN for FIRPTA withholding procedures, a reduced-withholding application or a later Form 1040-NR refund claim. The IRS lists transaction documents that may support Form W-7 in these cases, including the sales contract, closing statement and Forms 8288 or 8288-A.",
+          "Because closing dates and withholding certificates are time-sensitive, involve a tax professional and closing agent early rather than waiting until the transfer date.",
+        ],
+      },
+      {
+        id: "decision-list",
+        title: "Questions to answer before applying",
+        paragraphs: [
+          "An application should follow the tax requirement, not the other way around. Confirm the following points before preparing Form W-7.",
+        ],
+        bullets: [
+          "Is the seller an individual or a legal entity?",
+          "Is the income US-source or effectively connected with a US trade or business?",
+          "Is a treaty benefit being claimed?",
+          "Did a payer request W-8BEN, W-8BEN-E or another withholding form?",
+          "Must the seller file Form 1040-NR or claim a withholding refund?",
+        ],
+      },
+    ],
+    faqs: [
+      { question: "Does every foreign Amazon or ecommerce seller need an ITIN?", answer: "No. The answer depends on the legal seller, US tax filing duty and withholding documentation. The IRS does not issue an ITIN solely for e-commerce." },
+      { question: "Can I use my foreign TIN on Form W-8BEN?", answer: "Form W-8BEN includes a foreign TIN field. Whether a US ITIN is also required depends on the payment and the tax or treaty position claimed." },
+      { question: "Does a foreign company use an ITIN?", answer: "No. An ITIN identifies an individual. A foreign entity that needs a US taxpayer number generally applies for an EIN." },
+    ],
+    related: ["itin-for-non-us-residents", "form-w-7-guide", "itin-requirements-and-documents"],
+    sources: [
+      { label: "IRS: Instructions for Form W-8BEN", href: "https://www.irs.gov/instructions/iw8ben" },
+      { label: "IRS: ITIN guidance for foreign property buyers and sellers", href: "https://www.irs.gov/individuals/international-taxpayers/itin-guidance-for-foreign-property-buyers-sellers" },
+      { label: "IRS: Topic 857, ITIN", href: "https://www.irs.gov/taxtopics/tc857" },
+    ],
+  },
+  {
+    slug: "check-itin-status-phone-numbers",
+    title: "How to check ITIN status by phone: 267-941-1000 and 800-829-1040",
+    metaTitle: "Check ITIN Status: IRS Phone Numbers and CP565",
+    metaDescription:
+      "Learn when and how to call the IRS about ITIN status, which number to use inside or outside the US, what to prepare and why CP565 matters.",
+    excerpt:
+      "When to call the IRS, which ITIN status number applies and what information to have ready.",
+    summary:
+      "For general individual help, the IRS lists 800-829-1040 inside the United States and 267-941-1000 for international callers. Your notice may show a more specific number, which should normally be used first. Wait through the published ITIN processing period before requesting status.",
+    category: "ITIN status",
+    published: newPublished,
+    updated: newPublished,
+    readingTime: "7 min read",
+    author: publisher,
+    keywords: [
+      "ITIN status 267-941-1000",
+      "ITIN status 800-829-1040",
+      "check ITIN status",
+      "IRS ITIN phone number",
+      "CP565 status",
+      "ITIN application tracking",
+    ],
+    sections: [
+      {
+        id: "numbers",
+        title: "Which IRS number should you call?",
+        paragraphs: [
+          "If you have an IRS notice, start with the telephone number printed on it. That route is tied most closely to the type of correspondence you received. For general individual assistance, the IRS lists 800-829-1040 for callers in the United States. International callers can use 267-941-1000, which is not toll-free.",
+          "Phone numbers and hours can change. Confirm them on IRS.gov or on the latest notice before calling, especially if you found a number on a third-party website.",
+        ],
+      },
+      {
+        id: "when-to-call",
+        title: "Wait until the normal processing window has passed",
+        paragraphs: [
+          "The IRS says to allow 7 weeks for notification of ITIN application status. Allow 9 to 11 weeks if you applied during the January 15 through April 30 peak period or submitted from overseas. Calling earlier usually will not produce a final decision.",
+          "Count from confirmed delivery to the IRS, not from the day you handed the packet to a preparer or postal counter.",
+        ],
+      },
+      {
+        id: "prepare",
+        title: "What to have ready before the call",
+        paragraphs: [
+          "The IRS must verify identity before discussing a tax account. Keep the application copy and delivery record in front of you and allow enough time for the call.",
+        ],
+        bullets: [
+          "Applicant's full legal name, date of birth and current address",
+          "Date and method of submission",
+          "Courier tracking or CAA submission receipt",
+          "Copy of Form W-7 and attached tax return",
+          "Any CP565, CP566 or CP567 notice received",
+        ],
+      },
+      {
+        id: "notices",
+        title: "CP565, CP566 and CP567 are different",
+        paragraphs: [
+          "CP565 confirms that the IRS assigned or renewed an ITIN. CP566 asks for additional information. CP567 explains that the application was rejected. Read the response deadline and mailing instructions carefully before sending anything.",
+          "If CP565 has arrived, the status question is usually resolved. Check the name and date of birth and keep the notice in your permanent records.",
+        ],
+      },
+      {
+        id: "protect",
+        title: "Protect yourself from fake status services",
+        paragraphs: [
+          "Do not give a passport scan, tax return or payment to an unknown caller who promises an instant status result. IRS representatives will not demand payment by gift card, cryptocurrency or wire transfer to release an ITIN. Use the number printed on official correspondence or published on IRS.gov.",
+        ],
+      },
+    ],
+    faqs: [
+      { question: "Is 267-941-1000 toll-free?", answer: "No. The IRS identifies it as an international, non-toll-free number." },
+      { question: "Can 800-829-1040 check an ITIN application?", answer: "It is the IRS general individual assistance line. If you have a notice with a specific number, use the number on the notice first." },
+      { question: "What does CP565 mean?", answer: "CP565 confirms that the IRS assigned or renewed the ITIN shown on the notice." },
+    ],
+    related: ["can-you-check-itin-status-online", "how-long-does-it-take-to-get-an-itin", "caa-passport-processing-time-cp565"],
+    sources: [
+      { label: "IRS: Contact information", href: "https://www.irs.gov/help/let-us-help-you" },
+      { label: "IRS: Understanding your CP565 notice", href: "https://www.irs.gov/individuals/understanding-your-cp565-notice" },
+      { label: "IRS: How to apply for an ITIN", href: "https://www.irs.gov/tin/itin/how-to-apply-for-an-itin" },
+    ],
+  },
+  {
+    slug: "ein-foreign-responsible-party-no-itin-ssn",
+    title: "EIN for a foreign responsible party with no ITIN or SSN",
+    metaTitle: "EIN for Foreign Responsible Party Without ITIN or SSN",
+    metaDescription:
+      "See how a foreign responsible party can complete Form SS-4 without an ITIN or SSN, when to enter foreign or N/A and how international EIN applications work.",
+    excerpt:
+      "Form SS-4 rules for a foreign responsible party who is not eligible for an SSN or ITIN.",
+    summary:
+      "A foreign responsible party who has no SSN or ITIN and is ineligible to obtain either may enter “foreign” or “N/A” on Form SS-4 line 7b. International applicants who have no US legal residence, principal office or principal place of business cannot use the IRS online EIN application.",
+    category: "EIN",
+    published: newPublished,
+    updated: newPublished,
+    readingTime: "8 min read",
+    author: publisher,
+    keywords: [
+      "EIN foreign responsible party no ITIN",
+      "EIN without SSN",
+      "Form SS-4 line 7b foreign",
+      "foreign owner EIN application",
+      "international EIN phone number",
+      "EIN nonresident alien",
+    ],
+    sections: [
+      {
+        id: "line-7b",
+        title: "What to enter on Form SS-4 line 7b",
+        paragraphs: [
+          "The current Form SS-4 instructions say to enter “foreign” or “N/A” on line 7b when the responsible party does not have and is ineligible to obtain an SSN or ITIN. An entry is still required. Do not invent a number, borrow another person's TIN or use the new entity's EIN before it exists.",
+          "If the responsible party already has an SSN or ITIN, use that number as directed. The exception is for a person who is genuinely ineligible, not simply someone who would prefer not to provide an existing TIN.",
+        ],
+      },
+      {
+        id: "responsible-party",
+        title: "Who counts as the responsible party?",
+        paragraphs: [
+          "For most nongovernment applicants, the responsible party must be an individual. It is the person who ultimately owns or controls the entity, or who exercises effective control over its funds and assets. Listing a formation agent or another company merely for convenience can make the application inaccurate.",
+        ],
+      },
+      {
+        id: "online-limit",
+        title: "Why many foreign applicants cannot use the online EIN tool",
+        paragraphs: [
+          "The IRS online application is limited to applicants whose legal residence, principal place of business, or principal office or agency is in the United States or a US territory. The online process also requires a valid taxpayer identification number for the responsible party or principal person using it.",
+          "If the entity has no qualifying US location, use an international method even if it was formed in a US state. Formation and principal place of business are not always the same fact.",
+        ],
+      },
+      {
+        id: "apply",
+        title: "International EIN application methods",
+        paragraphs: [
+          "International applicants may apply by phone, fax or mail. The IRS currently lists 267-941-1099 for eligible international telephone applications. For a foreign address, the current SS-4 instructions list fax 304-707-9471 from outside the United States. Always confirm the latest number before sending sensitive information.",
+          "Complete Form SS-4 before calling. If applying by fax or mail, sign it and keep the transmission confirmation or delivery record. Use only one method for the same entity to avoid duplicate EINs.",
+        ],
+      },
+      {
+        id: "after",
+        title: "After the EIN is issued",
+        paragraphs: [
+          "Keep the assignment notice with permanent company records and use the EIN only for the entity it identifies. An EIN does not create an LLC, open a bank account automatically or replace the owner's personal tax number. Report later responsible-party or address changes on Form 8822-B within the applicable deadline.",
+        ],
+      },
+    ],
+    faqs: [
+      { question: "Can a foreign owner get an EIN without an ITIN?", answer: "Yes, when the responsible party has no SSN or ITIN and is ineligible for either, the SS-4 instructions permit “foreign” or “N/A” on line 7b." },
+      { question: "Can a foreign-owned US LLC apply for an EIN online?", answer: "Only if it meets the IRS location and responsible-party TIN conditions for the online tool. Many owners operating entirely from abroad must use an international method." },
+      { question: "Is 267-941-1099 the ITIN status number?", answer: "No. It is the number listed for eligible international EIN applications. The similar 267-941-1000 number is used for international individual tax assistance." },
+    ],
+    related: ["non-us-business-owner-representative-tax-id", "non-us-resident-bank-account-itin-ein", "itin-for-non-us-residents"],
+    sources: [
+      { label: "IRS: Instructions for Form SS-4", href: "https://www.irs.gov/instructions/iss4" },
+      { label: "IRS: About Form SS-4", href: "https://www.irs.gov/forms-pubs/about-form-ss-4" },
+      { label: "IRS: Where to file Form SS-4", href: "https://www.irs.gov/filing/where-to-file-your-taxes-for-form-ss-4" },
+    ],
+  },
+  {
+    slug: "non-us-business-owner-representative-tax-id",
+    title: "Business representative and owner Tax ID requirements for non-US companies",
+    metaTitle: "Non-US Business Rep and Owner Tax ID Requirements",
+    metaDescription:
+      "Understand which Tax ID a non-US business, owner, responsible party and authorized representative may need for EIN, banking and US tax forms.",
+    excerpt:
+      "A role-by-role guide to EIN, ITIN, SSN and foreign TIN requests for non-US businesses.",
+    summary:
+      "A business EIN, an owner's personal TIN and a representative's identity serve different purposes. A non-US company should identify who owns the account, who controls the entity and which US filing or onboarding rule is asking for a number before entering an EIN, ITIN, SSN or foreign TIN.",
+    category: "Business tax IDs",
+    published: newPublished,
+    updated: newPublished,
+    readingTime: "9 min read",
+    author: publisher,
+    keywords: [
+      "Business Rep Owner Tax ID requirements non-US",
+      "non US business owner tax ID",
+      "foreign company representative TIN",
+      "beneficial owner ITIN EIN",
+      "authorized signer tax identification",
+      "foreign responsible party SS-4",
+    ],
+    sections: [
+      {
+        id: "four-roles",
+        title: "Separate the company, owner, responsible party and representative",
+        paragraphs: [
+          "Onboarding forms often place several roles on one screen, which makes Tax ID requests look interchangeable. They are not. The company is the legal account holder, the beneficial owner has an ownership interest, the responsible party controls the entity for IRS EIN records, and an authorized representative acts for the company within granted authority.",
+          "One person can fill more than one role, but the form should still be answered for the role named in that field.",
+        ],
+      },
+      {
+        id: "which-id",
+        title: "Which number normally belongs to each role?",
+        paragraphs: [
+          "The correct answer depends on the form and tax classification. This is a working guide, not a substitute for the instructions beside the field.",
+        ],
+        bullets: [
+          "Business or entity: EIN if a US federal entity tax number is required",
+          "US individual owner: SSN or ITIN as applicable",
+          "Foreign individual owner: foreign TIN, ITIN or other identification, depending on the rule",
+          "Responsible party on Form SS-4: SSN or ITIN, or “foreign” or “N/A” when the person has neither and is ineligible",
+          "Authorized representative: personal identification and authority documents, not automatic use of the company's EIN as a personal TIN",
+        ],
+      },
+      {
+        id: "platforms-banks",
+        title: "Banks and platforms can request more than the IRS minimum",
+        paragraphs: [
+          "A bank, payment provider or marketplace must verify customers and may have its own supported-country, address and documentation rules. Having an EIN does not force a provider to open an account. The provider may ask for passports, ownership percentages, residential addresses, source-of-funds information and tax residence details.",
+          "If a portal labels a field only as “Tax ID,” ask whether it wants the entity's EIN, the individual's US TIN or the foreign tax number. Guessing can lead to an automated mismatch that is difficult to correct.",
+        ],
+      },
+      {
+        id: "w8-forms",
+        title: "Withholding forms follow the beneficial owner and entity type",
+        paragraphs: [
+          "A foreign individual generally uses Form W-8BEN to certify foreign status. A foreign entity generally uses Form W-8BEN-E or another form appropriate to its classification and income. A US person generally uses Form W-9. The authorized signer signs for the beneficial owner or entity but does not replace that person's tax identity with their own.",
+        ],
+      },
+      {
+        id: "checklist",
+        title: "A safer onboarding checklist",
+        paragraphs: [
+          "Before entering any number, save the field label and instructions, identify the legal account holder, confirm tax residence and classification, and match the number to the named role. Keep formation records, EIN correspondence and ownership information consistent across applications.",
+          "Do not apply for an ITIN simply because a private form appears to require one. First determine whether the owner has a federal tax purpose and is ineligible for an SSN.",
+        ],
+      },
+    ],
+    faqs: [
+      { question: "Can the representative enter the company's EIN as their Tax ID?", answer: "Only if the field specifically asks for the entity's EIN. An EIN should not be used as though it were the representative's personal TIN." },
+      { question: "Does every foreign beneficial owner need an ITIN?", answer: "No. It depends on the US tax purpose, filing duty and the form being completed. A foreign TIN or identification document may be the correct requirement in some settings." },
+      { question: "Can an entity be the responsible party on Form SS-4?", answer: "For most nongovernment entities, the responsible party must be an individual who ultimately owns or controls the entity." },
+    ],
+    related: ["ein-foreign-responsible-party-no-itin-ssn", "non-us-resident-bank-account-itin-ein", "foreign-seller-itin-tax-id-guide"],
+    sources: [
+      { label: "IRS: Instructions for Form SS-4", href: "https://www.irs.gov/instructions/iss4" },
+      { label: "IRS: Instructions for Form W-8BEN", href: "https://www.irs.gov/instructions/iw8ben" },
+      { label: "IRS: Taxpayer identification numbers", href: "https://www.irs.gov/tin/taxpayer-identification-numbers-tin" },
+    ],
+  },
+  {
+    slug: "can-you-check-itin-status-online",
+    title: "Can you check ITIN status online? What the IRS offers instead",
+    metaTitle: "Can You Check ITIN Status Online? IRS Options",
+    metaDescription:
+      "There is no general IRS online ITIN application tracker. Learn what you can check online, when to call, how long to wait and how to recognize CP565.",
+    excerpt:
+      "Why there is no general online ITIN tracker and the safest ways to follow an application.",
+    summary:
+      "The IRS does not provide a general online tracker where a Form W-7 applicant can enter details and see live ITIN status. Delivery tracking, processing-time guidance, mailed notices and IRS telephone assistance are the practical ways to follow the application.",
+    category: "ITIN status",
+    published: newPublished,
+    updated: newPublished,
+    readingTime: "7 min read",
+    author: publisher,
+    keywords: [
+      "ITIN cannot check online status",
+      "check ITIN status online",
+      "ITIN application tracker",
+      "IRS ITIN status online",
+      "track Form W-7",
+      "CP565 notice online",
+    ],
+    sections: [
+      {
+        id: "no-tracker",
+        title: "There is no general online Form W-7 status tracker",
+        paragraphs: [
+          "You can prepare an application online and use a courier's website to confirm delivery, but those services do not show the IRS review stage. The IRS does not offer a public Form W-7 tracker comparable to package tracking or the “Where's My Refund?” tool.",
+          "Be careful with websites that ask for a passport number, date of birth or payment to reveal instant ITIN status. A private preparer may show its own workflow, such as documents received or package mailed, but that is not live IRS case data.",
+        ],
+      },
+      {
+        id: "online-help",
+        title: "What you can confirm online",
+        paragraphs: [
+          "Online tools are still useful for confirming the current Form W-7, reviewing accepted documents, finding an IRS Taxpayer Assistance Center and checking published processing guidance. Courier tracking can confirm that a mailed package reached the IRS address.",
+          "An IRS online account may show tax-account information, but it should not be treated as a live ITIN application tracker. The official mailed notice remains the clearest decision record.",
+        ],
+      },
+      {
+        id: "timeline",
+        title: "Allow the full processing time before following up",
+        paragraphs: [
+          "Allow 7 weeks after IRS receipt for an application-status notice. Allow 9 to 11 weeks during the January 15 through April 30 peak period or when filing from overseas. Add delivery time for the notice to reach an international address.",
+          "If you used a CAA, ask for proof of submission and confirm the mailing address entered on Form W-7. The CAA can help interpret correspondence but cannot turn a private portal into IRS tracking.",
+        ],
+      },
+      {
+        id: "follow-up",
+        title: "How to follow up safely",
+        paragraphs: [
+          "After the relevant period has passed, call the IRS using the number on any notice. For general individual help, the IRS lists 800-829-1040 in the United States and 267-941-1000 for international calls. The international number is not toll-free.",
+          "Have the delivery date, Form W-7 copy, current address and any notice available. If someone else calls for you, the IRS may require valid authorization before discussing protected tax information.",
+        ],
+      },
+      {
+        id: "notice-result",
+        title: "The notice tells you the result",
+        paragraphs: [
+          "CP565 means an ITIN was assigned or renewed. CP566 requests more information, and CP567 reports a rejection. Respond using the instructions and deadline on the notice. Do not send a second application just because the first one is not visible online.",
+        ],
+      },
+    ],
+    faqs: [
+      { question: "Can I track Form W-7 with Where's My Refund?", answer: "No. The refund tool is not a Form W-7 or ITIN application tracker." },
+      { question: "Can a CAA track my ITIN online?", answer: "A CAA can track its own preparation and submission steps, but there is no general public live IRS ITIN-status portal." },
+      { question: "How will I know the ITIN was approved?", answer: "The IRS sends CP565 to confirm that it assigned or renewed an ITIN." },
+    ],
+    related: ["check-itin-status-phone-numbers", "how-long-does-it-take-to-get-an-itin", "caa-passport-processing-time-cp565"],
+    sources: [
+      { label: "IRS: Individual taxpayer identification number", href: "https://www.irs.gov/tin/itin/individual-taxpayer-identification-number-itin" },
+      { label: "IRS: Understanding your CP565 notice", href: "https://www.irs.gov/individuals/understanding-your-cp565-notice" },
+      { label: "IRS: How to apply for an ITIN", href: "https://www.irs.gov/tin/itin/how-to-apply-for-an-itin" },
     ],
   },
 ];

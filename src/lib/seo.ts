@@ -11,6 +11,9 @@ interface MetadataInput {
   description: string;
   path: string;
   type?: "website" | "article";
+  image?: string;
+  keywords?: string[];
+  author?: string;
 }
 
 export function createMetadata({
@@ -18,12 +21,17 @@ export function createMetadata({
   description,
   path,
   type = "website",
+  image = OG_IMAGE,
+  keywords,
+  author,
 }: MetadataInput): Metadata {
   const canonical = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
 
   return {
     title: { absolute: /ITINReady/i.test(title) ? title : `${title} | ${SITE_NAME}` },
     description,
+    keywords,
+    authors: author ? [{ name: author }] : undefined,
     alternates: { canonical },
     openGraph: {
       type,
@@ -34,10 +42,10 @@ export function createMetadata({
       locale: "en_US",
       images: [
         {
-          url: OG_IMAGE,
+          url: image,
           width: 1200,
           height: 630,
-          alt: "ITINReady - ITIN application and renewal support",
+          alt: title,
         },
       ],
     },
@@ -45,7 +53,7 @@ export function createMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [OG_IMAGE],
+      images: [image],
     },
   };
 }

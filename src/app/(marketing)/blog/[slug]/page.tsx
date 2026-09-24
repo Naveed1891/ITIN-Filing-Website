@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArticlePage } from "@/components/content/ArticlePage";
 import { blogArticleMap, blogArticles } from "@/content/blog-articles";
 import { createMetadata } from "@/lib/seo";
+import { articleImages } from "@/content/article-images";
 
 export const dynamicParams = false;
 
@@ -23,6 +24,9 @@ export async function generateMetadata({
     description: article.metaDescription,
     path: `/blog/${article.slug}`,
     type: "article",
+    image: articleImages[article.slug]?.src,
+    keywords: article.keywords,
+    author: article.author ?? "Naveed Aslam",
   });
 }
 

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArticleCard } from "./ArticleCard";
 import { Breadcrumbs } from "./Breadcrumbs";
@@ -8,6 +9,7 @@ import {
   type BlogArticle,
 } from "@/content/blog-articles";
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
+import { articleImages } from "@/content/article-images";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -23,6 +25,8 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
     .map((slug) => blogArticleMap.get(slug))
     .filter((item): item is BlogArticle => Boolean(item));
   const url = `${SITE_URL}/blog/${article.slug}`;
+  const author = article.author ?? "Naveed Aslam";
+  const image = articleImages[article.slug];
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -31,8 +35,9 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
     datePublished: article.published,
     dateModified: article.updated,
     mainEntityOfPage: url,
-    author: { "@type": "Organization", name: "ITINReady Editorial Team" },
+    author: { "@type": "Person", name: author },
     publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+    image: image ? `${SITE_URL}${image.src}` : undefined,
   };
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -82,7 +87,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
               {article.summary}
             </p>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-white/50 sm:text-[13px]">
-              <span>By ITINReady Editorial Team</span>
+              <span>By {author}</span>
               <span>
                 Published{" "}
                 <time dateTime={article.published}>
@@ -103,6 +108,19 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
 
       <article className="section-padding bg-white">
         <div className="mx-auto w-full max-w-[820px] px-4 md:px-6 lg:px-8">
+          {image && (
+            <div className="relative mb-10 aspect-[16/10] overflow-hidden rounded-card bg-bg-light shadow-sm">
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                priority
+                className="object-cover"
+                style={{ objectPosition: image.objectPosition }}
+                sizes="(max-width: 860px) calc(100vw - 32px), 820px"
+              />
+            </div>
+          )}
           <nav
             aria-label="Table of contents"
             className="rounded-card border border-border bg-bg-light p-5 sm:p-6"
