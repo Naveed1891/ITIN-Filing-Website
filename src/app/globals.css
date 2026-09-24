@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --site-max-width: 1800px;
+  --site-max-width: 3600px;
   --site-gutter: clamp(0.875rem, 2.75vw, 3.5rem);
   --reading-width: 760px;
   --background: oklch(1 0 0);

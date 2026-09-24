@@ -76,14 +76,14 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
           ]}
         />
         <div className="site-container pb-[clamp(2.75rem,5vw,5rem)] pt-[clamp(1.5rem,3vw,3rem)]">
-          <div className="max-w-[1280px]">
+          <div className="max-w-[1800px]">
             <p className="text-[12px] font-bold uppercase tracking-[0.13em] text-gold">
               {article.category}
             </p>
-            <h1 className="mt-4 max-w-[1180px] text-[clamp(1.9rem,4.25vw,4.5rem)] font-extrabold leading-[1.04] tracking-[-0.03em] text-white">
+            <h1 className="mt-4 max-w-[1600px] text-[clamp(1.9rem,4.25vw,4.75rem)] font-extrabold leading-[1.04] tracking-[-0.03em] text-white">
               {article.title}
             </h1>
-            <p className="mt-5 max-w-[920px] text-[14px] leading-[1.7] text-white/70 sm:text-[16px] lg:text-[18px]">
+            <p className="mt-5 max-w-[1100px] text-[14px] leading-[1.7] text-white/70 sm:text-[16px] lg:text-[18px] 2xl:text-[19px]">
               {article.summary}
             </p>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-white/50 sm:text-[13px]">
@@ -107,9 +107,9 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
       </section>
 
       <article className="section-padding bg-white">
-        <div className="site-container max-w-[1440px]">
+        <div className="site-container">
           {image && (
-            <div className="relative mb-[clamp(2rem,4vw,3.5rem)] aspect-[16/10] overflow-hidden rounded-[clamp(14px,2vw,24px)] bg-bg-light shadow-[0_30px_70px_-44px_rgba(17,46,81,0.55)] sm:aspect-[16/8] xl:aspect-[16/7]">
+            <div className="relative mb-[clamp(2rem,4vw,3.5rem)] aspect-[16/10] overflow-hidden rounded-[clamp(14px,2vw,24px)] bg-bg-light shadow-[0_30px_70px_-44px_rgba(17,46,81,0.55)] sm:aspect-[16/8] xl:aspect-[16/6] 2xl:aspect-[24/7]">
               <Image
                 src={image.src}
                 alt={image.alt}
@@ -117,14 +117,14 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
                 priority
                 className="object-cover"
                 style={{ objectPosition: image.objectPosition }}
-                sizes="(max-width: 640px) calc(100vw - 28px), (max-width: 1536px) calc(100vw - 8vw), 1440px"
+                sizes="calc(100vw - (2 * clamp(0.875rem, 2.75vw, 3.5rem)))"
               />
             </div>
           )}
-          <div className="grid min-w-0 gap-[clamp(2rem,4vw,5rem)] xl:grid-cols-[minmax(0,920px)_minmax(260px,1fr)] xl:items-start">
+          <div className="grid min-w-0 gap-[clamp(2rem,4vw,6rem)] xl:grid-cols-[minmax(0,3fr)_minmax(280px,0.8fr)] xl:items-start">
             <nav
               aria-label="Table of contents"
-              className="order-first rounded-card border border-border bg-bg-light p-5 sm:p-6 xl:order-last xl:sticky xl:top-24"
+              className="order-first rounded-card border border-border bg-bg-light p-5 sm:p-6 xl:order-last xl:sticky xl:top-24 xl:w-full xl:max-w-[440px] xl:justify-self-end"
             >
               <p className="text-[11px] font-bold uppercase tracking-[0.13em] text-blue">
                 On this page
@@ -160,7 +160,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
                   {section.paragraphs.map((paragraph) => (
                     <p
                       key={paragraph}
-                      className="max-w-[78ch] text-[15px] leading-[1.78] text-text-mid sm:text-[16px] lg:text-[17px]"
+                      className="max-w-[78ch] text-[15px] leading-[1.78] text-text-mid sm:text-[16px] lg:text-[17px] 2xl:max-w-[100ch] 2xl:text-[18px]"
                     >
                       {paragraph}
                     </p>
@@ -171,7 +171,7 @@ export function ArticlePage({ article }: { article: BlogArticle }) {
                     {section.bullets.map((item) => (
                       <li
                         key={item}
-                        className="flex max-w-[78ch] gap-3 text-[15px] leading-[1.7] text-text-dark sm:text-[16px] lg:text-[17px]"
+                        className="flex max-w-[78ch] gap-3 text-[15px] leading-[1.7] text-text-dark sm:text-[16px] lg:text-[17px] 2xl:max-w-[100ch] 2xl:text-[18px]"
                       >
                         <span
                           aria-hidden="true"
