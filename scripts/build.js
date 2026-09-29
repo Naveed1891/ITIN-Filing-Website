@@ -1,13 +1,13 @@
 /**
- * Hostinger-friendly build script.
- * Constructs DATABASE_URL from individual env vars, then runs the full
- * Prisma + Next.js build pipeline.
+ * Hostinger-friendly application build.
+ *
+ * Database migrations and seeding are intentionally separate deployment
+ * operations. Running them here makes every application build depend on
+ * production database connectivity and can prevent an otherwise valid
+ * release from being published.
  */
 const { execSync } = require("child_process");
 const path = require("path");
-const { ensureDatabaseUrl } = require("./db-url");
-
-const url = ensureDatabaseUrl();
 
 const binDir = path.join(__dirname, "..", "node_modules", ".bin");
 const prisma = path.join(binDir, "prisma");
@@ -15,9 +15,7 @@ const next = path.join(binDir, "next");
 
 const steps = [
   `"${prisma}" generate`,
-  `"${prisma}" migrate deploy`,
-  "node prisma/seed.js",
-  `"${next}" build`,
+  `"${next}" build --webpack`,
 ];
 
 for (const step of steps) {
@@ -25,7 +23,7 @@ for (const step of steps) {
   try {
     execSync(step, {
       stdio: "inherit",
-      env: { ...process.env, DATABASE_URL: url },
+      env: process.env,
     });
   } catch {
     process.exit(1);
