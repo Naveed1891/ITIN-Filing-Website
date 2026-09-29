@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, Newsreader, Noto_Sans, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BRAND_ICON_URL, LOGO_URL, OG_IMAGE, SITE_ALTERNATE_NAMES, SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
@@ -133,6 +134,25 @@ export default function RootLayout({
         />
         {children}
         <PartnershipButton />
+        <Script
+          id="tawk-live-chat"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.Tawk_API = window.Tawk_API || {};
+              window.Tawk_LoadStart = new Date();
+              (function () {
+                var script = document.createElement("script");
+                var firstScript = document.getElementsByTagName("script")[0];
+                script.async = true;
+                script.src = "https://embed.tawk.to/6abb6c209d6bd8343e773281/1k3m1sog6";
+                script.charset = "UTF-8";
+                script.setAttribute("crossorigin", "*");
+                firstScript.parentNode.insertBefore(script, firstScript);
+              })();
+            `,
+          }}
+        />
       </body>
     </html>
   );
