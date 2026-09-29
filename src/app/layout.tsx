@@ -135,23 +135,17 @@ export default function RootLayout({
         {children}
         <PartnershipButton />
         <Script
+          id="tawk-live-chat-config"
+          strategy="afterInteractive"
+        >
+          {`window.Tawk_API = window.Tawk_API || {}; window.Tawk_LoadStart = new Date();`}
+        </Script>
+        <Script
           id="tawk-live-chat"
-          strategy="lazyOnload"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.Tawk_API = window.Tawk_API || {};
-              window.Tawk_LoadStart = new Date();
-              (function () {
-                var script = document.createElement("script");
-                var firstScript = document.getElementsByTagName("script")[0];
-                script.async = true;
-                script.src = "https://embed.tawk.to/6abb6c209d6bd8343e773281/1k3m1sog6";
-                script.charset = "UTF-8";
-                script.setAttribute("crossorigin", "*");
-                firstScript.parentNode.insertBefore(script, firstScript);
-              })();
-            `,
-          }}
+          src="https://embed.tawk.to/6abb6c209d6bd8343e773281/1k3m1sog6"
+          strategy="afterInteractive"
+          charSet="UTF-8"
+          crossOrigin="anonymous"
         />
       </body>
     </html>
