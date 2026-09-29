@@ -2,7 +2,7 @@ import { z } from "zod";
 import { requireSuperAdmin } from "@/server/admin";
 import { prisma } from "@/server/db";
 import { json, parseJson, routeError } from "@/server/http";
-import { STAFF_MODULES } from "../route";
+import { STAFF_MODULES } from "@/lib/staff-modules";
 
 const schema = z.object({ role: z.enum(["STAFF", "ADMIN"]), status: z.enum(["ACTIVE", "SUSPENDED"]), modules: z.array(z.enum(STAFF_MODULES)) });
 

@@ -4,9 +4,9 @@ import { requireSuperAdmin } from "@/server/admin";
 import { prisma } from "@/server/db";
 import { json, parseJson, routeError } from "@/server/http";
 import { firstPasswordError } from "@/lib/password";
+import { STAFF_MODULES } from "@/lib/staff-modules";
 
 export const dynamic = "force-dynamic";
-export const STAFF_MODULES = ["overview", "orders", "customers", "applications", "documents", "finance", "packages", "communications", "tasks", "reports", "audit-log"] as const;
 
 const schema = z.object({
   fullName: z.string().trim().min(2).max(120),
