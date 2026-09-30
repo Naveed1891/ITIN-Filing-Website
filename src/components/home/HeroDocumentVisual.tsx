@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FileText, Globe2, ShieldCheck } from "lucide-react";
 
 const formRows = [
@@ -150,6 +151,15 @@ export function HeroDocumentVisual() {
           Private Preparation Service
         </span>
       </div>
+
+      <Image
+        src="/images/irs-certified-acceptance-agent.png"
+        alt=""
+        width={1308}
+        height={1202}
+        sizes="(min-width: 1024px) 144px, (min-width: 640px) 112px, 88px"
+        className="pointer-events-none absolute bottom-[1%] left-[40%] z-30 h-auto w-[5.5rem] drop-shadow-[0_16px_22px_rgba(0,0,0,0.42)] sm:left-[42%] sm:w-28 lg:bottom-0 lg:left-[38%] lg:w-36"
+      />
     </div>
   );
 }
