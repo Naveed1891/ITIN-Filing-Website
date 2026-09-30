@@ -50,7 +50,7 @@ export function FinalCta() {
             <Magnetic className="sm:flex-none">
               <Link href="/packages" className="block">
                 <Button variant="primary" size="lg" fullWidth>
-                  Get started - $99.9
+                  Get started - $99
                 </Button>
               </Link>
             </Magnetic>

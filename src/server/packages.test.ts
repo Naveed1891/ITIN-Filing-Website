@@ -26,9 +26,15 @@ describe("trusted package data", () => {
 
     expect(serializePackageDefinition(pkg!)).toMatchObject({
       slug: "itin-renewal",
-      price: 99.9,
-      priceCents: 9990,
+      price: 99,
+      priceCents: 9900,
       currency: "USD",
     });
+  });
+
+  it("prices both public packages at exactly $99", () => {
+    expect(packageDefinitions).toHaveLength(2);
+    expect(packageDefinitions.every((pkg) => pkg.priceCents === 9900)).toBe(true);
+    expect(packageDefinitions.every((pkg) => pkg.salePriceCents == null)).toBe(true);
   });
 });

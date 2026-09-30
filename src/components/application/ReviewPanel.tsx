@@ -23,7 +23,7 @@ const reviewSections = [
     title: "Package",
     items: [
       { label: "Service", value: "New ITIN Application" },
-      { label: "Amount paid", value: "$225" },
+      { label: "Amount paid", value: "$99" },
     ],
   },
 ];

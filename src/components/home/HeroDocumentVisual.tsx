@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { FileText, Globe2, ShieldCheck } from "lucide-react";
+import { FileText, Globe2 } from "lucide-react";
 
 const formRows = [
   ["Notice reference", "TIN-47-2086"],
@@ -145,20 +145,13 @@ export function HeroDocumentVisual() {
         </span>
       </div>
 
-      <div className="absolute bottom-[3%] left-[2%] z-30 flex rotate-[-2deg] items-center gap-2 rounded-[0.9rem] border border-white/15 bg-blue px-[clamp(0.75rem,1.5vw,1.15rem)] py-[clamp(0.6rem,1.1vw,0.85rem)] text-white shadow-[0_20px_45px_-22px_rgba(0,0,0,0.7)] md:bottom-[8%] md:left-[2%] lg:bottom-[1%]">
-        <ShieldCheck className="h-4 w-4 shrink-0 text-gold sm:h-5 sm:w-5" strokeWidth={1.8} />
-        <span className="whitespace-nowrap text-[clamp(0.65rem,1.15vw,0.95rem)] font-bold">
-          Private Preparation Service
-        </span>
-      </div>
-
       <Image
         src="/images/irs-certified-acceptance-agent.png"
         alt=""
         width={1308}
         height={1202}
         sizes="(min-width: 1024px) 144px, (min-width: 640px) 112px, 88px"
-        className="pointer-events-none absolute bottom-[1%] left-[40%] z-30 h-auto w-[5.5rem] drop-shadow-[0_16px_22px_rgba(0,0,0,0.42)] sm:left-[42%] sm:w-28 lg:bottom-0 lg:left-[38%] lg:w-36"
+        className="pointer-events-none absolute bottom-[1%] left-[2%] z-30 h-auto w-[5.5rem] drop-shadow-[0_16px_22px_rgba(0,0,0,0.42)] sm:w-28 md:bottom-[5%] lg:bottom-0 lg:w-36"
       />
     </div>
   );

@@ -29,7 +29,7 @@ describe("paid Stripe session order creation", () => {
       id: "intent_1",
       userId: "user_1",
       packageId: "pkg_1",
-      amountCents: 22500,
+      amountCents: 9900,
       currency: "USD",
       order: null,
       package: { id: "pkg_1" },
@@ -38,7 +38,7 @@ describe("paid Stripe session order creation", () => {
       id: "intent_1",
       userId: "user_1",
       packageId: "pkg_1",
-      amountCents: 22500,
+      amountCents: 9900,
       currency: "USD",
     });
     tx.order.findUnique.mockResolvedValue(null);
@@ -61,7 +61,7 @@ describe("paid Stripe session order creation", () => {
         userId: "user_1",
         checkoutIntentId: "intent_1",
         status: "PAID",
-        amountCents: 22500,
+        amountCents: 9900,
         application: { create: { userId: "user_1", status: "DRAFT", applicationJson: "{}" } },
       }),
     });

@@ -27,7 +27,7 @@ export const packageDefinitions: PackageDefinition[] = packageCatalog.map((pkg) 
     name: pkg.name,
     description: pkg.description,
     priceCents: pkg.priceCents,
-    salePriceCents: (pkg as any).salePriceCents ?? undefined,
+    salePriceCents: (pkg as { salePriceCents?: number }).salePriceCents,
     currency: SUPPORTED_CURRENCY,
     featured: pkg.featured,
     features: pkg.features,

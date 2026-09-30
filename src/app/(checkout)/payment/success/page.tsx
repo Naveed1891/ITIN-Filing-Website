@@ -189,7 +189,7 @@ function PaymentSuccessContent() {
                 <dl className="mt-3">
                   <ConfirmationRow label="Order reference" value={order.reference} />
                   <ConfirmationRow label="Package" value={order.packageName} />
-                  <ConfirmationRow label="Amount paid" value={`$${order.amount}.00 ${order.currency}`} />
+                  <ConfirmationRow label="Amount paid" value={`$${order.amount} ${order.currency}`} />
                   <ConfirmationRow label="Payment status" value="Paid" accent />
                   <ConfirmationRow label="Customer email" value={order.user?.email ?? "Your account"} />
                   <ConfirmationRow label="Account status" value="Ready" accent />

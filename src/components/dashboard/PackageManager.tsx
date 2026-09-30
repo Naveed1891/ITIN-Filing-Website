@@ -126,11 +126,11 @@ export function PackageManager({
                     <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                       {pkg.salePriceCents != null && (
                         <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#9AA7B4", textDecoration: "line-through" }}>
-                          {pkg.currency === "GBP" ? "£" : "$"}{(pkg.priceCents / 100).toFixed(2)}
+                          {pkg.currency === "GBP" ? "£" : "$"}{pkg.priceCents / 100}
                         </p>
                       )}
                       <p style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "#205493" }}>
-                        {pkg.currency === "GBP" ? "£" : "$"}{((pkg.salePriceCents ?? pkg.priceCents) / 100).toFixed(2)}
+                        {pkg.currency === "GBP" ? "£" : "$"}{(pkg.salePriceCents ?? pkg.priceCents) / 100}
                       </p>
                     </div>
                   </div>
@@ -228,7 +228,7 @@ function PackageForm({
 
     try {
       if (isEdit) {
-        await apiFetch<{ package: any }>(`/api/admin/packages/${initial!.id}`, {
+        await apiFetch<{ package: PackageData }>(`/api/admin/packages/${initial!.id}`, {
           method: "PATCH",
           body: JSON.stringify({ name, description, priceCents, salePriceCents, features: featureList, isActive }),
         });
@@ -243,7 +243,7 @@ function PackageForm({
           updatedAt: new Date().toISOString(),
         });
       } else {
-        const result = await apiFetch<{ package: any }>("/api/admin/packages", {
+        const result = await apiFetch<{ package: PackageData }>("/api/admin/packages", {
           method: "POST",
           body: JSON.stringify({ slug, name, description, priceCents, salePriceCents, currency: "USD", features: featureList, isActive }),
         });
@@ -291,11 +291,11 @@ function PackageForm({
           </label>
           <label className="dash-label">
             Original price ($)
-            <input className="dash-input" type="number" value={priceDollars} onChange={(e) => setPriceDollars(e.target.value)} required min="0" step="0.01" placeholder="225.00" />
+            <input className="dash-input" type="number" value={priceDollars} onChange={(e) => setPriceDollars(e.target.value)} required min="0" step="0.01" placeholder="99" />
           </label>
           <label className="dash-label">
             Sale price ($) <span style={{ fontWeight: 400, color: "#9AA7B4" }}>(optional)</span>
-            <input className="dash-input" type="number" value={salePriceDollars} onChange={(e) => setSalePriceDollars(e.target.value)} min="0" step="0.01" placeholder="99.90" />
+            <input className="dash-input" type="number" value={salePriceDollars} onChange={(e) => setSalePriceDollars(e.target.value)} min="0" step="0.01" placeholder="99" />
           </label>
         </div>
 

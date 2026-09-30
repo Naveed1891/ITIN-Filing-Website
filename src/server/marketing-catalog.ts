@@ -30,12 +30,13 @@ export async function getMarketingPackages(): Promise<{
         packages: dbPackages.map((pkg) => {
           let features: string[] = [];
           try { features = JSON.parse(pkg.featuresJson); } catch { /* ignore */ }
-          const hasSale = pkg.salePriceCents != null && pkg.salePriceCents > 0;
+          const trusted = packageDefinitions.find((definition) => definition.slug === pkg.slug);
+          const priceCents = trusted?.priceCents ?? pkg.priceCents;
           return {
             slug: pkg.slug,
             name: pkg.name,
-            price: hasSale ? pkg.salePriceCents! / 100 : pkg.priceCents / 100,
-            originalPrice: hasSale ? pkg.priceCents / 100 : undefined,
+            price: priceCents / 100,
+            originalPrice: undefined,
             currency: pkg.currency,
             featured: pkg.slug === dbPackages.reduce((best, p) => p.priceCents > best.priceCents ? p : best, dbPackages[0]).slug,
             description: pkg.description,

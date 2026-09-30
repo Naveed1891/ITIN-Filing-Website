@@ -8,6 +8,7 @@ import { sendEmailSafely } from "@/server/email";
 import { paymentProofReceivedEmail } from "@/server/email-templates";
 import { getAppUrl } from "@/server/stripe";
 import { uploadBase64File } from "@/server/storage";
+import { findPublishedPackage } from "@/server/packages";
 
 const schema = z.object({ packageSlug: z.string().trim().min(1), fileName: z.string().trim().min(1).max(180), mimeType: z.enum(["image/jpeg", "image/png", "application/pdf"]), fileBase64: z.string().min(1).max(7_000_000) });
 
@@ -17,8 +18,10 @@ export async function POST(request: Request) {
     const input = await parseJson(request, schema);
     const pkg = await prisma.formPackage.findFirst({ where: { slug: input.packageSlug, isActive: true } });
     if (!pkg) throw new Error("The selected package is not available.");
+    const trustedPackage = findPublishedPackage(pkg.slug);
+    if (!trustedPackage) throw new Error("The selected package is not available.");
     const proofStorageKey = await uploadBase64File(`payment-proofs/${user.id}`, input.fileName, input.mimeType, input.fileBase64);
-    const activeCents = pkg.salePriceCents ?? pkg.priceCents;
+    const activeCents = trustedPackage.priceCents;
     const result = await prisma.$transaction(async (tx) => {
       const intent = await tx.checkoutIntent.create({ data: { userId: user.id, packageId: pkg.id, amountCents: activeCents, currency: pkg.currency } });
       let reference = createOrderReference();

@@ -14,9 +14,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
     }).catch(() => null);
 
     if (dbPkg && dbPkg.isActive) {
+      const trustedPackage = findPublishedPackage(dbPkg.slug);
+      if (!trustedPackage) throw new Error("NOT_FOUND");
       let features: string[] = [];
       try { features = JSON.parse(dbPkg.featuresJson); } catch { /* ignore */ }
-      const activeCents = dbPkg.salePriceCents ?? dbPkg.priceCents;
+      const activeCents = trustedPackage.priceCents;
       return json({
         package: {
           id: dbPkg.id,
