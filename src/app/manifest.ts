@@ -12,8 +12,8 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#112E51",
     theme_color: "#112E51",
     icons: [
-      { src: "/itinready-icon-v3-192.png", sizes: "192x192", type: "image/png" },
-      { src: "/itinready-icon-v3-512.png", sizes: "512x512", type: "image/png" },
+      { src: "/itinready-icon-v4-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/itinready-icon-v4-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
     ],
   };
 }
