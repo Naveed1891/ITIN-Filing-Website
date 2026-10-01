@@ -51,8 +51,8 @@ export function Footer() {
               <Image
                 src="/images/brand/itinReadyLogo.png"
                 alt="ITINReady"
-                width={4032}
-                height={719}
+                width={4168}
+                height={839}
                 className="h-auto w-[150px] object-contain"
                 sizes="150px"
               />

@@ -79,8 +79,8 @@ export function DashboardShell({
             <Image
               src="/images/brand/itinReadyLogo.png"
               alt="ITINReady"
-              width={4032}
-              height={719}
+              width={4168}
+              height={839}
               className="dash__brand-logo"
               sizes="160px"
               priority
