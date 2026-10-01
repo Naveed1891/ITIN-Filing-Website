@@ -73,13 +73,13 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center">
             <Image
-              src="/images/brand/itinReadyLogo.png"
+              src="/images/brand/itinready-logo-v2.png"
               alt="ITINReady"
               width={4168}
               height={839}
               priority
-              className="h-auto w-[132px] object-contain sm:w-[160px]"
-              sizes="(max-width: 639px) 132px, 160px"
+              className="h-auto w-[152px] object-contain sm:w-[184px]"
+              sizes="(max-width: 639px) 152px, 184px"
             />
           </Link>
 

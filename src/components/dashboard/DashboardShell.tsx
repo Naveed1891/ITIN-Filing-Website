@@ -77,7 +77,7 @@ export function DashboardShell({
         <div className="dash__brand">
           <Link href="/" className="dash__brand-link">
             <Image
-              src="/images/brand/itinReadyLogo.png"
+              src="/images/brand/itinready-logo-v2.png"
               alt="ITINReady"
               width={4168}
               height={839}

@@ -11,7 +11,7 @@ export function CheckoutHeader() {
           className="flex shrink-0 items-center"
         >
           <Image
-            src="/images/brand/itinReadyLogo.png"
+            src="/images/brand/itinready-logo-v2.png"
             alt="ITINReady"
             width={4168}
             height={839}

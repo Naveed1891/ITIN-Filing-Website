@@ -56,12 +56,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
-      { url: "/icon-96.png", sizes: "96x96", type: "image/png" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/itinready-favicon-v2.ico", sizes: "48x48", type: "image/x-icon" },
+      { url: "/itinready-icon-v2-96.png", sizes: "96x96", type: "image/png" },
+      { url: "/itinready-icon-v2-192.png", sizes: "192x192", type: "image/png" },
     ],
-    shortcut: [{ url: "/favicon.ico", type: "image/x-icon" }],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: [{ url: "/itinready-favicon-v2.ico", type: "image/x-icon" }],
+    apple: [{ url: "/itinready-apple-touch-v2.png", sizes: "180x180", type: "image/png" }],
   },
   robots: {
     index: true,
