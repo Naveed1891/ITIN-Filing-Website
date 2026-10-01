@@ -14,11 +14,12 @@ describe("checkout state is derived from URL + session only", () => {
     expect(checkoutPage).not.toContain("sessionStorage");
   });
 
-  it("only shows Payment review when a user is authenticated", () => {
-    // Review renders solely on (selectedPackage && user); logged-out users get
-    // the Sign in / Create account summary instead.
+  it("starts the application instead of collecting payment after authentication", () => {
     expect(checkoutPage).toContain("selectedPackage && user ? (");
-    expect(checkoutPage).toContain("customer={user}");
+    expect(checkoutPage).toContain('"/api/checkout/start-application"');
+    expect(checkoutPage).toContain("Continue to application");
+    expect(checkoutPage).not.toContain("CheckoutReview");
+    expect(checkoutPage).not.toContain("/api/checkout/bank-transfer");
   });
 
   it("takes customer details from the session (/api/auth/me), not old orders", () => {

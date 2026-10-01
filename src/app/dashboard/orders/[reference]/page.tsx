@@ -17,7 +17,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ refere
 
   const order = await prisma.order.findFirst({
     where: { reference: decodeURIComponent(reference), userId: user.id },
-    include: { package: true, application: { include: { documents: true } } },
+    include: { package: true, checkoutIntent: { include: { bankTransfer: true } }, application: { include: { documents: true } } },
   });
   if (!order) notFound();
 
@@ -50,8 +50,19 @@ export default async function OrderDetail({ params }: { params: Promise<{ refere
 
       <div className="rounded-card border border-border bg-white p-6">
         <h2 className="text-base font-bold text-text-dark">Your ITIN application</h2>
-        {!canWork ? (
-          <p className="mt-2 text-sm text-text-mid">Your payment is being confirmed. The application unlocks once payment is complete.</p>
+        {!canWork && submitted ? (
+          order.checkoutIntent.bankTransfer?.status === "PENDING" ? (
+            <p className="mt-2 text-sm text-text-mid">Your application is complete and your payment proof is awaiting review. Processing begins after payment approval.</p>
+          ) : (
+            <>
+              <p className="mt-2 text-sm text-text-mid">Your application is complete. Submit payment to place it in the processing queue.</p>
+              <Link href={`/payment/${order.id}`} className="mt-4 inline-block rounded-btn bg-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-navy-mid">
+                Continue to payment
+              </Link>
+            </>
+          )
+        ) : !canWork ? (
+          <p className="mt-2 text-sm text-text-mid">Complete your application before submitting payment.</p>
         ) : submitted ? (
           <>
             <p className="mt-2 text-sm text-text-mid">Your application has been submitted. Our team is processing it and will update you here.</p>

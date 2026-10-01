@@ -20,7 +20,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     const transfer = await prisma.bankTransfer.findUnique({
       where: { id },
-      include: { checkoutIntent: { include: { order: true, package: true } } },
+      include: { checkoutIntent: { include: { order: { include: { application: true } }, package: true } } },
     });
     if (!transfer || !transfer.checkoutIntent.order) throw new Error("NOT_FOUND");
     if (transfer.status !== "PENDING") throw new Error("This payment proof has already been reviewed.");
@@ -36,7 +36,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
       if (input.decision === "APPROVED") {
         await tx.checkoutIntent.update({ where: { id: transfer.checkoutIntentId }, data: { status: "PAID", paidAt: new Date() } });
-        await tx.order.update({ where: { id: order.id }, data: { status: "PAID" } });
+        await tx.order.update({ where: { id: order.id }, data: { status: order.application?.status === "SUBMITTED" ? "SUBMITTED" : "PAID" } });
         await tx.payment.create({ data: { orderId: order.id, provider: "bank transfer", amountCents: order.amountCents, currency: order.currency, status: "PAID" } });
       } else {
         await tx.checkoutIntent.update({ where: { id: transfer.checkoutIntentId }, data: { status: "FAILED" } });
@@ -47,9 +47,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
           userId: transfer.userId,
           title: input.decision === "APPROVED" ? "Payment approved" : "Payment proof needs attention",
           body: input.decision === "APPROVED"
-            ? `Payment for ${order.reference} was approved. You can now start your application.`
+            ? `Payment for ${order.reference} was approved. Your application is now ready for processing.`
             : (input.note || `Payment proof for ${order.reference} was rejected.`),
-          href: input.decision === "APPROVED" ? `/application/${order.id}` : "/dashboard",
+          href: input.decision === "APPROVED" ? `/dashboard/orders/${order.reference}` : `/payment/${order.id}`,
         },
       });
 

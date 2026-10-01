@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Check, LoaderCircle, LockKeyhole, SearchX } from "lucide-react";
-import { CheckoutReview } from "@/components/checkout/CheckoutReview";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { apiFetch } from "@/lib/api-client";
@@ -14,7 +13,7 @@ import {
 } from "@/lib/checkout-redirect";
 import type { AuthUser, ItinPackage } from "@/features/itin/types";
 
-const steps = ["Selected form", "Sign in / Create account", "Payment review"];
+const steps = ["Selected form", "Sign in / Create account", "Application"];
 
 function SelectedPackageSummary({
   selectedPackage,
@@ -91,7 +90,6 @@ function CheckoutFlow() {
   const packageSlug = searchParams.get("package")?.trim() ?? "";
   const [selectedPackage, setSelectedPackage] = useState<ItinPackage | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(Boolean(packageSlug));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -131,25 +129,21 @@ function CheckoutFlow() {
     };
   }, [packageSlug]);
 
-  async function startCheckout(proof: File) {
+  async function startApplication() {
     if (!selectedPackage) return;
     setSubmitting(true);
     setError("");
     try {
-      if (proof.size > 5 * 1024 * 1024) throw new Error("Payment proof must be 5 MB or smaller.");
-      const bytes = new Uint8Array(await proof.arrayBuffer());
-      let binary = "";
-      for (const byte of bytes) binary += String.fromCharCode(byte);
-      const result = await apiFetch<{ orderId: string; reference: string }>("/api/checkout/bank-transfer", {
+      const result = await apiFetch<{ orderId: string; reference: string }>("/api/checkout/start-application", {
         method: "POST",
-        body: JSON.stringify({ packageSlug: selectedPackage.slug, fileName: proof.name, mimeType: proof.type, fileBase64: btoa(binary) }),
+        body: JSON.stringify({ packageSlug: selectedPackage.slug }),
       });
       router.push(`/application/${result.orderId}`);
     } catch (cause) {
       setError(
         cause instanceof Error && cause.message
           ? cause.message
-          : "Payment could not be started. Please try again or contact support.",
+          : "Application could not be started. Please try again or contact support.",
       );
       setSubmitting(false);
     }
@@ -228,16 +222,14 @@ function CheckoutFlow() {
               <Link href="/packages" className={cn(buttonVariants({ size: "md" }))}>Back to packages</Link>
             </div>
           ) : selectedPackage && user ? (
-            <CheckoutReview
-              customer={user}
-              selectedPackage={selectedPackage}
-              termsAccepted={termsAccepted}
-              submitting={submitting}
-              error={error}
-              onTermsChange={setTermsAccepted}
-              onBack={() => router.push("/packages")}
-              onContinue={startCheckout}
-            />
+            <div className="mx-auto max-w-[760px] rounded-card border border-border bg-white p-5 shadow-card sm:p-8">
+              <SelectedPackageSummary selectedPackage={selectedPackage} user={user} />
+              {error ? <p role="alert" className="mt-5 rounded-lg border border-error-border bg-error-bg p-3 text-sm text-error">{error}</p> : null}
+              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+                <button type="button" className={cn(buttonVariants({ variant: "text", size: "md" }))} onClick={() => router.push("/packages")} disabled={submitting}>Back to packages</button>
+                <button type="button" className={cn(buttonVariants({ variant: "primary", size: "md" }))} onClick={startApplication} disabled={submitting}>{submitting ? "Starting…" : "Continue to application"}</button>
+              </div>
+            </div>
           ) : selectedPackage ? (
             <SelectedPackageSummary selectedPackage={selectedPackage} user={user} />
           ) : (

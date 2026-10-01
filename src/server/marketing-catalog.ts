@@ -2,8 +2,20 @@ import type { PricingCardData } from "@/components/packages/PricingCard";
 import { prisma } from "@/server/db";
 import { packageDefinitions, priceDollars } from "@/server/packages";
 
+const packageDisplayOrder = ["new-itin-application", "itin-renewal"];
+
+function sortPackages<T extends { slug: string }>(packages: T[]): T[] {
+  return [...packages].sort((a, b) => {
+    const aIndex = packageDisplayOrder.indexOf(a.slug);
+    const bIndex = packageDisplayOrder.indexOf(b.slug);
+    const aRank = aIndex === -1 ? packageDisplayOrder.length : aIndex;
+    const bRank = bIndex === -1 ? packageDisplayOrder.length : bIndex;
+    return aRank - bRank;
+  });
+}
+
 function fallbackCards(): PricingCardData[] {
-  return packageDefinitions.map((pkg) => ({
+  return sortPackages(packageDefinitions.map((pkg) => ({
     slug: pkg.slug,
     name: pkg.name,
     price: pkg.salePriceCents ? priceDollars(pkg.salePriceCents) : priceDollars(pkg.priceCents),
@@ -13,7 +25,7 @@ function fallbackCards(): PricingCardData[] {
     description: pkg.description,
     features: pkg.features,
     cta: pkg.slug === "itin-renewal" ? "Renew my ITIN" : "Get started",
-  }));
+  })));
 }
 
 export async function getMarketingPackages(): Promise<{
@@ -27,7 +39,7 @@ export async function getMarketingPackages(): Promise<{
     });
     if (dbPackages.length > 0) {
       return {
-        packages: dbPackages.map((pkg) => {
+        packages: sortPackages(dbPackages.map((pkg) => {
           let features: string[] = [];
           try { features = JSON.parse(pkg.featuresJson); } catch { /* ignore */ }
           const trusted = packageDefinitions.find((definition) => definition.slug === pkg.slug);
@@ -43,7 +55,7 @@ export async function getMarketingPackages(): Promise<{
             features,
             cta: pkg.slug === "itin-renewal" ? "Renew my ITIN" : "Get started",
           };
-        }),
+        })),
         source: "live",
       };
     }

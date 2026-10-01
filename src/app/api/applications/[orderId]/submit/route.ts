@@ -14,11 +14,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ ord
 
     const order = await prisma.order.findUnique({
       where: { id: orderId },
-      include: { application: true },
+      include: { application: true, checkoutIntent: true },
     });
     if (!order) throw new Error("NOT_FOUND");
     if (order.userId !== user.id) throw new Error("FORBIDDEN");
     if (!order.application || order.status === "CANCELLED") throw new Error("This order is no longer active.");
+    if (order.application.status === "SUBMITTED" || order.application.status === "ACCEPTED") {
+      throw new Error("This application has already been submitted.");
+    }
 
     const uploadedDocuments = await Promise.all(input.documents.map(async (document) => ({
       ...document,
@@ -26,7 +29,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ ord
     })));
 
     const submittedAt = new Date();
-    const nextOrderStatus = order.status === "PENDING_PAYMENT" ? "PENDING_PAYMENT" : "SUBMITTED";
+    const nextOrderStatus = order.checkoutIntent.status === "PAID" ? "SUBMITTED" : "PENDING_PAYMENT";
     const application = await prisma.application.update({
       where: { id: order.application.id },
       data: {

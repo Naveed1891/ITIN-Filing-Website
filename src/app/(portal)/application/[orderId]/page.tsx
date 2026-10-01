@@ -157,7 +157,6 @@ export default function ApplicationPage() {
   const [showDocumentErrors, setShowDocumentErrors] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [saved, setSaved] = useState(false);
   const methods = useForm<ItinApplicationValues>({
     resolver: zodResolver(itinApplicationSchema),
@@ -186,10 +185,14 @@ export default function ApplicationPage() {
       try {
         const [{ order: loadedOrder }, { application }, { user: currentUser }] = await Promise.all([
           apiFetch<{ order: ItinOrder }>(`/api/orders/${params.orderId}`),
-          apiFetch<{ application: { application: Partial<ItinApplicationValues>; documents: DocumentMetadata[] } }>(`/api/applications/${params.orderId}`),
+          apiFetch<{ application: { status: string; application: Partial<ItinApplicationValues>; documents: DocumentMetadata[] } }>(`/api/applications/${params.orderId}`),
           apiFetch<{ user: AuthUser | null }>("/api/auth/me"),
         ]);
         if (!active) return;
+        if (application.status === "SUBMITTED" && loadedOrder.status === "PENDING_PAYMENT") {
+          window.location.replace(`/payment/${params.orderId}`);
+          return;
+        }
         setOrder(loadedOrder);
         setUser(currentUser);
         const option = application.application.applicationOption;
@@ -326,7 +329,7 @@ export default function ApplicationPage() {
           documents,
         }),
       });
-      setSubmitted(true);
+      window.location.assign(`/payment/${params.orderId}`);
     } catch (cause) {
       setSubmitError(
         cause instanceof Error
@@ -336,14 +339,6 @@ export default function ApplicationPage() {
       setSubmitting(false);
     }
   }
-
-  useEffect(() => {
-    if (!submitted) return;
-    const timer = window.setTimeout(() => {
-      window.location.assign("/");
-    }, 4000);
-    return () => window.clearTimeout(timer);
-  }, [submitted]);
 
   if (loading) {
     return (
@@ -365,33 +360,6 @@ export default function ApplicationPage() {
           <h1 className="text-2xl font-extrabold text-text-dark">Application unavailable</h1>
           <p className="mt-3 text-sm leading-6 text-text-mid">{loadError || "This application could not be loaded. Please try again or contact support."}</p>
           <Link href="/dashboard" className="mt-6"><Button size="md">Go to dashboard</Button></Link>
-        </main>
-      </div>
-    );
-  }
-
-  if (submitted) {
-    return (
-      <div className="min-h-screen bg-bg-light">
-        <main className="mx-auto flex min-h-[70vh] max-w-lg flex-col items-center justify-center px-5 text-center">
-          <span className="mb-5 flex size-16 items-center justify-center rounded-full bg-white text-blue shadow-card">
-            <Check size={28} strokeWidth={2.5} />
-          </span>
-          <h1 className="text-2xl font-extrabold text-text-dark">Application submitted</h1>
-          <p className="mt-3 text-sm leading-6 text-text-mid">
-            Application submitted successfully. You can track your order from My Orders.
-          </p>
-          <p className="mt-2 text-xs text-text-muted">Returning to the homepage shortly…</p>
-          <div className="mt-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:justify-center">
-            <Link href="/">
-              <Button size="md">Back to home</Button>
-            </Link>
-            <a href={customerDashboardUrl("/dashboard/orders")}>
-              <Button size="md" variant="outline">
-                View my orders
-              </Button>
-            </a>
-          </div>
         </main>
       </div>
     );

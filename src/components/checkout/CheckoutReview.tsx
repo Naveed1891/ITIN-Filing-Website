@@ -299,7 +299,7 @@ export function CheckoutReview({
           <ShieldCheck size={19} className="mt-0.5 shrink-0 text-[#F2C969]" />
           <div>
             <p className="text-sm font-bold">Secure checkout</p>
-            <p className="mt-1 text-xs leading-5 text-white/60">Your application opens after our team confirms your bank transfer.</p>
+            <p className="mt-1 text-xs leading-5 text-white/60">Your completed application enters processing after our team confirms your bank transfer.</p>
           </div>
         </div>
       </div>

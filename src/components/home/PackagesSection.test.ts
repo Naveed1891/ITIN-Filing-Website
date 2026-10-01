@@ -33,6 +33,15 @@ describe("homepage package CTA navigation", () => {
     expect(packagesSection).toContain("getMarketingPackages");
   });
 
+  it("keeps the new application card before the renewal card", async () => {
+    const { getMarketingPackages } = await import("@/server/marketing-catalog");
+    const { packages } = await getMarketingPackages();
+    expect(packages.slice(0, 2).map((pkg) => pkg.slug)).toEqual([
+      "new-itin-application",
+      "itin-renewal",
+    ]);
+  });
+
   it("points the New ITIN Application CTA at its checkout URL", () => {
     const pkg = packageDefinitions.find((p) => p.name === "New ITIN Application");
     expect(pkg?.slug).toBe("new-itin-application");

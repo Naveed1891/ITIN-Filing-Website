@@ -15,6 +15,9 @@ const tx = {
 vi.mock("./db", () => ({
   prisma: {
     $transaction: vi.fn((callback) => callback(tx)),
+    appSetting: {
+      findUnique: vi.fn().mockResolvedValue(null),
+    },
   },
 }));
 

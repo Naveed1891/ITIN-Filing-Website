@@ -52,11 +52,17 @@ export async function PATCH(
 
     const order = await prisma.order.findUnique({
       where: { id },
-      include: { user: true, package: true },
+      include: { user: true, package: true, checkoutIntent: true },
     });
     if (!order) return errorJson("Order not found.", 404);
     if (order.status === input.status) {
       return errorJson("Order is already in this status.", 400);
+    }
+    if (
+      ["SUBMITTED", "UNDER_REVIEW", "MORE_INFO_REQUIRED", "PROCESSING", "COMPLETED"].includes(input.status)
+      && order.checkoutIntent.status !== "PAID"
+    ) {
+      return errorJson("Payment must be confirmed before this order can be processed.", 409);
     }
 
     const fromStatus = order.status;
