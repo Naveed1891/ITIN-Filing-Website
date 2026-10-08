@@ -333,7 +333,7 @@ export const publicPages: PublicPageData[] = [
         id: "service",
         title: "Nature of the service",
         paragraphs: [
-          "ITINReady is a private document-preparation service and is not the IRS or another government agency. The IRS makes all decisions about assigning, renewing or rejecting an ITIN.",
+          "ITINReady is a private document-preparation service and is not the IRS or another government agency. The IRS makes all decisions about assigning, renewing or rejecting an ITIN. Service processing is completed via HopeTex Limited.",
         ],
       },
       {
