@@ -64,7 +64,7 @@ export function Footer() {
               href="/contact"
               className="self-start text-[12.5px] font-semibold text-white/60 transition-colors hover:text-gold"
             >
-              support@itinfiling.com
+              support@itinready.com
             </Link>
           </div>
 
