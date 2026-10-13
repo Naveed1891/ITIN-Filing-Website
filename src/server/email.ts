@@ -4,23 +4,35 @@ import { getOperationalSettings } from "./operational-settings";
 
 type MailPurpose = "otp" | "general";
 
-export async function sendEmail(to: string, content: EmailContent, purpose: MailPurpose) {
-  const { smtp } = await getOperationalSettings();
-  const username = purpose === "otp" ? smtp.noReplyEmail : smtp.mainEmail;
-  const password = purpose === "otp" ? smtp.noReplyPassword : smtp.password;
-  if (!smtp.host || !username || !password) {
-    throw new Error(`${purpose === "otp" ? "No-reply" : "Main"} email delivery is not fully configured.`);
+export function resolveSmtpDelivery(smtp: Awaited<ReturnType<typeof getOperationalSettings>>["smtp"], purpose: MailPurpose) {
+  const fromAddress = purpose === "otp" ? smtp.noReplyEmail : smtp.mainEmail;
+  if (!smtp.host || !fromAddress || !smtp.apiToken) {
+    throw new Error(`${purpose === "otp" ? "No-reply" : "Support"} email delivery is not fully configured.`);
   }
-  const port = Number(smtp.port || "587");
+  const port = Number(smtp.port || "465");
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("SMTP port is invalid.");
-  const transport = nodemailer.createTransport({
+  return {
     host: smtp.host,
     port,
     secure: port === 465,
-    auth: { user: username, pass: password },
+    auth: { user: smtp.username || "api_token", pass: smtp.apiToken },
+    from: { name: smtp.fromName || "ITINReady", address: fromAddress },
+    replyTo: smtp.mainEmail || undefined,
+  };
+}
+
+export async function sendEmail(to: string, content: EmailContent, purpose: MailPurpose) {
+  const { smtp } = await getOperationalSettings();
+  const delivery = resolveSmtpDelivery(smtp, purpose);
+  const transport = nodemailer.createTransport({
+    host: delivery.host,
+    port: delivery.port,
+    secure: delivery.secure,
+    auth: delivery.auth,
   });
   await transport.sendMail({
-    from: { name: smtp.fromName || "ITINReady", address: username },
+    from: delivery.from,
+    replyTo: delivery.replyTo,
     to,
     subject: content.subject,
     text: content.text,

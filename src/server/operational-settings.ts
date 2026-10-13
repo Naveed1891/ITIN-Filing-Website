@@ -7,7 +7,7 @@ export type OperationalSettings = {
   bank: { accountName: string; bankName: string; accountNumber: string; routingNumber: string; iban: string; swiftCode: string; instructions: string };
   stripe: { publishableKey: string; secretKey: string; webhookSecret: string; enabled: boolean };
   s3: { endpoint: string; region: string; bucket: string; accessKeyId: string; secretAccessKey: string; publicBaseUrl: string };
-  smtp: { host: string; port: string; mainEmail: string; password: string; fromName: string; noReplyEmail: string; noReplyPassword: string; secure: boolean };
+  smtp: { accountId: string; apiToken: string; host: string; port: string; username: string; mainEmail: string; fromName: string; noReplyEmail: string; secure: boolean };
   notifications: { emailVerification: boolean; orders: boolean; payments: boolean; orderStatus: boolean };
 };
 
@@ -15,7 +15,7 @@ export const emptyOperationalSettings: OperationalSettings = {
   bank: { accountName: "", bankName: "", accountNumber: "", routingNumber: "", iban: "", swiftCode: "", instructions: "" },
   stripe: { publishableKey: "", secretKey: "", webhookSecret: "", enabled: false },
   s3: { endpoint: "", region: "", bucket: "", accessKeyId: "", secretAccessKey: "", publicBaseUrl: "" },
-  smtp: { host: "", port: "587", mainEmail: "", password: "", fromName: "ITINReady", noReplyEmail: "", noReplyPassword: "", secure: true },
+  smtp: { accountId: "", apiToken: "", host: "smtp.mx.cloudflare.net", port: "465", username: "api_token", mainEmail: "", fromName: "ITINReady", noReplyEmail: "", secure: true },
   notifications: { emailVerification: false, orders: false, payments: false, orderStatus: false },
 };
 
@@ -23,7 +23,9 @@ export async function getOperationalSettings(): Promise<OperationalSettings> {
   const row = await prisma.appSetting.findUnique({ where: { key: KEY } });
   if (!row) return structuredClone(emptyOperationalSettings);
   try {
-    const parsed = JSON.parse(decryptSecret(row.valueJson)) as Partial<OperationalSettings> & { smtp?: Partial<OperationalSettings["smtp"]> & { username?: string } };
+    const parsed = JSON.parse(decryptSecret(row.valueJson)) as Partial<OperationalSettings> & {
+      smtp?: Partial<OperationalSettings["smtp"]> & { password?: string; noReplyPassword?: string };
+    };
     return {
       bank: { ...emptyOperationalSettings.bank, ...parsed.bank },
       stripe: { ...emptyOperationalSettings.stripe, ...parsed.stripe, enabled: false },
@@ -31,7 +33,11 @@ export async function getOperationalSettings(): Promise<OperationalSettings> {
       smtp: {
         ...emptyOperationalSettings.smtp,
         ...parsed.smtp,
-        mainEmail: parsed.smtp?.mainEmail || parsed.smtp?.username || "",
+        apiToken: parsed.smtp?.apiToken || parsed.smtp?.password || parsed.smtp?.noReplyPassword || "",
+        mainEmail:
+          parsed.smtp?.mainEmail ||
+          (parsed.smtp?.username && parsed.smtp.username !== "api_token" ? parsed.smtp.username : ""),
+        username: parsed.smtp?.username === "api_token" ? "api_token" : emptyOperationalSettings.smtp.username,
       },
       notifications: { ...emptyOperationalSettings.notifications, ...parsed.notifications },
     };
@@ -56,10 +62,8 @@ export function settingsForAdmin(settings: OperationalSettings) {
     s3: { ...settings.s3, secretAccessKey: "", secretAccessKeyConfigured: Boolean(settings.s3.secretAccessKey) },
     smtp: {
       ...settings.smtp,
-      password: "",
-      noReplyPassword: "",
-      passwordConfigured: Boolean(settings.smtp.password),
-      noReplyPasswordConfigured: Boolean(settings.smtp.noReplyPassword),
+      apiToken: "",
+      apiTokenConfigured: Boolean(settings.smtp.apiToken),
     },
     notifications: settings.notifications,
   };
