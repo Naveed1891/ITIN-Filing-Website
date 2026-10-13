@@ -87,19 +87,19 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-10 sm:mt-14 pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="mt-10 sm:mt-14 pt-6 sm:pt-8 border-t border-white/10 grid items-center justify-items-center gap-4 sm:grid-cols-3">
           <p className="text-[11px] sm:text-[12px] text-white/35">
             © {new Date().getFullYear()} ITINReady. All rights reserved.
           </p>
-          <div className="flex items-center gap-2" aria-label="ITINReady social media">
+          <div className="flex items-center justify-center gap-3" aria-label="ITINReady social media">
             <a
               href="https://www.facebook.com/itinready"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="ITINReady on Facebook"
-              className="flex size-9 items-center justify-center rounded-full border border-white/15 text-white/60 transition-colors hover:border-gold/60 hover:bg-gold/10 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy-deep"
+              className="flex size-10 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-lg shadow-black/20 transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-deep"
             >
-              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-4 fill-current">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-current">
                 <path d="M13.5 22v-9h3l.45-3.5H13.5V7.27c0-1.01.28-1.7 1.73-1.7H17V2.45c-.31-.04-1.37-.13-2.61-.13-2.58 0-4.35 1.58-4.35 4.48v2.7H7.12V13h2.92v9h3.46Z" />
               </svg>
             </a>
@@ -108,13 +108,14 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="ITINReady on Instagram"
-              className="flex size-9 items-center justify-center rounded-full border border-white/15 text-white/60 transition-colors hover:border-gold/60 hover:bg-gold/10 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy-deep"
+              className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white shadow-lg shadow-black/20 transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-deep"
             >
-              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-4 fill-current">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-current">
                 <path d="M7.8 2h8.4A5.8 5.8 0 0 1 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8A5.8 5.8 0 0 1 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2Zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4H7.6Zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" />
               </svg>
             </a>
           </div>
+          <span aria-hidden="true" className="hidden sm:block" />
         </div>
       </div>
     </footer>
