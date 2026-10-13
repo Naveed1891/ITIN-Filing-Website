@@ -33,6 +33,76 @@ function Section({ title, description, children, search }: { title: string; desc
   );
 }
 
+type AdminDocumentItem = {
+  id: string;
+  kind: string;
+  fileName: string;
+  storageKey: string | null;
+  status: string;
+  createdAt: Date;
+  application: {
+    user: { id: string; fullName: string; email: string };
+    order: { id: string; reference: string };
+  };
+};
+
+function ClientDocumentFolders({ items }: { items: AdminDocumentItem[] }) {
+  if (!items.length) return <EmptyState title="No client folders" description="No documents match this search yet." />;
+
+  const folders = Array.from(
+    items.reduce((grouped, document) => {
+      const client = document.application.user;
+      const folder = grouped.get(client.id);
+      if (folder) folder.documents.push(document);
+      else grouped.set(client.id, { client, documents: [document] });
+      return grouped;
+    }, new Map<string, { client: AdminDocumentItem["application"]["user"]; documents: AdminDocumentItem[] }>()),
+  )
+    .map(([, folder]) => ({
+      ...folder,
+      documents: folder.documents.sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.fileName.localeCompare(b.fileName),
+      ),
+    }))
+    .sort((a, b) => a.client.fullName.localeCompare(b.client.fullName, undefined, { sensitivity: "base" }) || a.client.email.localeCompare(b.client.email));
+
+  return (
+    <div className="space-y-4">
+      {folders.map((folder, index) => (
+        <details key={folder.client.id} className="overflow-hidden rounded-xl border border-border bg-white" open={folders.length === 1 || index === 0}>
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 bg-bg-light px-5 py-4 marker:content-none">
+            <span className="flex min-w-0 items-center gap-3">
+              <span className="text-2xl" aria-hidden="true">📁</span>
+              <span className="min-w-0">
+                <Link href={`/admin/customers/${folder.client.id}`} className="block truncate font-extrabold text-text-dark">{folder.client.fullName}</Link>
+                <span className="block truncate text-xs text-text-mid">{folder.client.email}</span>
+              </span>
+            </span>
+            <span className="shrink-0 rounded-full border border-border bg-white px-3 py-1 text-xs font-bold text-text-mid">{folder.documents.length} {folder.documents.length === 1 ? "document" : "documents"}</span>
+          </summary>
+          <div className="dash-table-wrap border-t border-border">
+            <table className="dash-table">
+              <thead><tr><th>File</th><th>Order</th><th>Type</th><th>Status</th><th>Uploaded</th><th>Actions</th></tr></thead>
+              <tbody>
+                {folder.documents.map((document) => (
+                  <tr key={document.id}>
+                    <td>{document.storageKey ? <a href={`/api/admin/documents/${document.id}`} target="_blank" rel="noopener noreferrer" className="dash-link"><strong>{document.fileName}</strong></a> : <strong>{document.fileName}</strong>}</td>
+                    <td><Link href={`/admin/orders/${document.application.order.id}`}>{document.application.order.reference}</Link></td>
+                    <td>{document.kind.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ")}</td>
+                    <td><StatusBadge status={document.status} /></td>
+                    <td>{formatDate(document.createdAt)}</td>
+                    <td>{document.storageKey ? <span style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}><a href={`/api/admin/documents/${document.id}`} target="_blank" rel="noopener noreferrer" className="dash-link" style={{ fontSize: "12px" }}>View</a><a href={`/api/admin/documents/${document.id}?download=1`} download={document.fileName} className="dash-link" style={{ fontSize: "12px" }}>Download</a></span> : <span style={{ fontSize: "12px", color: "#9AA7B4" }}>No file stored</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      ))}
+    </div>
+  );
+}
+
 export default async function AdminSectionPage({ params, searchParams }: { params: Promise<{ section: string }>; searchParams: Promise<{ q?: string | string[] }> }) {
   const { section } = await params;
   const q = readQuery((await searchParams).q);
@@ -104,27 +174,10 @@ export default async function AdminSectionPage({ params, searchParams }: { param
   if (section === "documents") {
     const items = await prisma.applicationDocument.findMany({
       where: q ? { OR: [{ fileName: has(q) }, { kind: has(q) }, { application: { order: { reference: has(q) } } }, { application: { order: { id: q } } }, { application: { user: { fullName: has(q) } } }, { application: { user: { email: has(q) } } }] } : undefined,
-      orderBy: { createdAt: "desc" }, include: { application: { include: { user: true, order: true } } }, take: 100 });
+      orderBy: { createdAt: "desc" }, include: { application: { include: { user: true, order: true } } } });
     return (
-      <Section title="Documents" description="Review customer uploads and document approval status." search={search("Search by order ID, customer, email or file name")}>
-        <DashTable heads={["File", "Customer", "Order", "Type", "Status", "Uploaded", "Actions"]} rows={items.map((x) => [
-          x.storageKey
-            ? <a key="f" href={`/api/admin/documents/${x.id}`} target="_blank" rel="noopener noreferrer" className="dash-link"><strong>{x.fileName}</strong></a>
-            : <strong key="f">{x.fileName}</strong>,
-          <Link key="u" href={`/admin/customers/${x.application.user.id}`}>{x.application.user.fullName}</Link>,
-          <Link key="o" href={`/admin/orders/${x.application.order.id}`}>{x.application.order.reference}</Link>,
-          x.kind,
-          <StatusBadge key="s" status={x.status} />,
-          formatDate(x.createdAt),
-          x.storageKey ? (
-            <span key="a" style={{ display: "flex", gap: "0.75rem" }}>
-              <a href={`/api/admin/documents/${x.id}`} target="_blank" rel="noopener noreferrer" className="dash-link" style={{ fontSize: "12px" }}>View</a>
-              <a href={`/api/admin/documents/${x.id}?download=1`} download={x.fileName} className="dash-link" style={{ fontSize: "12px" }}>Download</a>
-            </span>
-          ) : (
-            <span key="a" style={{ fontSize: "12px", color: "#9AA7B4" }}>No file stored</span>
-          ),
-        ])} />
+      <Section title="Documents" description="Browse secure client folders and review uploaded ITIN evidence." search={search("Search by order ID, customer, email, type or file name")}>
+        <ClientDocumentFolders items={items} />
       </Section>
     );
   }
