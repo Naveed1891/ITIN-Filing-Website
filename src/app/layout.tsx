@@ -7,6 +7,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { PartnershipButton } from "@/components/partner/PartnershipButton";
 
+// Site-wide marketing integration; changing this file triggers the production release pipeline.
 const META_PIXEL_ID = "1441523308123002";
 
 const playfairDisplayHeading = Playfair_Display({subsets:['latin'],variable:'--font-heading'});
